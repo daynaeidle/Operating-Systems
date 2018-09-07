@@ -79,6 +79,24 @@ module TSOS {
                                   "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
 
+            // date
+            sc = new ShellCommand(this.shellDate,
+                                  "date",
+                                  " - Displays the current date and time.");
+            this.commandList[this.commandList.length] = sc;
+
+            // loc
+            sc = new ShellCommand(this.shellLoc,
+                                  "loc",
+                                  " - Displays user's current location.");
+            this.commandList[this.commandList.length] = sc;
+
+            // fact
+            sc = new ShellCommand(this.shellFact,
+                                  "fact",
+                                  " - Displays a fun fact.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -259,7 +277,16 @@ module TSOS {
                         _StdOut.putText("For example, 'alpaca' will translate to 'nycnpn'.")
                         break;
                     case "prompt":
-                        _StdOut.putText("Sets the line prompt to the given string.")
+                        _StdOut.putText("Prompt sets the line prompt to the given string.")
+                        break;
+                    case "date":
+                        _StdOut.putText("Date prints out the current date and time.");
+                        break;
+                    case "loc":
+                        _StdOut.putText("Loc displays the user's current location...or at least my best guess at the user's location.");
+                        break;
+                    case "fact":
+                        _StdOut.putText("Fact displays a random fun fact. Enjoy your new knowledge.");
                         break;
                     case "start":
                         _StdOut.putText("The start button starts the operating system.");
@@ -337,6 +364,62 @@ module TSOS {
             } else {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
             }
+        }
+
+        public shellDate(args) {
+            var date = new Date().toLocaleDateString();
+            var time = new Date().toLocaleTimeString();
+            _StdOut.putText("Current Date and Time:");
+            _StdOut.advanceLine();
+            _StdOut.putText(date + " ~ " + time);
+        }
+
+        public shellLoc(args){
+            _StdOut.putText("Seeing as though you are reading this, I would assume you are sitting in front of your computer having the best time exploring the dOnutS operating system.")
+        }
+
+        public shellFact(args){
+            var facts = ['kool', 'mos', 'alaska', 'i', 'pills', 'prius', 'grouch', 'dunks', 'swiss', 'goats', 'selfie']
+            var randNum = Math.floor(Math.random() * facts.length);
+
+            switch (facts[randNum]) {
+                case 'kool':
+                    _StdOut.putText("Kool-Aid was originally marketed as 'Fruit Smack'.");
+                    break;
+                case 'mos':
+                    _StdOut.putText("Only female mosquitoes will bite you.");
+                    break;
+                case "alaska":
+                    _StdOut.putText("Alaska is the only state that you can type using one row of keys (on a traditional keyboard).");
+                    break;
+                case "i":
+                    _StdOut.putText("The dot on the top of a lowercase i is called a tittle.");
+                    break;
+                case "pills":
+                    _StdOut.putText("The Pillsbury Doughboy's real name is Poppin' Fresh.");
+                    break;
+                case "prius":
+                    _StdOut.putText("The plural of Prius (like the car) is Prii.");
+                    break;
+                case "grouch":
+                    _StdOut.putText("Oscar the Grouch was originally orange, not green.");
+                    break;
+                case "dunks":
+                    _StdOut.putText("Dunkin Donuts sells an average of 30 cups of coffee per second.");
+                    break;
+                case "swiss":
+                    _StdOut.putText("In Switzerland, it is illegal to own just one guinea pig.");
+                    break;
+                case "goats":
+                    _StdOut.putText("Billy goats urinate on their own heads in order to smell more attractive to female billy goats.");
+                    break;
+                case "selfie":
+                    _StdOut.putText("In 2017, more people died from injuries caused by taking a selfie than shark attacks.");
+                    break;
+            }
+
+
+
         }
 
     }
