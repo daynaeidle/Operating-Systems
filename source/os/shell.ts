@@ -238,11 +238,63 @@ module TSOS {
                         _StdOut.putText("Help displays a list of (hopefully) valid commands.");
                         break;
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+                    case "man":
+                        _StdOut.putText("Man displays a manual of each command.");
+                        break;
+                    case "ver":
+                        _StdOut.putText("Ver displays the current name and version of the operating system.");
+                        break;
+                    case "shutdown":
+                        _StdOut.putText("Shutdown does what you think - it shuts down the operating system.");
+                        break;
+                    case "cls":
+                        _StdOut.putText("Cls clears the command line of all previous entries and responses.");
+                        break;
+                    case "trace":
+                        _StdOut.putText("Trace either turns the OS trace on or off, depending on your input.");
+                        break;
+                    case "rot13":
+                        _StdOut.putText("Rot13 encodes the given string by shifting all of the letters by 13. How fun!");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("For example, 'alpaca' will translate to 'nycnpn'.")
+                        break;
+                    case "prompt":
+                        _StdOut.putText("Sets the line prompt to the given string.")
+                        break;
+                    case "start":
+                        _StdOut.putText("The start button starts the operating system.");
+                        break;
+                    case "halt":
+                        _StdOut.putText("The halt stops the program from running without resetting everything.");
+                        break;
+                    case "reset":
+                        _StdOut.putText("The reset button restarts the operating system and resets the page.");
+                        break;
+                    case "donuts":
+                        _StdOut.putText("dOnutS is a virtual operating system created by Dayna Eidle.");
+                        break;
+                    case "top":
+                        _StdOut.putText("TOPICS:")
+                        for (var i=0; i<_OsShell.commandList.length; i++){
+                            _StdOut.advanceLine();
+                            _StdOut.putText(_OsShell.commandList[i].command)
+                        }
+                        _StdOut.advanceLine();
+                        _StdOut.putText("start");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("halt");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("reset");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("donuts");
+                        _StdOut.advanceLine();
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
             } else {
-                _StdOut.putText("Usage: man <topic>  Please supply a topic.");
+                // TODO: Hopefully change this to a ? instead of top
+                _StdOut.putText("Usage: man <topic>  Please supply a topic or 'top' for a list of topics.");
             }
         }
 
