@@ -47,6 +47,11 @@ module TSOS {
             // Use the TypeScript cast to HTMLInputElement
             (<HTMLInputElement> document.getElementById("btnStartOS")).focus();
 
+
+            //get datetime for task bar
+            var dt = new Date();
+            (<HTMLInputElement> document.getElementById("datetime")).value = dt.toLocaleString();
+
             // Check for our testing and enrichment core, which
             // may be referenced here (from index.html) as function Glados().
             if (typeof Glados === "function") {

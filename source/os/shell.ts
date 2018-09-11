@@ -285,6 +285,7 @@ module TSOS {
                     case "loc":
                         _StdOut.putText("Loc displays the user's current location...or at least my best guess at the user's location.");
                         break;
+                        // TODO: give credit to fact site.
                     case "fact":
                         _StdOut.putText("Fact displays a random fun fact. Enjoy your new knowledge.");
                         break;
