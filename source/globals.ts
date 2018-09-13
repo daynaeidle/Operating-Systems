@@ -37,6 +37,8 @@ var _DefaultFontFamily: string = "sans";        // Ignored, I think. The was jus
 var _DefaultFontSize: number = 13;
 var _FontHeightMargin: number = 4;              // Additional space added to font size when advancing a line.
 
+var _Status: string = "Please have a donut!"
+
 var _Trace: boolean = true;  // Default the OS trace to be on.
 
 // The OS Kernel and its queues.

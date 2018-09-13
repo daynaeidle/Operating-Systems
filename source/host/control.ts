@@ -50,7 +50,7 @@ module TSOS {
 
             //get datetime for task bar
             var dt = new Date();
-            (<HTMLInputElement> document.getElementById("datetime")).value = dt.toLocaleString();
+            (<HTMLInputElement> document.getElementById("status")).value = _Status;
 
             // Check for our testing and enrichment core, which
             // may be referenced here (from index.html) as function Glados().

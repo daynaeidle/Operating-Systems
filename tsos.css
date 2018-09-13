@@ -47,6 +47,16 @@ h3 {
   text-align: center;
 }
 
-.taskBar {
-  border: 10px solid black;
+.task {
+  border: 1px solid black;
+  border-radius: 10px;
+  display: inline-block;
+  text-align: left;
+  height: 40px;
+  width: 300px;
+  position: relative;
+  left: 10px;
+  bottom: 10px;
+  padding-left: 10px;
+  padding-bottom: 10px;
 }

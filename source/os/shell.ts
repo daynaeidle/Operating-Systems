@@ -97,6 +97,12 @@ module TSOS {
                                   " - Displays a fun fact.");
             this.commandList[this.commandList.length] = sc;
 
+            //status
+            sc = new ShellCommand(this.shellStatus,
+                                  "status",
+                                  "<string> - Changes your status in the status bar.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -301,6 +307,9 @@ module TSOS {
                     case "donuts":
                         _StdOut.putText("dOnutS is a virtual operating system created by Dayna Eidle.");
                         break;
+                    case "status":
+                        _StdOut.putText("Update your status on the status bar. Let us know how you're feeling!");
+                        break;
                     case "top":
                         _StdOut.putText("TOPICS:")
                         for (var i=0; i<_OsShell.commandList.length; i++){
@@ -421,6 +430,15 @@ module TSOS {
 
 
 
+        }
+
+        // updates the status in the status bar
+        public shellStatus(args){
+            if (args.length > 0){
+                _Status = args;
+            } else{
+                _StdOut.putText("Usage: status <string>  Please supply a string.")
+            }
         }
 
     }
