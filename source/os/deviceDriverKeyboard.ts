@@ -1,5 +1,6 @@
 ///<reference path="../globals.ts" />
 ///<reference path="deviceDriver.ts" />
+///<reference path="console.ts" />
 
 /* ----------------------------------
    DeviceDriverKeyboard.ts
@@ -51,12 +52,13 @@ module TSOS {
                 _KernelInputQueue.enqueue(chr);
             } else if (((keyCode >= 48) && (keyCode <= 57)) ||   // digits
                         (keyCode == 32)                     ||   // space
-                        (keyCode == 13)) {                       // enter
+                        (keyCode == 13)                     ||   // enter
+                        (keyCode == 191)){
+                console.log(String.fromCharCode(191))
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
-            } else if (keyCode == 47){
-                chr = String.fromCharCode(keyCode);
-                _KernelInputQueue.enqueue(chr);
+            } else if (keyCode == 8){
+                _StdOut.backSpace();
             }
         }
     }

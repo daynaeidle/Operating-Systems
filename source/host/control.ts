@@ -75,8 +75,10 @@ module TSOS {
             taLog.value = str + taLog.value;
 
             //get datetime for task bar
+            //Create a date variable
             var dt = new Date().toLocaleString();
             console.log(dt);
+            // Set the datetime and status(global) to the taskbar
             (<HTMLElement> document.getElementById("taskBar")).innerHTML = "<p1>" + dt + " ~ " + _Status + "</p1>";
 
             // TODO in the future: Optionally update a log database or some streaming service.
