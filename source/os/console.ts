@@ -23,7 +23,7 @@ module TSOS {
         public init(): void {
             this.clearScreen();
             this.resetXY();
-            this.backSpace();
+            //this.backSpace();
         }
 
         private clearScreen(): void {
@@ -36,9 +36,12 @@ module TSOS {
         }
 
         private backSpace(): void {
+            var len = this.buffer.length;
+            var newValue = (this.buffer).substring(0, len - 1);
             console.log(this.currentYPosition);
-            console.log(this.buffer);
-            _DrawingContext.clearRect((this.currentXPosition - 1), this.currentYPosition, _Canvas.width, _Canvas.height);
+            console.log(newValue);
+            _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
+            _DrawingContext.fillText(newValue, 0, this.currentYPosition);
         }
 
         public handleInput(): void {
