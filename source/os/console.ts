@@ -23,6 +23,7 @@ module TSOS {
         public init(): void {
             this.clearScreen();
             this.resetXY();
+            //this.scroll();
         }
 
         private clearScreen(): void {
@@ -39,8 +40,8 @@ module TSOS {
             var newValue = (this.buffer).substring(0, len - 1);
             console.log(this.currentYPosition);
             console.log(newValue);
-            _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
-            _DrawingContext.fillText(newValue, 0, this.currentYPosition);
+            _DrawingContext.clearRect(0, _Canvas.height + this.currentYPosition, _Canvas.width, _Canvas.height);
+            _DrawingContext.fillText(newValue, 0, this.currentYPosition + _Canvas.height);
         }
 
         public handleInput(): void {
@@ -94,11 +95,27 @@ module TSOS {
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin;
 
+            var data = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
+            var lowVal = this.buffer;
+
+            if (this.currentYPosition > _Canvas.height){
+                console.log("Below frame");
+                console.log(lowVal);
+                _DrawingContext.putImageData(data, _Canvas.width, _Canvas.height);
+            }
+
             // TODO: Handle scrolling. (iProject 1)
         }
 
-        public scroll(): void{
+        /*public scroll(): void{
+            var lowVal = this.buffer;
+            var data = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
+            console.log(data);
+            if (this.currentYPosition > _Canvas.height){
+                console.log("Below frame");
+                _DrawingContext.putImageData(data, _Canvas.width, _Canvas.height);
+            }
 
-        }
+        }*/
     }
  }
