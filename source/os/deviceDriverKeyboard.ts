@@ -12,6 +12,24 @@
 
 module TSOS {
 
+    // array map of key codes to characters
+    /*var charCodes: {[key: number]: string};
+    charCodes = {192: "\\",
+                188: ",",
+                190: ".",
+                191: "/"};
+
+    let base = {"\\": 192,
+                ",": 188,
+                ".": 190,
+                "/": 191};
+    let charCodes = Object.create(base);*/
+
+    //parallel arrays "mapping" character codes to their correct characters
+    var charCodes = [192, 191, 188, 190, 186, 222, 219, 221, 220,  187, 189,  38,    40,     37,     39];
+    var charChars = ["`", "/", ",", ".", ";", "'", "[", "]", "\\", "=", "-", "up", "down", "left", "right" ];
+
+
     // Extends DeviceDriver
     export class DeviceDriverKeyboard extends DeviceDriver {
 
@@ -25,6 +43,8 @@ module TSOS {
             this.driverEntry = this.krnKbdDriverEntry;
             this.isr = this.krnKbdDispatchKeyPress;
         }
+
+
 
         public krnKbdDriverEntry() {
             // Initialization routine for this, the kernel-mode Keyboard Device Driver.
@@ -52,13 +72,14 @@ module TSOS {
                 _KernelInputQueue.enqueue(chr);
             } else if (((keyCode >= 48) && (keyCode <= 57)) ||   // digits
                         (keyCode == 32)                     ||   // space
-                        (keyCode == 13)                     ||   // enter
-                        (keyCode == 191)){
-                console.log(String.fromCharCode(191))
+                        (keyCode == 13)){                        //enter
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
             } else if (keyCode == 8){
                 _StdOut.backSpace();
+            } else if (charCodes.indexOf(keyCode) != -1){
+                var index = charCodes.indexOf(keyCode);
+                _KernelInputQueue.enqueue(charChars[index]);
             }
         }
     }

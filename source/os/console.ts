@@ -23,7 +23,6 @@ module TSOS {
         public init(): void {
             this.clearScreen();
             this.resetXY();
-            //this.backSpace();
         }
 
         private clearScreen(): void {
