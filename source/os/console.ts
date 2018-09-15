@@ -96,5 +96,9 @@ module TSOS {
 
             // TODO: Handle scrolling. (iProject 1)
         }
+
+        public scroll(): void{
+
+        }
     }
  }
