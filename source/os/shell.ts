@@ -263,7 +263,7 @@ module TSOS {
                         break;
                     // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
                     case "man":
-                        _StdOut.putText("Man displays a manual of each command.");
+                        _StdOut.putText("Man displays a manual of each topic. If you don't know the topics, use the command 'man ?'.");
                         break;
                     case "ver":
                         _StdOut.putText("Ver displays the current name and version of the operating system.");
@@ -310,7 +310,7 @@ module TSOS {
                     case "status":
                         _StdOut.putText("Update your status on the status bar. Let us know how you're feeling!");
                         break;
-                    case "top":
+                    case "?":
                         _StdOut.putText("TOPICS:")
                         for (var i=0; i<_OsShell.commandList.length; i++){
                             _StdOut.advanceLine();
@@ -331,7 +331,7 @@ module TSOS {
                 }
             } else {
                 // TODO: Hopefully change this to a ? instead of top
-                _StdOut.putText("Usage: man <topic>  Please supply a topic or 'top' for a list of topics.");
+                _StdOut.putText("Usage: man <topic>  Please supply a topic or ? for a list of topics.");
             }
         }
 

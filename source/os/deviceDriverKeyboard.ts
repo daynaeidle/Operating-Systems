@@ -29,6 +29,10 @@ module TSOS {
     var charCodes = [192, 191, 188, 190, 186, 222, 219, 221, 220,  187, 189,  38,    40,     37,     39];
     var charChars = ["`", "/", ",", ".", ";", "'", "[", "]", "\\", "=", "-", "up", "down", "left", "right" ];
 
+    //parallel arrays "mapping" character codes to their correct characters when shifted
+    var shiftedCodes = [192, 49,  50,  51,  52,  53,  54,  55,  56,  57,  48,  189, 187, 219, 221, 220, 186, 222,  191, 188, 190];
+    var shiftedChars = ["~", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "_", "+", "{", "}", "|", ":", "\"", "?", "<", ">"];
+
 
     // Extends DeviceDriver
     export class DeviceDriverKeyboard extends DeviceDriver {
@@ -70,16 +74,31 @@ module TSOS {
                 }
                 // TODO: Check for caps-lock and handle as shifted if so.
                 _KernelInputQueue.enqueue(chr);
+
+                //if the keycode can be found in the shiftedCodes array or the charCodes array...
+            } else if (shiftedCodes.indexOf(keyCode) != -1 || charCodes.indexOf(keyCode) != -1) {
+                //if the keycode is in charCodes array and shift is not pressed...
+                if (charCodes.indexOf(keyCode) != -1 && !isShifted){
+                    //...write the character at the corresponding index in charChars
+                    var index = charCodes.indexOf(keyCode);
+                    _KernelInputQueue.enqueue(charChars[index]);
+                    //if the keycode can be found in the shiftedCodes array and the shift key is pressed...
+                }else if (shiftedCodes.indexOf(keyCode) != -1 && isShifted){
+                    //...write the character at the corresponding index in shiftedChars
+                    var index = shiftedCodes.indexOf(keyCode);
+                    _KernelInputQueue.enqueue(shiftedChars[index]);
+                }else{
+                    //...print out the actual character(this is only numbers really)
+                    chr = String.fromCharCode(keyCode);
+                    _KernelInputQueue.enqueue(chr);
+                }
             } else if (((keyCode >= 48) && (keyCode <= 57)) ||   // digits
                         (keyCode == 32)                     ||   // space
                         (keyCode == 13)){                        //enter
                 chr = String.fromCharCode(keyCode);
                 _KernelInputQueue.enqueue(chr);
-            } else if (keyCode == 8){
+            } else if (keyCode == 8) {
                 _StdOut.backSpace();
-            } else if (charCodes.indexOf(keyCode) != -1){
-                var index = charCodes.indexOf(keyCode);
-                _KernelInputQueue.enqueue(charChars[index]);
             }
         }
     }
