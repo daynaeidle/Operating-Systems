@@ -26,8 +26,8 @@ module TSOS {
     let charCodes = Object.create(base);*/
 
     //parallel arrays "mapping" character codes to their correct characters
-    var charCodes = [192, 191, 188, 190, 186, 222, 219, 221, 220,  187, 189,  38,    40,     37,     39];
-    var charChars = ["`", "/", ",", ".", ";", "'", "[", "]", "\\", "=", "-", "up", "down", "left", "right" ];
+    var charCodes = [192, 191, 188, 190, 186, 222, 219, 221, 220,  187, 189]  //38,    40,     37,     39];
+    var charChars = ["`", "/", ",", ".", ";", "'", "[", "]", "\\", "=", "-"] //"up", "down", "left", "right" ];
 
     //parallel arrays "mapping" character codes to their correct characters when shifted
     var shiftedCodes = [192, 49,  50,  51,  52,  53,  54,  55,  56,  57,  48,  189, 187, 219, 221, 220, 186, 222,  191, 188, 190];
@@ -100,8 +100,11 @@ module TSOS {
             } else if (keyCode == 8) {
                 _StdOut.backSpace();
             } else if (keyCode == 9) {
-                console.log("Tab");
                 _StdOut.tab();
+            }else if (keyCode == 38){
+                _StdOut.cmdRecallUp();
+            }else if (keyCode == 40){
+                _StdOut.cmdRecallDown();
             }
         }
     }

@@ -11,6 +11,10 @@
 
 module TSOS {
 
+    // command list and length for command recall
+    var _Commands = [];
+    var cmdListLoc = 0;
+
     export class Console {
 
         constructor(public currentFont = _DefaultFontFamily,
@@ -52,6 +56,8 @@ module TSOS {
                 if (chr === String.fromCharCode(13)) { //     Enter key
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
+                    _Commands[_Commands.length] = (this.buffer);
+                    cmdListLoc+=1;
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
@@ -133,6 +139,7 @@ module TSOS {
                     console.log("No match");
                 }else{
                     this.buffer = item;
+                    this.putText(this.buffer);
                 }
             }
 
@@ -155,9 +162,38 @@ module TSOS {
                 this.buffer = matchList[0];
             }*/
 
+        }
+
+        private cmdRecallUp(): void{
+            console.log(cmdListLoc);
+            console.log(_Commands);
+
+
+            this.buffer = _Commands[cmdListLoc - 1];
+            this.putText(this.buffer);
+
+            cmdListLoc -= 1;
+
+            if (cmdListLoc < 0){
+                cmdListLoc = 0;
+            }
+
+        }
+
+        private cmdRecallDown(): void{
+            cmdListLoc += 1;
+            console.log(cmdListLoc);
+
+
+            if (cmdListLoc > (_Commands.length - 1)){
+                cmdListLoc = _Commands.length -1;
+            }
+
+            this.buffer = _Commands[cmdListLoc];
             this.putText(this.buffer);
 
         }
+
 
 
 
