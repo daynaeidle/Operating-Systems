@@ -95,27 +95,27 @@ module TSOS {
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin;
 
-            var data = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
+            //var data = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
             var lowVal = this.buffer;
 
             if (this.currentYPosition > _Canvas.height){
                 console.log("Below frame");
                 console.log(lowVal);
-                _DrawingContext.putImageData(data, _Canvas.width, _Canvas.height);
+                console.log("Canvas height: " + _Canvas.height);
+                console.log("Y Pos: " + this.currentYPosition);
+                var scrollVal = this.currentYPosition - _Canvas.height;
+                console.log("scroll val: " + scrollVal);
+                var data = _DrawingContext.getImageData(0, scrollVal, _Canvas.width, _Canvas.height);
+                _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
+                _DrawingContext.putImageData(data, 0, 0 );
+                //_DrawingContext.putImageData(data, 0,0,0,0,_Canvas.width, scrollVal);
+                //data = _DrawingContext.getImageData(0,0,_Canvas.width,_Canvas.height-scrollVal);
+                //_DrawingContext.putImageData(data, 0,scrollVal,0,0, _Canvas.width, _Canvas.height-scrollVal);
+                //_DrawingContext.putImageData(data, _Canvas.width, _Canvas.height);
             }
 
             // TODO: Handle scrolling. (iProject 1)
         }
-
-        /*public scroll(): void{
-            var lowVal = this.buffer;
-            var data = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
-            console.log(data);
-            if (this.currentYPosition > _Canvas.height){
-                console.log("Below frame");
-                _DrawingContext.putImageData(data, _Canvas.width, _Canvas.height);
-            }
-
-        }*/
+        
     }
  }
