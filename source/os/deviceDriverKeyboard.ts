@@ -99,6 +99,9 @@ module TSOS {
                 _KernelInputQueue.enqueue(chr);
             } else if (keyCode == 8) {
                 _StdOut.backSpace();
+            } else if (keyCode == 9) {
+                console.log("Tab");
+                _StdOut.tab();
             }
         }
     }

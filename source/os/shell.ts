@@ -97,7 +97,7 @@ module TSOS {
                                   " - Displays a fun fact.");
             this.commandList[this.commandList.length] = sc;
 
-            //status
+            // status
             sc = new ShellCommand(this.shellStatus,
                                   "status",
                                   "<string> - Changes your status in the status bar.");
@@ -428,8 +428,6 @@ module TSOS {
                     break;
             }
 
-
-
         }
 
         // updates the status in the status bar
@@ -440,6 +438,8 @@ module TSOS {
                 _StdOut.putText("Usage: status <string>  Please supply a string.")
             }
         }
+
+
 
     }
 }

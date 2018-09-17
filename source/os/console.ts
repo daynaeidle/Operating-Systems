@@ -116,6 +116,50 @@ module TSOS {
 
             // TODO: Handle scrolling. (iProject 1)
         }
-        
+
+        private tab(): void{
+            console.log("at function");
+            var cmdList = ["ver", "help", "shutdown", "cls", "man", "trace", "rot13", "prompt", "date", "loc", "fact", "status"];
+            var cmd = this.buffer;
+            var cmdLen;
+            console.log("Length: " + cmd.length);
+            var matchList = [];
+            console.log(matchList.length);
+            for (let item of cmdList){
+                console.log("item: " + item);
+                console.log("substring: " + item.substring(0, cmdLen));
+
+                if (item.search(cmd) == -1){
+                    console.log("No match");
+                }else{
+                    this.buffer = item;
+                }
+            }
+
+                /*if (cmd == item.substring(0, cmdLen)){
+                    console.log("got to a match");
+                    matchList[matchList.length] = item;
+
+                }
+            }
+            if (matchList.length > 1){
+                var newMatches = [];
+                for (let item in matchList){
+                    if (cmd == item.substring(0, 2)){
+                        newMatches[newMatches.length] = item;
+                    }
+                }
+                this.buffer = newMatches[0];
+
+            }else{
+                this.buffer = matchList[0];
+            }*/
+
+            this.putText(this.buffer);
+
+        }
+
+
+
     }
  }
