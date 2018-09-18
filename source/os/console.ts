@@ -165,31 +165,34 @@ module TSOS {
                 this.clearScreen();
                 //put the image data on the canvas starting at the coordinate (0,0)
                 _DrawingContext.putImageData(data, 0, 0);
-                //reset y so that it's not below the canvas
+                //reset y so that it's not below the canvas when the line advances
                 this.currentYPosition = y;
             }
 
-            // TODO: Handle scrolling. (iProject 1)
         }
 
         //command completion when pressing tab
         private tab(): void{
             var cmdList = ["ver", "help", "shutdown", "cls", "man", "trace", "rot13", "prompt", "date", "loc", "fact", "status", "load", "error"];
             var cmd = this.buffer;
+            var cmdLen = cmd.length;
             console.log("Length: " + cmd.length);
             var matchList = [];
             console.log(matchList.length);
+            console.log("cmd: " + cmd);
             //for each item in cmdList...
             for (let item of cmdList) {
                 //...if the buffer doesn't match any part of the item...
-                if (item.search(cmd) == -1) {
-                    //..do nothing really.
-                    console.log("No match");
-                    //...otherwise...
-                } else {
+                console.log("Substring: " + item.substring(0, cmdLen));
+                console.log(item.substring(0, cmdLen) == cmd);
+                if (item.substring(0, cmdLen) == cmd) {
                     //...add the item to matchList
                     matchList[matchList.length] = item;
 
+                    //...otherwise...
+                } else {
+                    //..do nothing really.
+                    console.log("No match");
                 }
             }
 
