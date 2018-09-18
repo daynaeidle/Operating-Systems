@@ -36,6 +36,13 @@ h3 {
   cursor: default;
 }
 
+.error{
+  color: white;
+  font-size: 50px;
+  font-weight: bold;
+  text-align: center;
+}
+
 .normal_button {
   width: 100px;
 }

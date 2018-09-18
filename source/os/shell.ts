@@ -486,7 +486,12 @@ module TSOS {
         }
 
         public shellError(args){
-
+            /*_DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
+            _DrawingContext.rect(0, 0, _Canvas.width, _Canvas.height);
+            _DrawingContext.fillStyle("#0000ff");
+            _DrawingContext.fill();*/
+            _Kernel.krnTrapError("ERROR");
+            (<HTMLElement> document.getElementById("blueScreen")).style.display = "block";
         }
 
 

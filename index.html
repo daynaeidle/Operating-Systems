@@ -37,6 +37,16 @@
 
 <body onload="onDocumentLoad()">
 
+
+<div id="blueScreen" style="height:100%; width: 100%; display: none; background-color: blue; position: fixed;z-index:2;">
+   <div id="errorTxt">
+      <p class="error">Abort! Abort!</p>
+      <p class="error">OS Error has been triggered!</p>
+   </div>
+</div>
+
+
+
 <div id="divMain" style="width:100%;">
 
    <div id="divButtonBar" style="margin:4px;">
@@ -103,10 +113,8 @@
       </label>
    </div>
 
-
-
-
 </div>
+
 
 <p class="footerText" style="clear:both;">
    <br>
