@@ -12,19 +12,6 @@
 
 module TSOS {
 
-    // array map of key codes to characters
-    /*var charCodes: {[key: number]: string};
-    charCodes = {192: "\\",
-                188: ",",
-                190: ".",
-                191: "/"};
-
-    let base = {"\\": 192,
-                ",": 188,
-                ".": 190,
-                "/": 191};
-    let charCodes = Object.create(base);*/
-
     //parallel arrays "mapping" character codes to their correct characters
     var charCodes = [192, 191, 188, 190, 186, 222, 219, 221, 220,  187, 189]  //38,    40,     37,     39];
     var charChars = ["`", "/", ",", ".", ";", "'", "[", "]", "\\", "=", "-"] //"up", "down", "left", "right" ];
@@ -68,6 +55,7 @@ module TSOS {
                 // Determine the character we want to display.
                 // Assume it's lowercase...
                 chr = String.fromCharCode(keyCode + 32);
+                console.log(isShifted);
                 // ... then check the shift key and re-adjust if necessary.
                 if (isShifted) {
                     chr = String.fromCharCode(keyCode);
@@ -102,9 +90,9 @@ module TSOS {
             } else if (keyCode == 9) {
                 _StdOut.tab();
             }else if (keyCode == 38){
-                _KernelInputQueue.enqueue("up");
+                _StdOut.cmdRecallUp();
             }else if (keyCode == 40){
-                _KernelInputQueue.enqueue("down");
+                _StdOut.cmdRecallDown();
             }
         }
     }

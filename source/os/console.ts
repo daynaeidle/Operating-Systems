@@ -38,14 +38,18 @@ module TSOS {
             this.currentYPosition = this.currentFontSize;
         }
 
-        public clearLine(): void {
+
+        private clearLine(): void {
             console.log("Line Height: " + _DefaultFontSize +
                 _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                 _FontHeightMargin);
+            //set the prompt string to a variable
             var prompt = _OsShell.promptStr;
             console.log(prompt);
+            //get the length of the prompt string
             var promptLen = _DrawingContext.measureText(this.currentFont, this.currentFontSize, prompt);
             console.log("Prompt len: " + promptLen);
+            //clear everything on the current line after the prompt string
             _DrawingContext.clearRect(promptLen,
                                       this.currentYPosition - (_DefaultFontSize +
                                         _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
@@ -54,16 +58,22 @@ module TSOS {
                                      (_DefaultFontSize +
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin));
+            //set the x position to just after the prompt string
             this.currentXPosition = promptLen;
         }
 
         private backSpace(): void {
+            //get the length of the buffer
             var len = this.buffer.length;
+            //make a substring of the buffer (one less character) and set it to newValue
             var newValue = (this.buffer).substring(0, len - 1);
             console.log(this.currentYPosition);
             console.log(newValue);
+            //clear the line
             this.clearLine();
+            //set the buffer to the new value
             this.buffer = newValue;
+            //write the new value to the line
             this.putText(this.buffer);
         }
 
@@ -77,34 +87,17 @@ module TSOS {
                 if (chr === String.fromCharCode(13)) { //     Enter key
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
+
+                    //add the input to the commands array
                     _Commands[_Commands.length] = (this.buffer);
-                    cmdListLoc += 1;
+                    //add one to the cmdListLoc variable since a command was added
+                    //set the cmdListLoc to the length of the commands array to use as an index variable
+                    cmdListLoc = _Commands.length;
                     console.log(cmdListLoc);
+
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
-                }else if (chr == "up") {
-                    if (cmdListLoc == 0) {
-                        this.buffer = _Commands[cmdListLoc];
-                        cmdListLoc = 0;
-                    } else {
-                        this.buffer = _Commands[cmdListLoc - 1];
-                        cmdListLoc -= 1;
-                    }
-                    this.clearLine();
-                    this.putText(this.buffer);
-                }else if (chr == "down"){
-                    cmdListLoc += 1;
-                    console.log(cmdListLoc);
-
-
-                    if (cmdListLoc > (_Commands.length - 1)){
-                        cmdListLoc = _Commands.length -1;
-                    }
-
-                    this.buffer = _Commands[cmdListLoc];
-                    this.clearLine();
-                    this.putText(this.buffer);
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
@@ -163,64 +156,77 @@ module TSOS {
             // TODO: Handle scrolling. (iProject 1)
         }
 
+        //command completion when pressing tab
         private tab(): void{
-            console.log("at function");
             var cmdList = ["ver", "help", "shutdown", "cls", "man", "trace", "rot13", "prompt", "date", "loc", "fact", "status"];
             var cmd = this.buffer;
-            var cmdLen;
             console.log("Length: " + cmd.length);
             var matchList = [];
             console.log(matchList.length);
+            //for each item in cmdList...
             for (let item of cmdList) {
+                //...if the buffer doesn't match any part of the item...
                 if (item.search(cmd) == -1) {
+                    //..do nothing really.
                     console.log("No match");
+                    //...otherwise...
                 } else {
+                    //...add the item to matchList
                     matchList[matchList.length] = item;
 
                 }
             }
 
             console.log(matchList);
-
+                //if just one match is found...
                 if (matchList.length == 1){
+                    //...clear the line and print it out
                     this.buffer = matchList[0];
                     this.clearLine();
                     this.putText(this.buffer);
                 }else{
+                    ///otherwise don't do anything because a longer buffer is required
                     console.log("too many or no matches");
                 }
         }
 
-        /*private cmdRecallUp(): void{
+        //up key to scroll up through commandlist
+        private cmdRecallUp(): void{
             console.log(cmdListLoc);
             console.log(_Commands);
 
+            //if the index is 0
             if (cmdListLoc == 0){
+                //set the buffer to the command at index 0
                 this.buffer = _Commands[cmdListLoc];
-                cmdListLoc = 0;
             }else{
-                this.buffer = _Commands[cmdListLoc - 1];
+                //otherwise, decrement the index by 1 and set the command at that index to the buffer
                 cmdListLoc -= 1;
+                this.buffer = _Commands[cmdListLoc];
             }
 
+            //clear the line and write the buffer to the line
             this.clearLine();
             this.putText(this.buffer);
-        }*/
+        }
 
-        /*private cmdRecallDown(): void{
-            cmdListLoc += 1;
+        //down key to scroll down through commandlist
+        private cmdRecallDown(): void{
             console.log(cmdListLoc);
 
-
-            if (cmdListLoc > (_Commands.length - 1)){
-                cmdListLoc = _Commands.length -1;
+            //if the index is greater than or equal to the length - 1 (last element) of the commands list...
+            if (cmdListLoc >= _Commands.length - 1){
+                //do nothing
+                console.log("No lower commands");
+            }else{
+                //otherwise, add 1 to cmdListLoc, set the command at that index to the buffer,
+                //clear the line, and write the buffer
+                cmdListLoc += 1;
+                this.buffer = _Commands[cmdListLoc];
+                this.clearLine();
+                this.putText(this.buffer);
             }
-
-            this.buffer = _Commands[cmdListLoc];
-            this.clearLine();
-            this.putText(this.buffer);
-
-        }*/
+        }
 
 
 
