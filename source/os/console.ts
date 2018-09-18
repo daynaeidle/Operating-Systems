@@ -173,22 +173,20 @@ module TSOS {
 
         //command completion when pressing tab
         private tab(): void{
-            var cmdList = ["ver", "help", "shutdown", "cls", "man", "trace", "rot13", "prompt", "date", "loc", "fact", "status", "load", "error"];
-            var cmd = this.buffer;
-            var cmdLen = cmd.length;
-            console.log("Length: " + cmd.length);
+            var cmdList = _OsShell.commandList;
+            var buf = this.buffer;
+            var bufLen = buf.length;
+            console.log("Length: " + buf.length);
             var matchList = [];
             console.log(matchList.length);
-            console.log("cmd: " + cmd);
-            //for each item in cmdList...
-            for (let item of cmdList) {
-                //...if the buffer doesn't match any part of the item...
-                console.log("Substring: " + item.substring(0, cmdLen));
-                console.log(item.substring(0, cmdLen) == cmd);
-                if (item.substring(0, cmdLen) == cmd) {
+            //for each index in cmdlist
+            for (let i in cmdList) {
+                //get a command at that index
+                var cmd = cmdList[i].command;
+                //if the buffer matches a command
+                if (cmd.substring(0, bufLen) == buf) {
                     //...add the item to matchList
-                    matchList[matchList.length] = item;
-
+                    matchList[matchList.length] = cmd;
                     //...otherwise...
                 } else {
                     //..do nothing really.

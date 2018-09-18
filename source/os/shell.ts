@@ -85,9 +85,9 @@ module TSOS {
                                   " - Displays the current date and time.");
             this.commandList[this.commandList.length] = sc;
 
-            // loc
-            sc = new ShellCommand(this.shellLoc,
-                                  "loc",
+            // whereami
+            sc = new ShellCommand(this.shellWhereAmI,
+                                  "whereami",
                                   " - Displays user's current location.");
             this.commandList[this.commandList.length] = sc;
 
@@ -302,8 +302,8 @@ module TSOS {
                     case "date":
                         _StdOut.putText("Date prints out the current date and time.");
                         break;
-                    case "loc":
-                        _StdOut.putText("Loc displays the user's current location...or at least my best guess at the user's location.");
+                    case "whereami":
+                        _StdOut.putText("Whereami displays the user's current location...or at least my best guess at the user's location.");
                         break;
                         // TODO: give credit to fact site.
                     case "fact":
@@ -404,7 +404,7 @@ module TSOS {
             _StdOut.putText(date + " ~ " + time);
         }
 
-        public shellLoc(args){
+        public shellWhereAmI(args){
             _StdOut.putText("Seeing as though you are reading this, I would assume you are sitting in front of your computer having the best time exploring the dOnutS operating system.")
         }
 
