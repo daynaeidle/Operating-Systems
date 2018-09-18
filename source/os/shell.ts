@@ -453,6 +453,7 @@ module TSOS {
         // updates the status in the status bar
         public shellStatus(args){
             if (args.length > 0){
+                //make this an array
                 _Status = args;
             } else{
                 _StdOut.putText("Usage: status <string>  Please supply a string.")

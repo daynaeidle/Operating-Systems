@@ -135,25 +135,38 @@ module TSOS {
              * Font descent measures from the baseline to the lowest point in the font.
              * Font height margin is extra spacing between the lines.
              */
+
+            var y = this.currentYPosition;
+
             this.currentYPosition += _DefaultFontSize + 
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin;
 
+            var lineHeight = _DefaultFontSize +
+                            _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
+                            _FontHeightMargin;
+
 
             //scrolling
+            //if the lines go below the canvas height
             if (this.currentYPosition > _Canvas.height){
                 console.log("Below frame");
                 console.log("Canvas height: " + _Canvas.height);
                 console.log("Y Pos: " + this.currentYPosition);
-                var scrollVal = this.currentYPosition - _Canvas.height;
-                console.log("scroll val: " + scrollVal);
-                var data = _DrawingContext.getImageData(0, _Canvas.height - scrollVal, _Canvas.width, _Canvas.height);
-                _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height + scrollVal);
-                _DrawingContext.putImageData(data, 0, scrollVal, 0, 0, _Canvas.width, _Canvas.height - scrollVal );
-                console.log(data);
-                //_DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
-                //_DrawingContext.beginPath();
+                
+                //var scrollVal = this.currentYPosition - _Canvas.height;
+                //console.log("scroll val: " + scrollVal);
+                console.log("Line height: " + lineHeight);
 
+                //get the image data(text) from the y position at the bottom of the first line to the current y position
+                var data = _DrawingContext.getImageData(0, lineHeight, _Canvas.width, this.currentYPosition);
+                console.log(data);
+                //clear the screen
+                this.clearScreen();
+                //put the image data on the canvas starting at the coordinate (0,0)
+                _DrawingContext.putImageData(data, 0, 0);
+                //reset y so that it's not below the canvas
+                this.currentYPosition = y;
             }
 
             // TODO: Handle scrolling. (iProject 1)
