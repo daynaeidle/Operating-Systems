@@ -51,8 +51,6 @@ var _KernelBuffers: any[] = null;   // when clearly 'any' is not what we want. T
 var _StdIn;    // Same "to null or not to null" issue as above.
 var _StdOut;
 
-
-
 // UI
 var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;

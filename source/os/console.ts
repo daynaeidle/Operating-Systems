@@ -27,7 +27,6 @@ module TSOS {
         public init(): void {
             this.clearScreen();
             this.resetXY();
-            //this.scroll();
         }
 
         private clearScreen(): void {
@@ -39,14 +38,32 @@ module TSOS {
             this.currentYPosition = this.currentFontSize;
         }
 
+        public clearLine(): void {
+            console.log("Line Height: " + _DefaultFontSize +
+                _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
+                _FontHeightMargin);
+            _DrawingContext.clearRect(12,
+                                      this.currentYPosition - (_DefaultFontSize +
+                                        _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
+                                        _FontHeightMargin) + 5,
+                                      _Canvas.width,
+                                     (_DefaultFontSize +
+                                     _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
+                                     _FontHeightMargin));
+            this.currentXPosition = 12;
+        }
+
         private backSpace(): void {
             var len = this.buffer.length;
             var newValue = (this.buffer).substring(0, len - 1);
             console.log(this.currentYPosition);
             console.log(newValue);
-            _DrawingContext.clearRect(0, _Canvas.height + this.currentYPosition, _Canvas.width, _Canvas.height);
-            _DrawingContext.fillText(newValue, 0, this.currentYPosition + _Canvas.height);
+            this.clearLine();
+            this.buffer = newValue;
+            this.putText(this.buffer);
         }
+
+
 
         public handleInput(): void {
             while (_KernelInputQueue.getSize() > 0) {
@@ -58,6 +75,7 @@ module TSOS {
                     // ... tell the shell ...
                     _Commands[_Commands.length] = (this.buffer);
                     cmdListLoc+=1;
+                    console.log(cmdListLoc);
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
@@ -131,53 +149,40 @@ module TSOS {
             console.log("Length: " + cmd.length);
             var matchList = [];
             console.log(matchList.length);
-            for (let item of cmdList){
-                console.log("item: " + item);
-                console.log("substring: " + item.substring(0, cmdLen));
-
-                if (item.search(cmd) == -1){
+            for (let item of cmdList) {
+                if (item.search(cmd) == -1) {
                     console.log("No match");
-                }else{
-                    this.buffer = item;
-                    this.putText(this.buffer);
-                }
-            }
-
-                /*if (cmd == item.substring(0, cmdLen)){
-                    console.log("got to a match");
+                } else {
                     matchList[matchList.length] = item;
 
                 }
             }
-            if (matchList.length > 1){
-                var newMatches = [];
-                for (let item in matchList){
-                    if (cmd == item.substring(0, 2)){
-                        newMatches[newMatches.length] = item;
-                    }
+
+            console.log(matchList);
+
+                if (matchList.length == 1){
+                    this.buffer = matchList[0];
+                    this.clearLine();
+                    this.putText(this.buffer);
+                }else{
+                    console.log("too many or no matches");
                 }
-                this.buffer = newMatches[0];
-
-            }else{
-                this.buffer = matchList[0];
-            }*/
-
         }
 
         private cmdRecallUp(): void{
             console.log(cmdListLoc);
             console.log(_Commands);
 
-
-            this.buffer = _Commands[cmdListLoc - 1];
-            this.putText(this.buffer);
-
-            cmdListLoc -= 1;
-
-            if (cmdListLoc < 0){
+            if (cmdListLoc == 0){
+                this.buffer = _Commands[cmdListLoc];
                 cmdListLoc = 0;
+            }else{
+                this.buffer = _Commands[cmdListLoc - 1];
+                cmdListLoc -= 1;
             }
 
+            this.clearLine();
+            this.putText(this.buffer);
         }
 
         private cmdRecallDown(): void{
@@ -190,6 +195,7 @@ module TSOS {
             }
 
             this.buffer = _Commands[cmdListLoc];
+            this.clearLine();
             this.putText(this.buffer);
 
         }
