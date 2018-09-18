@@ -120,12 +120,41 @@ module TSOS {
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             //         Consider fixing that.
             if (text !== "") {
-                // Draw the text at the current X and Y coordinates.
+
+                var prompt = _OsShell.promptStr;
+                var words = text.split(" ");
+                console.log("Words: " + words);
+                var currLine = '';
+
+                for (let word of words){
+                    var test = currLine + word + " ";
+                    var lineSize = _DrawingContext.measureText(this.currentFont, this.currentFontSize, test);
+                    //var lineWidth = lineSize.width;
+                    console.log(lineSize);
+                    console.log(lineSize > _Canvas.width);
+                    if (lineSize > _Canvas.width){
+                        _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, currLine);
+                        var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, currLine);
+                        this.currentXPosition = this.currentXPosition + offset;
+                        currLine = word + " ";
+                        this.advanceLine();
+                    }else{
+                        currLine = test;
+                    }
+                }
+                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, currLine);
+                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, currLine);
+                this.currentXPosition = this.currentXPosition + offset;
+
+
+                /*// Draw the text at the current X and Y coordinates.
                 _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
                 // Move the current X position.
                 var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                this.currentXPosition = this.currentXPosition + offset;
+                this.currentXPosition = this.currentXPosition + offset;*/
+
             }
+
          }
 
         public advanceLine(): void {
@@ -150,17 +179,13 @@ module TSOS {
             //scrolling
             //if the lines go below the canvas height
             if (this.currentYPosition > _Canvas.height){
-                console.log("Below frame");
+                /*console.log("Below frame");
                 console.log("Canvas height: " + _Canvas.height);
                 console.log("Y Pos: " + this.currentYPosition);
-                
-                //var scrollVal = this.currentYPosition - _Canvas.height;
-                //console.log("scroll val: " + scrollVal);
-                console.log("Line height: " + lineHeight);
+                console.log("Line height: " + lineHeight);*/
 
                 //get the image data(text) from the y position at the bottom of the first line to the current y position
                 var data = _DrawingContext.getImageData(0, lineHeight, _Canvas.width, this.currentYPosition);
-                console.log(data);
                 //clear the screen
                 this.clearScreen();
                 //put the image data on the canvas starting at the coordinate (0,0)
