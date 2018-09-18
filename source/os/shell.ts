@@ -275,7 +275,6 @@ module TSOS {
                     case "help":
                         _StdOut.putText("Help displays a list of (hopefully) valid commands.");
                         break;
-                    // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
                     case "man":
                         _StdOut.putText("Man displays a manual of each topic. If you don't know the topics, use the command 'man ?'.");
                         break;
@@ -325,7 +324,7 @@ module TSOS {
                         _StdOut.putText("Update your status on the status bar. Let us know how you're feeling!");
                         break;
                     case "load":
-                        _StdOut.putText("Load checks for valid user inout and then loads the user program.");
+                        _StdOut.putText("Load checks for valid user input.");
                         break;
                     case "error":
                         _StdOut.putText("Error simulates an OS error.");
@@ -465,20 +464,25 @@ module TSOS {
             }
         }
 
-        // validate and load the user program
+        // validate the user program
         public shellLoad(args){
             //store the user input in a variable
             var programInput = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
+            console.log(programInput);
+
             //set valid to true
             var valid = true;
-
-            console.log(programInput);
 
             //regex pattern for NOT characters a-f, A-F, 0-9 and " "(space)
             var hex = new RegExp('[^a-fA-F0-9 ]+');
 
-            //if something besides valid hex is found
-            if (programInput.search(hex) != -1){
+            //if no input is in the text area
+            if (programInput == ""){
+                //tell the user and set valid to false.
+                _StdOut.putText("No user program entered.");
+                valid = false;
+                //if something besides valid hex is found
+            } else if (programInput.search(hex) != -1){
                 //write an error message and set valid to false
                 _StdOut.putText("Input error in the user program! Must input valid hex code.");
                 valid = false;
@@ -487,15 +491,12 @@ module TSOS {
             //if valid is true...
             if (valid == true){
                 //write a validation message
-                _StdOut.putText("User code is valid. Program has been loaded.");
+                _StdOut.putText("User code is valid.");
             }
         }
 
+        //traps an os error and displays BSOD
         public shellError(args){
-            /*_DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
-            _DrawingContext.rect(0, 0, _Canvas.width, _Canvas.height);
-            _DrawingContext.fillStyle("#0000ff");
-            _DrawingContext.fill();*/
             _Kernel.krnTrapError("ERROR");
             (<HTMLElement> document.getElementById("blueScreen")).style.display = "block";
         }
