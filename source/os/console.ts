@@ -42,7 +42,11 @@ module TSOS {
             console.log("Line Height: " + _DefaultFontSize +
                 _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                 _FontHeightMargin);
-            _DrawingContext.clearRect(12,
+            var prompt = _OsShell.promptStr;
+            console.log(prompt);
+            var promptLen = _DrawingContext.measureText(this.currentFont, this.currentFontSize, prompt);
+            console.log("Prompt len: " + promptLen);
+            _DrawingContext.clearRect(promptLen,
                                       this.currentYPosition - (_DefaultFontSize +
                                         _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                         _FontHeightMargin) + 5,
@@ -50,7 +54,7 @@ module TSOS {
                                      (_DefaultFontSize +
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin));
-            this.currentXPosition = 12;
+            this.currentXPosition = promptLen;
         }
 
         private backSpace(): void {
@@ -74,11 +78,33 @@ module TSOS {
                     // The enter key marks the end of a console command, so ...
                     // ... tell the shell ...
                     _Commands[_Commands.length] = (this.buffer);
-                    cmdListLoc+=1;
+                    cmdListLoc += 1;
                     console.log(cmdListLoc);
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.
                     this.buffer = "";
+                }else if (chr == "up") {
+                    if (cmdListLoc == 0) {
+                        this.buffer = _Commands[cmdListLoc];
+                        cmdListLoc = 0;
+                    } else {
+                        this.buffer = _Commands[cmdListLoc - 1];
+                        cmdListLoc -= 1;
+                    }
+                    this.clearLine();
+                    this.putText(this.buffer);
+                }else if (chr == "down"){
+                    cmdListLoc += 1;
+                    console.log(cmdListLoc);
+
+
+                    if (cmdListLoc > (_Commands.length - 1)){
+                        cmdListLoc = _Commands.length -1;
+                    }
+
+                    this.buffer = _Commands[cmdListLoc];
+                    this.clearLine();
+                    this.putText(this.buffer);
                 } else {
                     // This is a "normal" character, so ...
                     // ... draw it on the screen...
@@ -132,10 +158,6 @@ module TSOS {
                 var data = _DrawingContext.getImageData(0, scrollVal, _Canvas.width, _Canvas.height);
                 _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
                 _DrawingContext.putImageData(data, 0, 0 );
-                //_DrawingContext.putImageData(data, 0,0,0,0,_Canvas.width, scrollVal);
-                //data = _DrawingContext.getImageData(0,0,_Canvas.width,_Canvas.height-scrollVal);
-                //_DrawingContext.putImageData(data, 0,scrollVal,0,0, _Canvas.width, _Canvas.height-scrollVal);
-                //_DrawingContext.putImageData(data, _Canvas.width, _Canvas.height);
             }
 
             // TODO: Handle scrolling. (iProject 1)
@@ -169,7 +191,7 @@ module TSOS {
                 }
         }
 
-        private cmdRecallUp(): void{
+        /*private cmdRecallUp(): void{
             console.log(cmdListLoc);
             console.log(_Commands);
 
@@ -183,9 +205,9 @@ module TSOS {
 
             this.clearLine();
             this.putText(this.buffer);
-        }
+        }*/
 
-        private cmdRecallDown(): void{
+        /*private cmdRecallDown(): void{
             cmdListLoc += 1;
             console.log(cmdListLoc);
 
@@ -198,7 +220,7 @@ module TSOS {
             this.clearLine();
             this.putText(this.buffer);
 
-        }
+        }*/
 
 
 

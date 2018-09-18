@@ -102,9 +102,9 @@ module TSOS {
             } else if (keyCode == 9) {
                 _StdOut.tab();
             }else if (keyCode == 38){
-                _StdOut.cmdRecallUp();
+                _KernelInputQueue.enqueue("up");
             }else if (keyCode == 40){
-                _StdOut.cmdRecallDown();
+                _KernelInputQueue.enqueue("down");
             }
         }
     }
