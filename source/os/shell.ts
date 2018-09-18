@@ -103,6 +103,20 @@ module TSOS {
                                   "<string> - Changes your status in the status bar.");
             this.commandList[this.commandList.length] = sc;
 
+
+            //load
+            sc = new ShellCommand(this.shellLoad,
+                                  "load",
+                                  " - Validates and loads the user program into memory.");
+            this.commandList[this.commandList.length] = sc;
+
+
+            // error
+            sc = new ShellCommand(this.shellError,
+                                  "error",
+                                  " - Traps an OS error.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -310,6 +324,12 @@ module TSOS {
                     case "status":
                         _StdOut.putText("Update your status on the status bar. Let us know how you're feeling!");
                         break;
+                    case "load":
+                        _StdOut.putText("Load checks for valid user inout and then loads the user program.");
+                        break;
+                    case "error":
+                        _StdOut.putText("Error simulates an OS error.");
+                        break;
                     case "?":
                         _StdOut.putText("TOPICS:")
                         for (var i=0; i<_OsShell.commandList.length; i++){
@@ -437,6 +457,36 @@ module TSOS {
             } else{
                 _StdOut.putText("Usage: status <string>  Please supply a string.")
             }
+        }
+
+        // validate and load the user program
+        public shellLoad(args){
+            //store the user input in a variable
+            var programInput = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
+            //set valid to true
+            var valid = true;
+
+            console.log(programInput);
+
+            //regex pattern for NOT characters a-f, A-F, 0-9 and " "(space)
+            var hex = new RegExp('[^a-fA-F0-9 ]+');
+
+            //if something besides valid hex is found
+            if (programInput.search(hex) != -1){
+                //write an error message and set valid to false
+                _StdOut.putText("Input error in the user program! Must input valid hex code.");
+                valid = false;
+            }
+
+            //if valid is true...
+            if (valid == true){
+                //write a validation message
+                _StdOut.putText("User code is valid. Program has been loaded.");
+            }
+        }
+
+        public shellError(args){
+
         }
 
 

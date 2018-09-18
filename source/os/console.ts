@@ -50,14 +50,15 @@ module TSOS {
             var promptLen = _DrawingContext.measureText(this.currentFont, this.currentFontSize, prompt);
             console.log("Prompt len: " + promptLen);
             //clear everything on the current line after the prompt string
-            _DrawingContext.clearRect(promptLen,
+            console.log("Font size: " + _DefaultFontSize);
+            console.log("Margin: " + _FontHeightMargin);
+            _DrawingContext.clearRect(promptLen, //start after the prompt
                                       this.currentYPosition - (_DefaultFontSize +
-                                        _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
-                                        _FontHeightMargin) + 5,
-                                      _Canvas.width,
+                                        _DrawingContext.fontDescent(this.currentFont, this.currentFontSize)), //start at the y position above the line (not including margins)
+                                      _Canvas.width, //width of the canvas
                                      (_DefaultFontSize +
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
-                                     _FontHeightMargin));
+                                     _FontHeightMargin)); //height of the line
             //set the x position to just after the prompt string
             this.currentXPosition = promptLen;
         }
@@ -138,19 +139,21 @@ module TSOS {
                                      _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
                                      _FontHeightMargin;
 
-            //var data = _DrawingContext.getImageData(0, 0, _Canvas.width, _Canvas.height);
-            var lowVal = this.buffer;
 
+            //scrolling
             if (this.currentYPosition > _Canvas.height){
                 console.log("Below frame");
-                console.log(lowVal);
                 console.log("Canvas height: " + _Canvas.height);
                 console.log("Y Pos: " + this.currentYPosition);
                 var scrollVal = this.currentYPosition - _Canvas.height;
                 console.log("scroll val: " + scrollVal);
-                var data = _DrawingContext.getImageData(0, scrollVal, _Canvas.width, _Canvas.height);
-                _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
-                _DrawingContext.putImageData(data, 0, 0 );
+                var data = _DrawingContext.getImageData(0, _Canvas.height - scrollVal, _Canvas.width, _Canvas.height);
+                _DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height + scrollVal);
+                _DrawingContext.putImageData(data, 0, scrollVal, 0, 0, _Canvas.width, _Canvas.height - scrollVal );
+                console.log(data);
+                //_DrawingContext.clearRect(0, 0, _Canvas.width, _Canvas.height);
+                //_DrawingContext.beginPath();
+
             }
 
             // TODO: Handle scrolling. (iProject 1)
@@ -158,7 +161,7 @@ module TSOS {
 
         //command completion when pressing tab
         private tab(): void{
-            var cmdList = ["ver", "help", "shutdown", "cls", "man", "trace", "rot13", "prompt", "date", "loc", "fact", "status"];
+            var cmdList = ["ver", "help", "shutdown", "cls", "man", "trace", "rot13", "prompt", "date", "loc", "fact", "status", "load", "error"];
             var cmd = this.buffer;
             console.log("Length: " + cmd.length);
             var matchList = [];
