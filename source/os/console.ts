@@ -120,7 +120,7 @@ module TSOS {
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             //         Consider fixing that.
             if (text !== "") {
-                
+
                 //make an array of the words on the line, found by spaces as a separator
                 var words = text.split(" ");
                 console.log("Words: " + words);
@@ -132,6 +132,7 @@ module TSOS {
                 //than the length of the canvas, it won't wrap around to a new line because the characters
                 //aren't accounted for.
                 //Would like to enhance this later to account for both words and characters
+                //Used html5canvastutorials documentation for this part as a resource.
 
                 //if its just one word, then don't bother with the second half of the code
                 if (words.length <= 1){
