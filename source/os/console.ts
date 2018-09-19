@@ -120,38 +120,57 @@ module TSOS {
             // UPDATE: Even though we are now working in TypeScript, char and string remain undistinguished.
             //         Consider fixing that.
             if (text !== "") {
-
-                var prompt = _OsShell.promptStr;
+                
+                //make an array of the words on the line, found by spaces as a separator
                 var words = text.split(" ");
                 console.log("Words: " + words);
+                //create a current line variable
                 var currLine = '';
 
-                for (let word of words){
-                    var test = currLine + word + " ";
-                    var lineSize = _DrawingContext.measureText(this.currentFont, this.currentFontSize, test);
-                    //var lineWidth = lineSize.width;
-                    console.log(lineSize);
-                    console.log(lineSize > _Canvas.width);
-                    if (lineSize > _Canvas.width){
-                        _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, currLine);
-                        var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, currLine);
-                        this.currentXPosition = this.currentXPosition + offset;
-                        currLine = word + " ";
-                        this.advanceLine();
-                    }else{
-                        currLine = test;
+                //Linewrap
+                //Because this is linewrap by word, if you input a single word that is longer
+                //than the length of the canvas, it won't wrap around to a new line because the characters
+                //aren't accounted for.
+                //Would like to enhance this later to account for both words and characters
+
+                //if its just one word, then don't bother with the second half of the code
+                if (words.length <= 1){
+                    // Draw the text at the current X and Y coordinates.
+                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+                    // Move the current X position.
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                    this.currentXPosition = this.currentXPosition + offset;
+                }else{
+                    //for each word in the words array
+                    for (let word of words){
+                        //make a variable of the current line + the word + a space
+                        var test = currLine + word + " ";
+                        //find the size of the line
+                        var lineSize = _DrawingContext.measureText(this.currentFont, this.currentFontSize, test);
+                        console.log(lineSize);
+                        console.log(lineSize > _Canvas.width);
+                        //if that new line's width is longer than the canvas width
+                        if (lineSize > _Canvas.width){
+                            //draw the current line (without the addition of the word and the space)
+                            _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, currLine);
+                            //move the current x position
+                            var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, " ");
+                            this.currentXPosition = this.currentXPosition + offset;
+                            //set current line equal to the word + a space
+                            currLine = word + " ";
+                            //advance to the next line
+                            this.advanceLine();
+                        }else{
+                            //otherwise, set current line equal to the current line + the word + a space
+                            currLine = test;
+                        }
                     }
+                    //draw the current line
+                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, currLine);
+                    //move the current x position
+                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, currLine);
+                    this.currentXPosition = this.currentXPosition + offset;
                 }
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, currLine);
-                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, currLine);
-                this.currentXPosition = this.currentXPosition + offset;
-
-
-                /*// Draw the text at the current X and Y coordinates.
-                _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
-                // Move the current X position.
-                var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                this.currentXPosition = this.currentXPosition + offset;*/
 
             }
 
