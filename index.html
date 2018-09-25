@@ -31,11 +31,21 @@
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. -->
-   <script type="text/javascript" src="http://alanclasses.github.io/TSOS/test/glados-ip0.js"></script>
+   <script type="text/javascript" src="test/glados-ip1.js"></script>
    
 </head>
 
 <body onload="onDocumentLoad()">
+
+
+<div id="blueScreen" style="height:100%; width: 100%; display: none; background-color: blue; position: fixed;z-index:2;">
+   <div id="errorTxt">
+      <p class="error">Abort! Abort!</p>
+      <p class="error">OS Error has been triggered!</p>
+   </div>
+</div>
+
+
 
 <div id="divMain" style="width:100%;">
 
@@ -75,6 +85,10 @@
       </canvas>
    </div>
 
+   <div id="taskBar" class="task" style="...">
+      <p1></p1>
+   </div>
+
    <div id="divLog" style="margin-left:520px;">
       <label>
          Host Log
@@ -98,7 +112,9 @@
          ></textarea>
       </label>
    </div>
+
 </div>
+
 
 <p class="footerText" style="clear:both;">
    <br>

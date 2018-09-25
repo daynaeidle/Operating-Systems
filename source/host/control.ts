@@ -47,6 +47,7 @@ module TSOS {
             // Use the TypeScript cast to HTMLInputElement
             (<HTMLInputElement> document.getElementById("btnStartOS")).focus();
 
+
             // Check for our testing and enrichment core, which
             // may be referenced here (from index.html) as function Glados().
             if (typeof Glados === "function") {
@@ -55,6 +56,8 @@ module TSOS {
                 _GLaDOS = new Glados();
                 _GLaDOS.init();
             }
+
+
         }
 
         public static hostLog(msg: string, source: string = "?"): void {
@@ -70,6 +73,13 @@ module TSOS {
             // Update the log console.
             var taLog = <HTMLInputElement> document.getElementById("taHostLog");
             taLog.value = str + taLog.value;
+
+            //get datetime for task bar
+            //Create a date variable
+            var dt = new Date().toLocaleString();
+            console.log(dt);
+            // Set the datetime and status(global) to the taskbar
+            (<HTMLElement> document.getElementById("taskBar")).innerHTML = "<p1>" + dt + " ~ " + _Status + "</p1>";
 
             // TODO in the future: Optionally update a log database or some streaming service.
         }
@@ -98,6 +108,9 @@ module TSOS {
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
+
+
+
         }
 
         public static hostBtnHaltOS_click(btn): void {

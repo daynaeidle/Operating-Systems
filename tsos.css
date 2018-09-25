@@ -36,6 +36,13 @@ h3 {
   cursor: default;
 }
 
+.error{
+  color: white;
+  font-size: 50px;
+  font-weight: bold;
+  text-align: center;
+}
+
 .normal_button {
   width: 100px;
 }
@@ -45,4 +52,17 @@ h3 {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 8pt;
   text-align: center;
+}
+
+.task {
+  border: 1px solid black;
+  border-radius: 10px;
+  display: inline-block;
+  text-align: center;
+  height: 40px;
+  width: 400px;
+  position: relative;
+  bottom: 10px;
+  left: 10px;
+  padding-top: 20px;
 }

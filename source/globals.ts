@@ -11,8 +11,8 @@
 //
 // Global CONSTANTS (TypeScript 1.5 introduced const. Very cool.)
 //
-const APP_NAME: string    = "TSOS";   // 'cause Bob and I were at a loss for a better name.
-const APP_VERSION: string = "0.07";   // What did you expect?
+const APP_NAME: string    = "dOnutS";   // 'cause Bob and I were at a loss for a better name.
+const APP_VERSION: string = "0.01";   // What did you expect?
 
 const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 
@@ -36,6 +36,8 @@ var _DrawingContext: any; // = _Canvas.getContext("2d");  // Assigned here for t
 var _DefaultFontFamily: string = "sans";        // Ignored, I think. The was just a place-holder in 2008, but the HTML canvas may have use for it.
 var _DefaultFontSize: number = 13;
 var _FontHeightMargin: number = 4;              // Additional space added to font size when advancing a line.
+
+var _Status: string = "Have a donut today :)"
 
 var _Trace: boolean = true;  // Default the OS trace to be on.
 

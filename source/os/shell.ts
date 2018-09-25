@@ -79,6 +79,44 @@ module TSOS {
                                   "<string> - Sets the prompt.");
             this.commandList[this.commandList.length] = sc;
 
+            // date
+            sc = new ShellCommand(this.shellDate,
+                                  "date",
+                                  " - Displays the current date and time.");
+            this.commandList[this.commandList.length] = sc;
+
+            // whereami
+            sc = new ShellCommand(this.shellWhereAmI,
+                                  "whereami",
+                                  " - Displays user's current location.");
+            this.commandList[this.commandList.length] = sc;
+
+            // fact
+            sc = new ShellCommand(this.shellFact,
+                                  "fact",
+                                  " - Displays a fun fact.");
+            this.commandList[this.commandList.length] = sc;
+
+            // status
+            sc = new ShellCommand(this.shellStatus,
+                                  "status",
+                                  "<string> - Changes your status in the status bar.");
+            this.commandList[this.commandList.length] = sc;
+
+
+            //load
+            sc = new ShellCommand(this.shellLoad,
+                                  "load",
+                                  " - Validates and loads the user program into memory.");
+            this.commandList[this.commandList.length] = sc;
+
+
+            // error
+            sc = new ShellCommand(this.shellError,
+                                  "error",
+                                  " - Traps an OS error.");
+            this.commandList[this.commandList.length] = sc;
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -237,12 +275,82 @@ module TSOS {
                     case "help":
                         _StdOut.putText("Help displays a list of (hopefully) valid commands.");
                         break;
-                    // TODO: Make descriptive MANual page entries for the the rest of the shell commands here.
+                    case "man":
+                        _StdOut.putText("Man displays a manual of each topic. If you don't know the topics, use the command 'man ?'.");
+                        break;
+                    case "ver":
+                        _StdOut.putText("Ver displays the current name and version of the operating system.");
+                        break;
+                    case "shutdown":
+                        _StdOut.putText("Shutdown does what you think - it shuts down the operating system.");
+                        break;
+                    case "cls":
+                        _StdOut.putText("Cls clears the command line of all previous entries and responses.");
+                        break;
+                    case "trace":
+                        _StdOut.putText("Trace either turns the OS trace on or off, depending on your input.");
+                        break;
+                    case "rot13":
+                        _StdOut.putText("Rot13 encodes the given string by shifting all of the letters by 13. How fun!");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("For example, 'alpaca' will translate to 'nycnpn'.")
+                        break;
+                    case "prompt":
+                        _StdOut.putText("Prompt sets the line prompt to the given string.")
+                        break;
+                    case "date":
+                        _StdOut.putText("Date prints out the current date and time.");
+                        break;
+                    case "whereami":
+                        _StdOut.putText("Whereami displays the user's current location...or at least my best guess at the user's location.");
+                        break;
+                        // TODO: give credit to fact site.
+                    case "fact":
+                        _StdOut.putText("Fact displays a random fun fact. Enjoy your new knowledge.");
+                        break;
+                    case "start":
+                        _StdOut.putText("The start button starts the operating system.");
+                        break;
+                    case "halt":
+                        _StdOut.putText("The halt stops the program from running without resetting everything.");
+                        break;
+                    case "reset":
+                        _StdOut.putText("The reset button restarts the operating system and resets the page.");
+                        break;
+                    case "donuts":
+                        _StdOut.putText("dOnutS is a virtual operating system created by Dayna Eidle.");
+                        break;
+                    case "status":
+                        _StdOut.putText("Update your status on the status bar. Let us know how you're feeling!");
+                        break;
+                    case "load":
+                        _StdOut.putText("Load checks for valid user input.");
+                        break;
+                    case "error":
+                        _StdOut.putText("Error simulates an OS error.");
+                        break;
+                    case "?":
+                        _StdOut.putText("TOPICS:")
+                        for (var i=0; i<_OsShell.commandList.length; i++){
+                            _StdOut.advanceLine();
+                            _StdOut.putText(_OsShell.commandList[i].command)
+                        }
+                        _StdOut.advanceLine();
+                        _StdOut.putText("start");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("halt");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("reset");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("donuts");
+                        _StdOut.advanceLine();
+                        break;
                     default:
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
             } else {
-                _StdOut.putText("Usage: man <topic>  Please supply a topic.");
+                // TODO: Hopefully change this to a ? instead of top
+                _StdOut.putText("Usage: man <topic>  Please supply a topic or ? for a list of topics.");
             }
         }
 
@@ -286,6 +394,114 @@ module TSOS {
                 _StdOut.putText("Usage: prompt <string>  Please supply a string.");
             }
         }
+
+        public shellDate(args) {
+            var date = new Date().toLocaleDateString();
+            var time = new Date().toLocaleTimeString();
+            _StdOut.putText("Current Date and Time:");
+            _StdOut.advanceLine();
+            _StdOut.putText(date + " ~ " + time);
+        }
+
+        public shellWhereAmI(args){
+            _StdOut.putText("Seeing as though you are reading this, I would assume you are sitting in front of your computer having the best time exploring the dOnutS operating system.")
+        }
+
+        public shellFact(args){
+            var facts = ['kool', 'mos', 'alaska', 'i', 'pills', 'prius', 'grouch', 'dunks', 'swiss', 'goats', 'selfie']
+            var randNum = Math.floor(Math.random() * facts.length);
+
+            switch (facts[randNum]) {
+                case 'kool':
+                    _StdOut.putText("Kool-Aid was originally marketed as 'Fruit Smack'.");
+                    break;
+                case 'mos':
+                    _StdOut.putText("Only female mosquitoes will bite you.");
+                    break;
+                case "alaska":
+                    _StdOut.putText("Alaska is the only state that you can type using one row of keys (on a traditional keyboard).");
+                    break;
+                case "i":
+                    _StdOut.putText("The dot on the top of a lowercase i is called a tittle.");
+                    break;
+                case "pills":
+                    _StdOut.putText("The Pillsbury Doughboy's real name is Poppin' Fresh.");
+                    break;
+                case "prius":
+                    _StdOut.putText("The plural of Prius (like the car) is Prii.");
+                    break;
+                case "grouch":
+                    _StdOut.putText("Oscar the Grouch was originally orange, not green.");
+                    break;
+                case "dunks":
+                    _StdOut.putText("Dunkin Donuts sells an average of 30 cups of coffee per second.");
+                    break;
+                case "swiss":
+                    _StdOut.putText("In Switzerland, it is illegal to own just one guinea pig.");
+                    break;
+                case "goats":
+                    _StdOut.putText("Billy goats urinate on their own heads in order to smell more attractive to female billy goats.");
+                    break;
+                case "selfie":
+                    _StdOut.putText("In 2017, more people died from injuries caused by taking a selfie than shark attacks.");
+                    break;
+            }
+
+        }
+
+        // updates the status in the status bar
+        public shellStatus(args){
+            if (args.length > 0){
+                //clear the hardcoated status
+                _Status = "";
+                //for each item in args
+                for (let item of args){
+                    //add it to the status
+                    _Status += item + " ";
+                }
+            } else{
+                _StdOut.putText("Usage: status <string>  Please supply a string.")
+            }
+        }
+
+        // validate the user program
+        public shellLoad(args){
+            //store the user input in a variable
+            var programInput = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
+            console.log(programInput);
+
+            //set valid to true
+            var valid = true;
+
+            //regex pattern for NOT characters a-f, A-F, 0-9 and " "(space)
+            var hex = new RegExp('[^a-fA-F0-9 ]+');
+
+            //if no input is in the text area
+            if (programInput == ""){
+                //tell the user and set valid to false.
+                _StdOut.putText("No user program entered.");
+                valid = false;
+                //if something besides valid hex is found
+            } else if (programInput.search(hex) != -1){
+                //write an error message and set valid to false
+                _StdOut.putText("Input error in the user program! Must input valid hex code.");
+                valid = false;
+            }
+
+            //if valid is true...
+            if (valid == true){
+                //write a validation message
+                _StdOut.putText("User code is valid.");
+            }
+        }
+
+        //traps an os error and displays BSOD
+        public shellError(args){
+            _Kernel.krnTrapError("ERROR");
+            (<HTMLElement> document.getElementById("blueScreen")).style.display = "block";
+        }
+
+
 
     }
 }
