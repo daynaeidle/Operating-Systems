@@ -474,7 +474,7 @@ module TSOS {
             var valid = true;
 
             //regex pattern for NOT characters a-f, A-F, 0-9 and " "(space)
-            var hex = new RegExp('[^a-fA-F0-9 ]+');
+            var hex = new RegExp('([a-fA-F0-9][a-fA-F0-9]([ ]*))+');
 
             //if no input is in the text area
             if (programInput == ""){
@@ -482,15 +482,11 @@ module TSOS {
                 _StdOut.putText("No user program entered.");
                 valid = false;
                 //if something besides valid hex is found
-            } else if (programInput.search(hex) != -1){
-                //write an error message and set valid to false
-                _StdOut.putText("Input error in the user program! Must input valid hex code.");
+            } else if (programInput.search(hex) == -1){
+                _StdOut.putText("User code is invalid.");
                 valid = false;
-            }
-
-            //if valid is true...
-            if (valid == true){
-                //write a validation message
+            } else if (valid == true){
+                //write an error message and set valid to false
                 _StdOut.putText("User code is valid.");
             }
         }
