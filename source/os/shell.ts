@@ -488,7 +488,11 @@ module TSOS {
             } else if (valid == true){
                 //write an error message and set valid to false
                 _StdOut.putText("User code is valid.");
+                _userProgram = programInput.split(" ");
+                console.log(_userProgram);
             }
+
+
         }
 
         //traps an os error and displays BSOD
