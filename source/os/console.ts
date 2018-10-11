@@ -136,7 +136,9 @@ module TSOS {
 
                 //if its just one word, then don't bother with the second half of the code
                 if (words.length <= 1){
+                    //if the character is off the canvas
                     if (this.currentXPosition > _Canvas.width){
+                        //move it to the next line
                         this.advanceLine();
                         // Draw the text at the current X and Y coordinates.
                         _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
