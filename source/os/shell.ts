@@ -486,10 +486,9 @@ module TSOS {
                 _StdOut.putText("User code is invalid.");
                 valid = false;
             } else if (valid == true){
-                //write an error message and set valid to false
-                _StdOut.putText("User code is valid.");
-                _StdOut.advanceLine();
                 _StdOut.putText("Program loaded into memory with Process ID " + _pid);
+                var opCodes = programInput.split(" ");
+                console.log(opCodes);
                 _pid+=1;
                 console.log("PID: " + _pid);
                 _userProgram = programInput.split(" ");
