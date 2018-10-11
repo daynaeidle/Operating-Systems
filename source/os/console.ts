@@ -136,11 +136,21 @@ module TSOS {
 
                 //if its just one word, then don't bother with the second half of the code
                 if (words.length <= 1){
-                    // Draw the text at the current X and Y coordinates.
-                    _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
-                    // Move the current X position.
-                    var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
-                    this.currentXPosition = this.currentXPosition + offset;
+                    if (this.currentXPosition > _Canvas.width){
+                        this.advanceLine();
+                        // Draw the text at the current X and Y coordinates.
+                        _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+                        // Move the current X position.
+                        var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                        this.currentXPosition = this.currentXPosition + offset;
+                    }else{
+                        // Draw the text at the current X and Y coordinates.
+                        _DrawingContext.drawText(this.currentFont, this.currentFontSize, this.currentXPosition, this.currentYPosition, text);
+                        // Move the current X position.
+                        var offset = _DrawingContext.measureText(this.currentFont, this.currentFontSize, text);
+                        this.currentXPosition = this.currentXPosition + offset;
+                    }
+
                 }else{
                     //for each word in the words array
                     for (let word of words){
