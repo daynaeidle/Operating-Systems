@@ -66,3 +66,15 @@ h3 {
   left: 10px;
   padding-top: 20px;
 }
+
+th, td {
+  border: 1px solid black;
+
+}
+
+#memDisplay, #cpuDisplay, #pcbDisplay{
+  margin: 50px;
+  border: 1px solid black;
+  display: inline-block;
+
+}

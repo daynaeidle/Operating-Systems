@@ -15,6 +15,8 @@
    <script type="text/javascript" src="distrib/host/control.js"></script>
    <script type="text/javascript" src="distrib/host/devices.js"></script>
    <script type="text/javascript" src="distrib/host/cpu.js"></script>
+   <script type="text/javascript" src="distrib/host/memory.js"></script>
+   <script type="text/javascript" src="distrib/host/memoryAccessor.js"></script>
 
    <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
    <script type="text/javascript" src="distrib/os/interrupt.js"></script>
@@ -27,11 +29,12 @@
    <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
    <script type="text/javascript" src="distrib/os/userCommand.js"></script>
    <script type="text/javascript" src="distrib/os/kernel.js"></script>
+   <script type="text/javascript" src="distrib/os/memoryManager.js"></script>
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. -->
-   <script type="text/javascript" src="test/glados-ip1.js"></script>
+   <script type="text/javascript" src="test/glados-ip2.js"></script>
    
 </head>
 
@@ -113,6 +116,66 @@
       </label>
    </div>
 
+   <div id="memDisplay">
+      <label>Memory</label>
+      <table id="memTable"; style="width:50%">
+         <tr>
+            <td>0</td>
+            <td>0</td>
+         </tr>
+      </table>
+
+   </div>
+
+   <div id="cpuDisplay">
+      <label>CPU</label>
+      <table id="cpuTable"; style="width:50%">
+         <tr>
+            <th>PC</th>
+            <th>IR</th>
+            <th>ACC</th>
+            <th>X</th>
+            <th>Y</th>
+            <th>Z</th>
+         </tr>
+         <tr>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+         </tr>
+      </table>
+
+   </div>
+
+   <div id="pcbDisplay">
+      <label>PCB</label>
+      <table id="pcbTable"; style="width:50%">
+         <tr>
+            <th>PID</th>
+            <th>State</th>
+            <th>PC</th>
+            <th>IR</th>
+            <th>ACC</th>
+            <th>X</th>
+            <th>Y</th>
+            <th>Z</th>
+         </tr>
+         <tr>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+         </tr>
+      </table>
+
+   </div>
 </div>
 
 

@@ -73,7 +73,7 @@ var Glados: any = null;  // This is the function Glados() in glados.js on Labous
 var _GLaDOS: any = null; // If the above is linked in, this is the instantiated instance of Glados.
 
 //	Hardware	(host)
-var	_CPU: TSOS.CPU;
+var	_CPU: TSOS.Cpu;
 var	_Memory: TSOS.Memory;
 var	_MemoryAccessor: TSOS.MemoryAccessor;
 //	Software	(OS)
