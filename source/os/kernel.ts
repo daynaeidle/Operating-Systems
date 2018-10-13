@@ -55,6 +55,8 @@ module TSOS {
             _Pcb = new Pcb(0, "ready", 0, 0, 0, 0, 0);
             _Pcb.init();
 
+            _Queue = new Queue();
+
 
             // Enable the OS Interrupts.  (Not the CPU clock interrupt, as that is done in the hardware sim.)
             this.krnTrace("Enabling the interrupts.");
@@ -167,9 +169,18 @@ module TSOS {
             var newProcess = new Pcb(_Pid, "ready", base, 0, 0, 0, 0);
             _Pid++;
             console.log(newProcess);
+            _Queue.enqueue(newProcess);
+        }
 
+        public executeProcess(pid: number){
+
+            if (pid < _Pid){
+                //process exists
+            }
 
         }
+
+
 
 
         //

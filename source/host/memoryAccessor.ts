@@ -3,7 +3,13 @@ module TSOS {
 
     export class MemoryAccessor {
 
-        public
+        public readProcess(){
+
+        }
+
+        public writeProcess(){
+
+        }
 
     }
 

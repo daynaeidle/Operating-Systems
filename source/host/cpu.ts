@@ -41,6 +41,56 @@ module TSOS {
             _Kernel.krnTrace('CPU cycle');
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
+
+            var opcode = fetch();
+        }
+
+        public fetch(pid: number) {
+            //fetch an instruction to decode from a process
+
+        }
+
+        public decode(opcode: string){
+            //find out what the instruction means
+
+            switch(opcode){
+                case("A9"):
+                    break;
+                case("AD"):
+                    break;
+                case ("8D"):
+                    break;
+                case("6D"):
+                    break;
+                case("A2"):
+                    break;
+                case("AE"):
+                    break;
+                case("A0"):
+                    break;
+                case("AC"):
+                    break;
+                case("EA"):
+                    break;
+                case("00"):
+                    break;
+                case("EC"):
+                    break;
+                case("D0"):
+                    break;
+                case("EE"):
+                    break;
+                case("FF"):
+                    break;
+                default:
+                    console.log("Not a valid op code");
+            }
+
+        }
+
+        public execute(){
+            //execute that instruction
+
         }
     }
 }

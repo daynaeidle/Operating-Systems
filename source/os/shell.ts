@@ -117,6 +117,13 @@ module TSOS {
                                   " - Traps an OS error.");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellRun,
+                                  "run <pid>",
+                                   " - Runs the specified process.");
+            this.commandList[this.commandList.length] = sc;
+
+
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -329,6 +336,9 @@ module TSOS {
                     case "error":
                         _StdOut.putText("Error simulates an OS error.");
                         break;
+                    case "run":
+                        _StdOut.putText("Run executes the specified process.");
+                        break;
                     case "?":
                         _StdOut.putText("TOPICS:")
                         for (var i=0; i<_OsShell.commandList.length; i++){
@@ -509,6 +519,10 @@ module TSOS {
         public shellError(args){
             _Kernel.krnTrapError("ERROR");
             (<HTMLElement> document.getElementById("blueScreen")).style.display = "block";
+        }
+
+        public shellRun(args){
+
         }
 
 

@@ -76,9 +76,11 @@ var _GLaDOS: any = null; // If the above is linked in, this is the instantiated 
 var	_CPU: TSOS.Cpu;
 var	_Memory: TSOS.Memory;
 var	_MemoryAccessor: TSOS.MemoryAccessor;
-var _Pcb: TSOS.Pcb;
 //	Software	(OS)
 var	_MemoryManager: any	= null;
+var _Pcb: TSOS.Pcb;
+
+var _Queue: TSOS.Queue;
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
