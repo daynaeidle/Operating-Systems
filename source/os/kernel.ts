@@ -158,6 +158,10 @@ module TSOS {
         // - WriteFile
         // - CloseFile
 
+        public createProcess(){
+
+        }
+
 
         //
         // OS Utility Routines

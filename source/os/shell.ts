@@ -467,7 +467,7 @@ module TSOS {
         public shellLoad(args){
             //store the user input in a variable
             var programInput = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
-            console.log(programInput);
+            //console.log(programInput);
 
             //set valid to true
             var valid = true;
@@ -485,11 +485,17 @@ module TSOS {
                 _StdOut.putText("User code is invalid.");
                 valid = false;
             } else if (valid == true){
-                _StdOut.putText("Program loaded into memory with Process ID " + _pid);
+
                 _userProgram = programInput.split(" ");
-                _pid+=1;
-                console.log("PID: " + _pid);
-                _MemoryManager.loadMem(_userProgram);
+                if (_userProgram.length > 255){
+                    _StdOut.putText("Program too  large for available memory space.")
+                }else{
+                    _StdOut.putText("Program loaded into memory with Process ID " + _pid);
+                    _pid+=1;
+                    console.log("PID: " + _pid);
+                    _MemoryManager.loadMem(_userProgram);
+                }
+
             }
 
 

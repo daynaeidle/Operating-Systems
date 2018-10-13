@@ -14,7 +14,7 @@ module TSOS {
                 //load the array with all 00
                 this.mainMem[i] = "00";
             }
-            console.log(this.mainMem);
+            console.log("Main mem initializer: " + this.mainMem);
         }
 
 
