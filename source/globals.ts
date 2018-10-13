@@ -34,7 +34,7 @@ var _Mode: number = 0;     // (currently unused)  0 = Kernel Mode, 1 = User Mode
 
 //user program memory
 var _userProgram: any[] = null;
-var _pid: number = 0;
+var _Pid: number = 0;
 
 var _Canvas: HTMLCanvasElement;         // Initialized in Control.hostInit().
 var _DrawingContext: any; // = _Canvas.getContext("2d");  // Assigned here for type safety, but re-initialized in Control.hostInit() for OCD and logic.
@@ -76,6 +76,7 @@ var _GLaDOS: any = null; // If the above is linked in, this is the instantiated 
 var	_CPU: TSOS.Cpu;
 var	_Memory: TSOS.Memory;
 var	_MemoryAccessor: TSOS.MemoryAccessor;
+var _Pcb: TSOS.Pcb;
 //	Software	(OS)
 var	_MemoryManager: any	= null;
 

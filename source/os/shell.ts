@@ -490,10 +490,14 @@ module TSOS {
                 if (_userProgram.length > 255){
                     _StdOut.putText("Program too  large for available memory space.")
                 }else{
-                    _StdOut.putText("Program loaded into memory with Process ID " + _pid);
-                    _pid+=1;
-                    console.log("PID: " + _pid);
-                    _MemoryManager.loadMem(_userProgram);
+                    var base = _MemoryManager.loadMem(_userProgram);
+                    if (base == -1){
+                        _StdOut.putText("Out of memory.");
+                    }else{
+                        _StdOut.putText("Program loaded into memory with Process ID " + _Pid);
+                        _Kernel.createProcess(base);
+                    }
+
                 }
 
             }

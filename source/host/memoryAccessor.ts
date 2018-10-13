@@ -3,5 +3,8 @@ module TSOS {
 
     export class MemoryAccessor {
 
+        public
+
     }
+
 }

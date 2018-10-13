@@ -52,6 +52,10 @@ module TSOS {
             _Memory.init();
             _MemoryAccessor	=	new	MemoryAccessor();
 
+            _Pcb = new Pcb(0, "ready", 0, 0, 0, 0, 0);
+            _Pcb.init();
+
+
             // Enable the OS Interrupts.  (Not the CPU clock interrupt, as that is done in the hardware sim.)
             this.krnTrace("Enabling the interrupts.");
             this.krnEnableInterrupts();
@@ -158,7 +162,12 @@ module TSOS {
         // - WriteFile
         // - CloseFile
 
-        public createProcess(){
+        public createProcess(base: number){
+
+            var newProcess = new Pcb(_Pid, "ready", base, 0, 0, 0, 0);
+            _Pid++;
+            console.log(newProcess);
+
 
         }
 
