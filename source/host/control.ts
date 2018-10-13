@@ -114,8 +114,8 @@ module TSOS {
         }
 
         public static memoryDisplay(): void{
-            (<HTMLElement> document.getElementById("memDisplay")).innerHTML = "<td>" + "memory" + "</td>";
-            (<HTMLElement> document.getElementById("cpuDisplay")).innerHTML = "<th>" + _Cpu.pc + "</th>";
+            //(<HTMLElement> document.getElementById("memDisplay")).innerHTML = "<td>" + "memory" + "</td>";
+            //(<HTMLElement> document.getElementById("cpuDisplay")).innerHTML = "<th>" + Cpu.pc + "</th>";
         }
 
         public static hostBtnHaltOS_click(btn): void {

@@ -349,7 +349,6 @@ module TSOS {
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
             } else {
-                // TODO: Hopefully change this to a ? instead of top
                 _StdOut.putText("Usage: man <topic>  Please supply a topic or ? for a list of topics.");
             }
         }
@@ -487,12 +486,10 @@ module TSOS {
                 valid = false;
             } else if (valid == true){
                 _StdOut.putText("Program loaded into memory with Process ID " + _pid);
-                var opCodes = programInput.split(" ");
-                console.log(opCodes);
+                _userProgram = programInput.split(" ");
                 _pid+=1;
                 console.log("PID: " + _pid);
-                _userProgram = programInput.split(" ");
-                console.log(_userProgram);
+                _MemoryManager.loadMem(_userProgram);
             }
 
 

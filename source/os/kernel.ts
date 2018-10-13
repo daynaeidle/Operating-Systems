@@ -46,6 +46,11 @@ module TSOS {
             //
             //memory manager
             _MemoryManager	=	new	MemoryManager();
+            _CPU	=	new	Cpu();
+            _CPU.init();
+            _Memory	=	new	Memory();
+            _Memory.init();
+            _MemoryAccessor	=	new	MemoryAccessor();
 
             // Enable the OS Interrupts.  (Not the CPU clock interrupt, as that is done in the hardware sim.)
             this.krnTrace("Enabling the interrupts.");
