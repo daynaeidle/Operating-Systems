@@ -42,23 +42,23 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
-            var opcode = this.fetch(this.PC);
+            var opCode = this.fetch(this.PC);
         }
 
         public fetch(memAddress: number) {
             this.isExecuting = true;
             //fetch an instruction to decode from a process
-            return _MemoryAccessor.readMemory(memAddress);
+            return parseInt(_MemoryAccessor.readValue(memAddress));
 
         }
 
-        public decode(opcode: string){
+        public decode(opCode: string){
             //find out what the instruction means
 
             var val;
             var address;
 
-            switch(opcode){
+            switch(opCode){
 
                 case("A9"):
                     //load the accumulator with a constant
@@ -68,7 +68,8 @@ module TSOS {
                     break;
                 case("AD"):
                     //load the accumulator from memory
-                    address = parseInt((this.fetch(this.PC+2).toString(), this.fetch(this.PC+1).toString()));
+                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    address = parseInt(hexAddr, 16);
                     val = this.fetch(address);
                     this.Acc = val;
                     this.PC += 3;
@@ -76,13 +77,15 @@ module TSOS {
                 case ("8D"):
                     //store the accumulator in memory
                     val = this.Acc;
-                    address = parseInt((this.fetch(this.PC+2).toString(), this.fetch(this.PC+1).toString()));
+                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    address = parseInt(hexAddr, 16);
                     _MemoryAccessor.writeValue(address, val);
                     this.PC += 3;
                     break;
                 case("6D"):
                     //add with carry
-                    address = parseInt((this.fetch(this.PC+2).toString(), this.fetch(this.PC+1).toString()));
+                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    address = parseInt(hexAddr, 16);
                     val = this.fetch(address);
                     this.Acc = this.Acc + val;
                     this.PC += 3;
@@ -123,7 +126,8 @@ module TSOS {
                     break;
                 case("EC"):
                     //compares a byte in memory to the xreg - changes zflag if equal
-                    address = address = parseInt((this.fetch(this.PC+2).toString(), this.fetch(this.PC+1).toString()));
+                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    address = parseInt(hexAddr, 16);
                     val = this.fetch(address);
                     if (this.Xreg == val){
                         this.Zflag = 1;
@@ -134,7 +138,7 @@ module TSOS {
                 case("D0"):
                     //branch n bytes if zflag = 0
                     if (this.Zflag == 0){
-                        this.PC = = this.fetch(this.PC + 1);
+                        this.PC =  this.fetch(this.PC + 1);
                         this.PC += 2;
                     }else{
                         this.PC += 2;
@@ -142,7 +146,8 @@ module TSOS {
                     break;
                 case("EE"):
                     //incrememnt the value of a byte
-                    address = address = parseInt((this.fetch(this.PC+2).toString(), this.fetch(this.PC+1).toString()));
+                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    address = parseInt(hexAddr, 16);
                     val = this.fetch(address);
                     _MemoryAccessor.writeValue(address, val + 1);
                     this.PC += 3;

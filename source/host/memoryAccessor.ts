@@ -32,7 +32,7 @@ module TSOS {
             //check to see if memory address created is within the process bounds in memory
             if (memAddress <= (base + limit)){
                 //set value at memory location
-                _Memory.mainMem[memAddress] = value;
+                _Memory.mainMem[memAddress] = String(value);
             }else{
                 console.log("Memory address out of bounds.");
             }
