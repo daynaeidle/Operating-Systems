@@ -21,6 +21,7 @@ module TSOS {
 
         constructor(public PC: number = 0,
                     public Acc: number = 0,
+                    public IR: string = "0",
                     public Xreg: number = 0,
                     public Yreg: number = 0,
                     public Zflag: number = 0,
@@ -31,6 +32,7 @@ module TSOS {
         public init(): void {
             this.PC = 0;
             this.Acc = 0;
+            this.IR = "0";
             this.Xreg = 0;
             this.Yreg = 0;
             this.Zflag = 0;
@@ -42,13 +44,23 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
+
+
             var opCode = this.fetch(this.PC);
+            this.IR = opCode;
+            console.log("PC: " + this.PC);
+            console.log("Acc: " + this.Acc);
+            console.log("IR: " + this.IR);
+            this.decode(String(opCode));
         }
 
         public fetch(memAddress: number) {
             this.isExecuting = true;
             //fetch an instruction to decode from a process
-            return parseInt(_MemoryAccessor.readValue(memAddress));
+            //console.log("No parse int: " + _MemoryAccessor.readValue(memAddress));
+            //console.log("With parse int: " + parseInt(_MemoryAccessor.readValue(memAddress)));
+            //console.log("With +: " + +_MemoryAccessor.readValue(memAddress));
+            return _MemoryAccessor.readValue(memAddress);
 
         }
 
@@ -61,8 +73,10 @@ module TSOS {
             switch(opCode){
 
                 case("A9"):
+                    console.log("INSTRUCTION: A9");
                     //load the accumulator with a constant
                     val = this.fetch(this.PC + 1);
+                    console.log("VALUE: " + val);
                     this.Acc = val;
                     this.PC += 2;
                     break;
@@ -79,7 +93,9 @@ module TSOS {
                     val = this.Acc;
                     var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
+                    console.log("PARSED HEX ADDRESS:" + address);
                     _MemoryAccessor.writeValue(address, val);
+                    console.log(address + ": " + _Memory.mainMem[address]);
                     this.PC += 3;
                     break;
                 case("6D"):
@@ -138,7 +154,7 @@ module TSOS {
                 case("D0"):
                     //branch n bytes if zflag = 0
                     if (this.Zflag == 0){
-                        this.PC =  this.fetch(this.PC + 1);
+                        this.PC =  Number(this.fetch(this.PC + 1));
                         this.PC += 2;
                     }else{
                         this.PC += 2;
@@ -157,13 +173,13 @@ module TSOS {
                     //01 in xregprint the integer stored in the y register
                     //02 in xreg print the 00 terminated string stored at the y register
                     if (this.Xreg == 1){
-                        console.log(this.Yreg);
+                        _StdOut.putText(this.Yreg);
                     }else if (this.Xreg == 2){
-                        console.log((this.Yreg).toString);
+                        _StdOut.putText(this.Yreg.toString(16));
                     }
                     break;
                 default:
-                    console.log("Not a valid op code");
+                    console.log(opCode + ": Not a valid op code");
             }
 
         }

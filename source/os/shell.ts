@@ -118,8 +118,8 @@ module TSOS {
             this.commandList[this.commandList.length] = sc;
 
             sc = new ShellCommand(this.shellRun,
-                                  "run <pid>",
-                                   " - Runs the specified process.");
+                                  "run",
+                                   "<pid> - Runs the specified process.");
             this.commandList[this.commandList.length] = sc;
 
 
@@ -522,6 +522,8 @@ module TSOS {
         }
 
         public shellRun(args){
+            var pid = args[0];
+            _Kernel.executeProcess(pid);
 
         }
 

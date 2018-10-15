@@ -174,8 +174,11 @@ module TSOS {
 
         public executeProcess(pid: number){
 
-            if (pid < _Pid){
+            if (pid < _Pid && pid >= 0){
                 //process exists
+                _CPU.cycle();
+            }else{
+                _StdOut.putText("Process does not exist.")
             }
 
         }

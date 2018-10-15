@@ -13,6 +13,7 @@ module TSOS {
             //check to see if memory address created is within the process bounds in memory
             if (memAddress < (base + limit)){
                 //return value at address in memory
+                console.log("MEM VAL:" +  _Memory.mainMem[memAddress]);
                 return _Memory.mainMem[memAddress];
             }else{
                 console.log("Memory address out of bounds.");
