@@ -523,7 +523,13 @@ module TSOS {
 
         public shellRun(args){
             var pid = args[0];
-            _Kernel.executeProcess(pid);
+
+            if (pid >= 0 && pid < _Pid){
+                _Kernel.executeProcess(pid);
+            }else{
+                _StdOut.putText("Not a valid Pid");
+            }
+
 
         }
 

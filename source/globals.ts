@@ -80,7 +80,7 @@ var	_MemoryAccessor: TSOS.MemoryAccessor;
 var	_MemoryManager: any	= null;
 var _Pcb: TSOS.Pcb;
 
-var _Queue: TSOS.Queue;
+var _ReadyQueue: TSOS.Queue;
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();

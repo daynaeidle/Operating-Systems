@@ -55,7 +55,7 @@ module TSOS {
             _Pcb = new Pcb(0, "ready", 0, 0, 0, 0, 0);
             _Pcb.init();
 
-            _Queue = new Queue();
+            _ReadyQueue = new Queue();
 
 
             // Enable the OS Interrupts.  (Not the CPU clock interrupt, as that is done in the hardware sim.)
@@ -173,13 +173,9 @@ module TSOS {
         }
 
         public executeProcess(pid: number){
+            _Pcb.state = "Running";
+            _CPU.isExecuting = true;
 
-            if (pid < _Pid && pid >= 0){
-                //process exists
-                _CPU.cycle();
-            }else{
-                _StdOut.putText("Process does not exist.")
-            }
 
         }
 
