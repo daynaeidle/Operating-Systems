@@ -482,7 +482,7 @@ module TSOS {
             //set valid to true
             var valid = true;
 
-            //regex pattern for NOT characters a-f, A-F, 0-9 and " "(space)
+            //regex pattern
             var hex = new RegExp('([a-fA-F0-9][a-fA-F0-9]([ ]*))+');
 
             //if no input is in the text area
