@@ -32,7 +32,7 @@ module TSOS {
         public init(): void {
             this.PC = 0;
             this.Acc = 0;
-            this.IR = "00";
+            this.IR = "-";
             this.Xreg = 0;
             this.Yreg = 0;
             this.Zflag = 0;
@@ -44,8 +44,10 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
+            /*console.log("size of res queue" + _ResidentQueue.getSize());
             for (var i =0; i < _ResidentQueue.getSize(); i++) {
                 _currPcb = _ResidentQueue.dequeue();
+                console.log(`IS THIS TRUE???`,_currPcb.PID == _currPID)
                 if (_currPcb.PID == _currPID) {
                     _currPcb.Acc = this.Acc;
                     _currPcb.IR = this.IR;
@@ -54,8 +56,11 @@ module TSOS {
                     _currPcb.Zflag = this.Zflag;
                     break;
                 }
+                console.log(`CURRPCB:`, _currPcb);
 
-            }
+            }*/
+
+
 
 
             var opCode = this.fetch(this.PC);
@@ -80,7 +85,6 @@ module TSOS {
                 case("A9"):
                     //load the accumulator with a constant
                     val = parseInt(this.fetch(this.PC + 1), 16);
-                    console.log("VALUE: " + val);
                     this.Acc = val;
                     this.PC += 2;
                     break;
@@ -95,6 +99,7 @@ module TSOS {
                 case ("8D"):
                     //store the accumulator in memory
                     val = this.Acc;
+                    console.log(val);
                     var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     console.log("PARSED HEX ADDRESS:" + address);
@@ -118,7 +123,8 @@ module TSOS {
                     break;
                 case("AE"):
                     //load x register from memory
-                    address = address = parseInt((this.fetch(this.PC+2).toString(), this.fetch(this.PC+1).toString()));
+                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     this.Xreg = val;
                     this.PC += 3;
@@ -131,7 +137,8 @@ module TSOS {
                     break;
                 case("AC"):
                     //load y register from memory
-                    address = address = parseInt((this.fetch(this.PC+2).toString(), this.fetch(this.PC+1).toString()));
+                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     this.Yreg = val;
                     this.PC += 3;
@@ -155,9 +162,9 @@ module TSOS {
                     }else{
                         this.Zflag = 0;
                     }
+                    this.PC+=3;
                     break;
                 case("D0"):
-                    //DOUBLE CHECK THIS
                     //branch n bytes if zflag = 0
                     if (this.Zflag == 0){
                         this.PC +=  (Number(parseInt(this.fetch(this.PC + 1), 16)) + 2);
@@ -186,9 +193,16 @@ module TSOS {
                         _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, String(this.Yreg)));
                     }else if (this.Xreg == 2){
                         address = parseInt(String(this.Yreg), 16);
-                        val = parseInt(this.fetch(address), 16);
-                        var char = String.fromCharCode(val);
-                        _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, char));
+
+                        var char;
+                        var yString = "";
+
+                        while (val != "00"){
+                            val = parseInt(this.fetch(address), 16);
+                            char = String.fromCharCode(val);
+                            yString += char;
+                        }
+                        _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, yString));
                     }
                     this.PC+=1;
                     break;
@@ -196,10 +210,16 @@ module TSOS {
                     var msg = "Not a valid op code.";
                     _KernelInterruptQueue.enqueue(new Interrupt(OPCODE_ERROR_IRQ, msg));
             }
-            console.log("IR: " + this.IR);
+            console.log(`PCB:`, _currPcb )
             console.log("PID: " + _currPID);
+            console.log(`CPU ACC:`, this.Acc )
+            _currPcb.Acc = this.Acc;
+            _currPcb.IR = this.IR;
+            _currPcb.Xreg = this.Xreg;
+            _currPcb.Yreg = this.Yreg;
+            _currPcb.Zflag = this.Zflag;
             TSOS.Control.updateCPUTable(this.PC, this.IR, this.Acc, this.Xreg, this.Yreg, this.Zflag);
-            //TSOS.Control.updatePCBTable(_currPID, _currPcb.state,  this.PC, _currPcb.IR, _currPcb.Acc, _currPcb.Xreg, _currPcb.Yreg, _currPcb.Zflag);
+            TSOS.Control.updatePCBTable(_currPID, _currPcb.state,  _currPcb.PC, _currPcb.IR, _currPcb.Acc, _currPcb.Xreg, _currPcb.Yreg, _currPcb.Zflag);
 
         }
 

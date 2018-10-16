@@ -88,11 +88,12 @@ var	_MemoryManager: any	= null;
 var _Pcb: TSOS.Pcb;
 
 var _ResidentQueue: TSOS.Queue;
+var _RunningProcess: any[];
 
 
 //current process
 var _currPID: number;
-var _currPcb: any = null;
+var _currPcb: TSOS.Pcb;
 
 var _Interrupt: TSOS.Interrupt;
 

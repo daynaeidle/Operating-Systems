@@ -17,6 +17,7 @@ module TSOS {
             if (_Memory.mainMem[this.base1] == "00"){
                 for (var i = 0; i < userProgram.length; i++){
                     _Memory.mainMem[this.base1 + i] = userProgram[i];
+
                 }
                 return this.base1;
             }else if (_Memory.mainMem[this.base2] == "00"){

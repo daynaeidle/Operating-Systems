@@ -45,7 +45,6 @@ module TSOS {
                 _FontHeightMargin);
             //set the prompt string to a variable
             var prompt = _OsShell.promptStr;
-            console.log(prompt);
             //get the length of the prompt string
             var promptLen = _DrawingContext.measureText(this.currentFont, this.currentFontSize, prompt);
             console.log("Prompt len: " + promptLen);
@@ -160,8 +159,6 @@ module TSOS {
                         var test = currLine + word + " ";
                         //find the size of the line
                         var lineSize = _DrawingContext.measureText(this.currentFont, this.currentFontSize, test);
-                        console.log(lineSize);
-                        console.log(lineSize > _Canvas.width);
                         //if that new line's width is longer than the canvas width
                         if (lineSize > _Canvas.width){
                             //draw the current line (without the addition of the word and the space)

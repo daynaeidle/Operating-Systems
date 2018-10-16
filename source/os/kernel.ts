@@ -52,8 +52,11 @@ module TSOS {
             _Memory.init();
             _MemoryAccessor	=	new	MemoryAccessor();
 
-            _Pcb = new Pcb(0, 0, "ready", 0, "00", 0, 0, 0, 0);
-            _Pcb.init();
+            // _Pcb = new Pcb();
+            // _Pcb.init();
+
+            _currPcb = new Pcb(-1, 0, "ready", 0, "00", 0, 0, 0, 0);
+            _currPcb.init();
 
             _ResidentQueue = new Queue();
 
@@ -115,6 +118,8 @@ module TSOS {
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle. {
                 this.krnTrace("Idle");
             }
+
+            TSOS.Control.createMemoryTable();
         }
 
 
@@ -186,7 +191,8 @@ module TSOS {
 
         public createProcess(base: number){
 
-            var newProcess = new Pcb(_Pid, base, "ready", base, "00", 0, 0, 0, 0);
+            var newProcess = new Pcb(_Pid, base, "ready", 0, "00", 0, 0, 0, 0);
+            console.log("New process: " + newProcess);
             _Pid++;
             _ResidentQueue.enqueue(newProcess);
             for (var i = 0; i < _ResidentQueue.q.length; i++){
@@ -196,12 +202,14 @@ module TSOS {
 
         public executeProcess(pid: number){
             for (var i =0; i < _ResidentQueue.getSize(); i++){
-                var pcb = _ResidentQueue.dequeue();
-                if (pcb.PID == pid){
+                var _currPcb = _ResidentQueue.dequeue();
+                if (_currPcb.PID == pid){
                     _currPID = pid;
-                    pcb.state = "Running";
+                    _currPcb.state = "Running";
+                    console.log(`THeres no more un`,_currPcb)
                     _CPU.isExecuting = true;
-                    //_ResidentQueue.enqueue(pcb);
+                    //_ResidentQueue.enqueue(_currPcb);
+
                     break;
                 }
 
@@ -210,35 +218,27 @@ module TSOS {
         }
 
         public exitProcess(pid:number){
-            for (var i =0; i < _ResidentQueue.getSize(); i++){
-                var pcb = _ResidentQueue.dequeue();
-                if (pcb.PID == pid) {
-                    _currPID = pid;
-                    pcb.state = "Terminated";
-                    _CPU.isExecuting = false;
-                    var base = pcb.base;
-                    for (var j = base; j < base + 255; j++){
-                        _Memory.mainMem[j] = "00";
-                    }
-                    pcb.PID = -1;
-                    pcb.state = "Ready";
-                    pcb.PC = 0;
-                    pcb.IR = "00";
-                    pcb.Acc = 0;
-                    pcb.Xreg = 0;
-                    pcb.Yreg = 0;
-                    pcb.Zflag = 0;
-                    _CPU.PC = 0;
-                    _CPU.IR = "00";
-                    _CPU.Acc = 0;
-                    _CPU.Xreg = 0;
-                    _CPU.Yreg = 0;
-                    _CPU.Zflag = 0;
-                    _currPID = -1;
-                }
+
+            _currPcb.state = "Terminated";
+            _CPU.isExecuting = false;
+            var base = _currPcb.base;
+            for (var j = base; j < base + 255; j++) {
+                _Memory.mainMem[j] = "00";
+            }
+            _currPcb.init();
+
+            _CPU.PC = 0;
+            _CPU.IR = "-";
+            _CPU.Acc = 0;
+            _CPU.Xreg = 0;
+            _CPU.Yreg = 0;
+            _CPU.Zflag = 0;
+            _currPID = -1;
 
 
-                }
+            TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
+
+
 
         }
 

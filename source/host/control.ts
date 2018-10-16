@@ -79,7 +79,7 @@ module TSOS {
             //get datetime for task bar
             //Create a date variable
             var dt = new Date().toLocaleString();
-            console.log(dt);
+            // console.log(dt);
             // Set the datetime and status(global) to the taskbar
             (<HTMLElement> document.getElementById("taskBar")).innerHTML = "<p1>" + dt + " ~ " + _Status + "</p1>";
 
@@ -117,11 +117,6 @@ module TSOS {
 
 
 
-        }
-
-        public static memoryDisplay(): void{
-            //(<HTMLElement> document.getElementById("memDisplay")).innerHTML = "<td>" + "memory" + "</td>";
-            //(<HTMLElement> document.getElementById("cpuDisplay")).innerHTML = "<th>" + Cpu.pc + "</th>";
         }
 
         public static hostBtnHaltOS_click(btn): void {
@@ -165,39 +160,41 @@ module TSOS {
         }
 
         public static createMemoryTable(): void{
-            var table: HTMLTableElement = <HTMLTableElement> document.getElementById("memTable");
-            var size = _Memory.mainMem.length;
-            var rows = size / 8;
-            var index = 0;
+            var row = [];
+            var table = "";
+            var hexVar = 0;
 
-            var address = 0;
-            var hexAddress = address.toString(16);
+            for (var i = 0; i < _Memory.mainMem.length; i++){
 
-            for (var i = 0; i < rows; i++){
-                var row = table.insertRow(i);
-                for (var j = 0; j < 9; j++){
-                    var cell = row.insertCell(j);
-                    if (j == 0){
-                        var text = document.createTextNode('0x'+hexAddress);
-                        cell.appendChild(text);
-                    }else{
-                        var dec = parseInt(hexAddress, 16);
-                        dec++;
-                        hexAddress = dec.toString(16);
-                        var text = document.createTextNode(_Memory.mainMem[index]);
-                        cell.appendChild(text);
-                        index++;
-                    }
+
+                row.push(_Memory.mainMem[i]);
+
+                if (row.length == 8){
+                    var html =
+                    `<tr>` +
+                        `<td>0x${hexVar.toString(16)}</td>`+
+                        `<td>${row[0]}</td>`+
+                        `<td>${row[1]}</td>`+
+                        `<td>${row[2]}</td>`+
+                        `<td>${row[3]}</td>`+
+                        `<td>${row[4]}</td>`+
+                        `<td>${row[5]}</td>`+
+                        `<td>${row[6]}</td>`+
+                        `<td>${row[7]}</td>`+
+                    `</tr>`
+                    // console.log(html)
+                    hexVar += 8;
+                    table += html;
+                    row = [];
+
                 }
             }
 
-        }
-
-        public static updateMemoryTable(pid: number): void{
-
-
+            document.getElementById('memTable').innerHTML = table;
+            // console.log(table);
 
         }
+
 
         public static updateCPUTable(pc, ir, acc, x, y, z): void{
 
@@ -212,11 +209,12 @@ module TSOS {
         }
 
         public static updatePCBTable(pid, state, pc, ir, acc, x, y, z){
+            console.log(`IRRRRRR ${ir}`);
 
             (<HTMLElement> document.getElementById("pcb-pid")).innerHTML = String(pid);
             (<HTMLElement> document.getElementById("pcb-state")).innerHTML = String(state);
             (<HTMLElement> document.getElementById("pcb-pc")).innerHTML = String(pc);
-            (<HTMLElement> document.getElementById("pcb-IR")).innerHTML = String(ir);
+            (<HTMLElement> document.getElementById("pcb-ir")).innerHTML = ir;
             (<HTMLElement> document.getElementById("pcb-acc")).innerHTML = String(acc);
             (<HTMLElement> document.getElementById("pcb-x")).innerHTML = String(x);
             (<HTMLElement> document.getElementById("pcb-y")).innerHTML = String(y);
