@@ -58,6 +58,8 @@ module TSOS {
             }
 
 
+
+
         }
 
         public static hostLog(msg: string, source: string = "?"): void {
@@ -109,6 +111,8 @@ module TSOS {
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
 
+            this.createMemoryTable();
+
 
 
         }
@@ -134,6 +138,60 @@ module TSOS {
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        }
+
+        public static createMemoryTable(): void{
+            var table: HTMLTableElement = <HTMLTableElement> document.getElementById("memTable");
+            var size = _Memory.mainMem.length;
+            var rows = size / 8;
+            var index = 0;
+
+            var address = 0;
+            var hexAddress = address.toString(16);
+
+            for (var i = 0; i < rows; i++){
+                var row = table.insertRow(i);
+                for (var j = 0; j < 9; j++){
+                    var cell = row.insertCell(j);
+                    if (j == 0){
+                        var text = document.createTextNode('0x'+hexAddress);
+                        cell.appendChild(text);
+                    }else{
+                        var dec = parseInt(hexAddress, 16);
+                        dec++;
+                        hexAddress = dec.toString(16);
+                        var text = document.createTextNode(_Memory.mainMem[index]);
+                        cell.appendChild(text);
+                        index++;
+                    }
+                }
+            }
+
+        }
+
+        public static updateCPUTable(pc, ir, acc, x, y, z): void{
+
+            (<HTMLElement> document.getElementById("cpu-pc")).innerHTML = String(pc);
+            (<HTMLElement> document.getElementById("cpu-IR")).innerHTML = String(ir);
+            (<HTMLElement> document.getElementById("cpu-acc")).innerHTML = String(acc);
+            (<HTMLElement> document.getElementById("cpu-x")).innerHTML = String(x);
+            (<HTMLElement> document.getElementById("cpu-y")).innerHTML = String(y);
+            (<HTMLElement> document.getElementById("cpu-z")).innerHTML = String(z);
+
+
+        }
+
+        public static updatePCBTable(pid, state, pc, ir, acc, x, y, z){
+
+            (<HTMLElement> document.getElementById("pcb-pid")).innerHTML = String(pid);
+            (<HTMLElement> document.getElementById("pcb-state")).innerHTML = String(state);
+            (<HTMLElement> document.getElementById("pcb-pc")).innerHTML = String(pc);
+            (<HTMLElement> document.getElementById("pcb-IR")).innerHTML = String(ir);
+            (<HTMLElement> document.getElementById("pcb-acc")).innerHTML = String(acc);
+            (<HTMLElement> document.getElementById("pcb-x")).innerHTML = String(x);
+            (<HTMLElement> document.getElementById("pcb-y")).innerHTML = String(y);
+            (<HTMLElement> document.getElementById("pcb-z")).innerHTML = String(z);
+
         }
     }
 }

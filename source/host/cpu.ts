@@ -21,7 +21,7 @@ module TSOS {
 
         constructor(public PC: number = 0,
                     public Acc: number = 0,
-                    public IR: string = "0",
+                    public IR: string = "00",
                     public Xreg: number = 0,
                     public Yreg: number = 0,
                     public Zflag: number = 0,
@@ -32,7 +32,7 @@ module TSOS {
         public init(): void {
             this.PC = 0;
             this.Acc = 0;
-            this.IR = "0";
+            this.IR = "00";
             this.Xreg = 0;
             this.Yreg = 0;
             this.Zflag = 0;
@@ -44,6 +44,12 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
+            _Pcb.PC = this.PC;
+            _Pcb.Acc = this.Acc;
+            _Pcb.IR = this.IR;
+            _Pcb.Xreg = this.Xreg;
+            _Pcb.Yreg = this.Yreg;
+            _Pcb.Zflag = this.Zflag;
 
 
             var opCode = this.fetch(this.PC);
@@ -56,10 +62,6 @@ module TSOS {
 
         public fetch(memAddress: number) {
             this.isExecuting = true;
-            //fetch an instruction to decode from a process
-            //console.log("No parse int: " + _MemoryAccessor.readValue(memAddress));
-            //console.log("With parse int: " + parseInt(_MemoryAccessor.readValue(memAddress)));
-            //console.log("With +: " + +_MemoryAccessor.readValue(memAddress));
             return _MemoryAccessor.readValue(memAddress);
 
         }
@@ -73,9 +75,8 @@ module TSOS {
             switch(opCode){
 
                 case("A9"):
-                    console.log("INSTRUCTION: A9");
                     //load the accumulator with a constant
-                    val = this.fetch(this.PC + 1);
+                    val = parseInt(this.fetch(this.PC + 1), 16);
                     console.log("VALUE: " + val);
                     this.Acc = val;
                     this.PC += 2;
@@ -84,7 +85,7 @@ module TSOS {
                     //load the accumulator from memory
                     var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
-                    val = this.fetch(address);
+                    val = parseInt(this.fetch(address), 16);
                     this.Acc = val;
                     this.PC += 3;
                     break;
@@ -102,33 +103,33 @@ module TSOS {
                     //add with carry
                     var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
-                    val = this.fetch(address);
+                    val = parseInt(this.fetch(address), 16);
                     this.Acc = this.Acc + val;
                     this.PC += 3;
                     break;
                 case("A2"):
                     //load x register with a constant
-                    val = this.fetch(this.PC + 1);
+                    val = parseInt(this.fetch(this.PC + 1),16);
                     this.Xreg = val;
                     this.PC += 2;
                     break;
                 case("AE"):
                     //load x register from memory
                     address = address = parseInt((this.fetch(this.PC+2).toString(), this.fetch(this.PC+1).toString()));
-                    val = this.fetch(address);
+                    val = parseInt(this.fetch(address), 16);
                     this.Xreg = val;
                     this.PC += 3;
                     break;
                 case("A0"):
                     //load y register with a constant
-                    val = this.fetch(this.PC + 1);
+                    val = parseInt(this.fetch(this.PC + 1), 16);
                     this.Yreg = val;
                     this.PC += 2;
                     break;
                 case("AC"):
                     //load y register from memory
                     address = address = parseInt((this.fetch(this.PC+2).toString(), this.fetch(this.PC+1).toString()));
-                    val = this.fetch(address);
+                    val = parseInt(this.fetch(address), 16);
                     this.Yreg = val;
                     this.PC += 3;
                     break;
@@ -139,12 +140,13 @@ module TSOS {
                 case("00"):
                     //break
                     this.isExecuting = false;
+                    _Kernel.exitProcess(_currPID);
                     break;
                 case("EC"):
                     //compares a byte in memory to the xreg - changes zflag if equal
                     var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
-                    val = this.fetch(address);
+                    val = parseInt(this.fetch(address), 16);
                     if (this.Xreg == val){
                         this.Zflag = 1;
                     }else{
@@ -152,10 +154,10 @@ module TSOS {
                     }
                     break;
                 case("D0"):
+                    //DOUBLE CHECK THIS
                     //branch n bytes if zflag = 0
                     if (this.Zflag == 0){
-                        this.PC =  Number(this.fetch(this.PC + 1));
-                        this.PC += 2;
+                        this.PC =  Number(parseInt(this.fetch(this.PC + 1), 16));
                     }else{
                         this.PC += 2;
                     }
@@ -164,7 +166,7 @@ module TSOS {
                     //incrememnt the value of a byte
                     var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
-                    val = this.fetch(address);
+                    val = parseInt(this.fetch(address), 16);
                     _MemoryAccessor.writeValue(address, val + 1);
                     this.PC += 3;
                     break;
@@ -173,20 +175,24 @@ module TSOS {
                     //01 in xregprint the integer stored in the y register
                     //02 in xreg print the 00 terminated string stored at the y register
                     if (this.Xreg == 1){
-                        _StdOut.putText(this.Yreg);
+                        _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, this.Yreg));
                     }else if (this.Xreg == 2){
-                        _StdOut.putText(this.Yreg.toString(16));
+                        address = parseInt(String(this.Yreg), 16);
+                        val = parseInt(this.fetch(address), 16);
+                        var char = String.fromCharCode(val);
+                        _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, char));
                     }
                     break;
                 default:
-                    console.log(opCode + ": Not a valid op code");
+                    var msg = "Not a valid op code.";
+                    _KernelInterruptQueue.enqueue(new Interrupt(OPCODE_ERROR_IRQ, msg));
             }
+            console.log("IR: " + this.IR);
+            console.log("PID: " + _currPID);
+            //TSOS.Control.updateCPUTable(this.PC, this.IR, this.Acc, this.Xreg, this.Yreg, this.Zflag);
+            //TSOS.Control.updatePCBTable(_currPID, _Pcb.state,  this.PC, this.IR, this.Acc, this.Xreg, this.Yreg, this.Zflag);
 
         }
 
-        public execute(){
-            //execute that instruction
-
-        }
     }
 }

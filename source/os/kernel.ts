@@ -52,7 +52,7 @@ module TSOS {
             _Memory.init();
             _MemoryAccessor	=	new	MemoryAccessor();
 
-            _Pcb = new Pcb(0, "ready", 0, 0, 0, 0, 0);
+            _Pcb = new Pcb(0, 0, "ready", 0, "00", 0, 0, 0, 0);
             _Pcb.init();
 
             _ReadyQueue = new Queue();
@@ -139,6 +139,15 @@ module TSOS {
                     _krnKeyboardDriver.isr(params);   // Kernel mode device driver
                     _StdIn.handleInput();
                     break;
+                case OPCODE_ERROR_IRQ:
+                    _StdOut.putText("Not a valid OP Code.");
+                    break;
+                case OUTPUT_IRQ:
+                    _StdOut.putText(params);
+                    break;
+                case COMPLETE_PROC_IRQ:
+                    this.exitProcess(params);
+                    break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }
@@ -166,16 +175,57 @@ module TSOS {
 
         public createProcess(base: number){
 
-            var newProcess = new Pcb(_Pid, "ready", base, 0, 0, 0, 0);
+            var newProcess = new Pcb(_Pid, base, "ready", 0, "00", 0, 0, 0, 0);
             _Pid++;
-            console.log(newProcess);
-            _Queue.enqueue(newProcess);
+            _ReadyQueue.enqueue(newProcess);
+            for (var i = 0; i < _ReadyQueue.q.length; i++){
+                console.log(_ReadyQueue.q[i]);
+            }
         }
 
         public executeProcess(pid: number){
-            _Pcb.state = "Running";
-            _CPU.isExecuting = true;
+            for (var i =0; i < _ReadyQueue.getSize(); i++){
+                var pcb = _ReadyQueue.dequeue();
+                if (pcb.PID == pid){
+                    _currPID = pid;
+                    pcb.state = "Running";
+                    _CPU.isExecuting = true;
+                    _ReadyQueue.enqueue(pcb);
+                }
 
+            }
+
+        }
+
+        public exitProcess(pid:number){
+            for (var i =0; i < _ReadyQueue.getSize(); i++){
+                var pcb = _ReadyQueue.dequeue();
+                if (pcb.PID == pid) {
+                    _currPID = pid;
+                    pcb.state = "Running";
+                    _CPU.isExecuting = true;
+                    var base = pcb.base;
+                    for (var j = base; j < base + 255; j++){
+                        _Memory.mainMem[j] = "00";
+                    }
+                    pcb.PID = -1;
+                    pcb.state = "Ready";
+                    pcb.PC = 0;
+                    pcb.IR = "00";
+                    pcb.Acc = 0;
+                    pcb.Xreg = 0;
+                    pcb.Yreg = 0;
+                    pcb.Zflag = 0;
+                    _CPU.PC = 0;
+                    _CPU.IR = "00";
+                    _CPU.Acc = 0;
+                    _CPU.Xreg = 0;
+                    _CPU.Yreg = 0;
+                    _CPU.Zflag = 0;
+                }
+
+
+                }
 
         }
 
