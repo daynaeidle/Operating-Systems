@@ -12,7 +12,7 @@ module TSOS {
 
     export class Pcb {
 
-        constructor(public PID: number,
+        constructor(public PID: string,
                     public base: number,
                     public state: string,
                     public PC: number,
@@ -25,11 +25,11 @@ module TSOS {
         }
 
         public init(): void {
-            this.PID = -1;
+            this.PID = "-";
             this.base = 0;
-            this.state = "ready";
+            this.state = "-";
             this.PC = 0;
-            this.IR = "00";
+            this.IR = "-";
             this.Acc = 0;
             this.Xreg = 0;
             this.Yreg = 0;

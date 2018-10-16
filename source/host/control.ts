@@ -182,7 +182,7 @@ module TSOS {
                         `<td>${row[6]}</td>`+
                         `<td>${row[7]}</td>`+
                     `</tr>`
-                    // console.log(html)
+
                     hexVar += 8;
                     table += html;
                     row = [];
@@ -191,7 +191,6 @@ module TSOS {
             }
 
             document.getElementById('memTable').innerHTML = table;
-            // console.log(table);
 
         }
 
@@ -209,7 +208,6 @@ module TSOS {
         }
 
         public static updatePCBTable(pid, state, pc, ir, acc, x, y, z){
-            console.log(`IRRRRRR ${ir}`);
 
             (<HTMLElement> document.getElementById("pcb-pid")).innerHTML = String(pid);
             (<HTMLElement> document.getElementById("pcb-state")).innerHTML = String(state);

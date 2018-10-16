@@ -41,25 +41,18 @@ module TSOS {
 
         public cycle(): void {
             _Kernel.krnTrace('CPU cycle');
+            _currPcb.state = "Running";
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
-            /*console.log("size of res queue" + _ResidentQueue.getSize());
-            for (var i =0; i < _ResidentQueue.getSize(); i++) {
-                _currPcb = _ResidentQueue.dequeue();
-                console.log(`IS THIS TRUE???`,_currPcb.PID == _currPID)
-                if (_currPcb.PID == _currPID) {
-                    _currPcb.Acc = this.Acc;
-                    _currPcb.IR = this.IR;
-                    _currPcb.Xreg = this.Xreg;
-                    _currPcb.Yreg = this.Yreg;
-                    _currPcb.Zflag = this.Zflag;
-                    break;
-                }
-                console.log(`CURRPCB:`, _currPcb);
-
-            }*/
-
+            /*_currPcb.PC = this.PC;
+            _currPcb.Acc = this.Acc;
+            _currPcb.IR = this.IR;
+            _currPcb.Xreg = this.Xreg;
+            _currPcb.Yreg = this.Yreg;
+            _currPcb.Zflag = this.Zflag;
+            TSOS.Control.updateCPUTable(this.PC, this.IR, this.Acc, this.Xreg, this.Yreg, this.Zflag);
+            TSOS.Control.updatePCBTable(_currPID, _currPcb.state,  _currPcb.PC, _currPcb.IR, _currPcb.Acc, _currPcb.Xreg, _currPcb.Yreg, _currPcb.Zflag);*/
 
 
 
@@ -98,13 +91,10 @@ module TSOS {
                     break;
                 case ("8D"):
                     //store the accumulator in memory
-                    val = this.Acc;
-                    console.log(val);
+                    val = (this.Acc).toString(16).toUpperCase();
                     var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
-                    console.log("PARSED HEX ADDRESS:" + address);
                     _MemoryAccessor.writeValue(address, val);
-                    console.log(address + ": " + _Memory.mainMem[address]);
                     this.PC += 3;
                     break;
                 case("6D"):
@@ -167,7 +157,7 @@ module TSOS {
                 case("D0"):
                     //branch n bytes if zflag = 0
                     if (this.Zflag == 0){
-                        this.PC +=  (Number(parseInt(this.fetch(this.PC + 1), 16)) + 2);
+                        this.PC +=  (Number(parseInt(this.fetch(this.PC + 1), 16)) + 1);
                         if (this.PC > _currPcb.base + 255){
                             var overflow = this.PC - (_currPcb.base + 255);
                             this.PC = overflow + _currPcb.base;
@@ -191,28 +181,35 @@ module TSOS {
                     if (this.Xreg == 1){
                         console.log("y reg: " + this.Yreg);
                         _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, String(this.Yreg)));
+                        this.PC+=1;
                     }else if (this.Xreg == 2){
-                        address = parseInt(String(this.Yreg), 16);
 
-                        var char;
+                        address = this.Yreg;
+                        //console.log("Yreg address: " + address);
+
+                        var char = String.fromCharCode(val);
                         var yString = "";
 
-                        while (val != "00"){
+                        while (val != "0"){
                             val = parseInt(this.fetch(address), 16);
+
+                            //console.log("val from address: " + val);
                             char = String.fromCharCode(val);
+                            //console.log("Char from val: " + char);
                             yString += char;
+                            //console.log(yString);
+                            address++;
                         }
                         _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, yString));
+                        this.PC+=1;
                     }
-                    this.PC+=1;
                     break;
                 default:
                     var msg = "Not a valid op code.";
                     _KernelInterruptQueue.enqueue(new Interrupt(OPCODE_ERROR_IRQ, msg));
             }
-            console.log(`PCB:`, _currPcb )
-            console.log("PID: " + _currPID);
-            console.log(`CPU ACC:`, this.Acc )
+
+            _currPcb.PC = this.PC;
             _currPcb.Acc = this.Acc;
             _currPcb.IR = this.IR;
             _currPcb.Xreg = this.Xreg;

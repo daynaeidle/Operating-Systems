@@ -52,10 +52,8 @@ module TSOS {
             _Memory.init();
             _MemoryAccessor	=	new	MemoryAccessor();
 
-            // _Pcb = new Pcb();
-            // _Pcb.init();
 
-            _currPcb = new Pcb(-1, 0, "ready", 0, "00", 0, 0, 0, 0);
+            _currPcb = new Pcb("-", 0, "ready", 0, "-", 0, 0, 0, 0);
             _currPcb.init();
 
             _ResidentQueue = new Queue();
@@ -191,8 +189,9 @@ module TSOS {
 
         public createProcess(base: number){
 
-            var newProcess = new Pcb(_Pid, base, "ready", 0, "00", 0, 0, 0, 0);
-            console.log("New process: " + newProcess);
+            var newProcess = new Pcb(_Pid.toString(), base, "ready", 0, "-", 0, 0, 0, 0);
+            TSOS.Control.updatePCBTable(newProcess.PID, newProcess.state,  newProcess.PC, newProcess.IR, newProcess.Acc, newProcess.Xreg, newProcess.Yreg, newProcess.Zflag);
+            //console.log("New process: " + newProcess);
             _Pid++;
             _ResidentQueue.enqueue(newProcess);
             for (var i = 0; i < _ResidentQueue.q.length; i++){
@@ -206,18 +205,17 @@ module TSOS {
                 if (_currPcb.PID == pid){
                     _currPID = pid;
                     _currPcb.state = "Running";
-                    console.log(`THeres no more un`,_currPcb)
+                    //console.log(`THeres no more un`,_currPcb)
                     _CPU.isExecuting = true;
                     //_ResidentQueue.enqueue(_currPcb);
-
                     break;
                 }
-
             }
-
         }
 
         public exitProcess(pid:number){
+
+            _StdOut.advanceLine();
 
             _currPcb.state = "Terminated";
             _CPU.isExecuting = false;
@@ -236,7 +234,8 @@ module TSOS {
             _currPID = -1;
 
 
-            TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
+
+            //TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
 
 
 
