@@ -143,6 +143,15 @@ module TSOS {
                 (<HTMLButtonElement>document.getElementById("btnStep")).disabled = true;
                 singleStepMode = false;
             }
+        }
+
+        public static hostBtnStep_click(btn): void{
+
+            if (step == false){
+                step = true;
+            }else{
+                step = false;
+            }
 
 
         }

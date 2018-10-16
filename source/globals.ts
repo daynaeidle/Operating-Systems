@@ -65,6 +65,7 @@ var _StdOut;
 // UI
 var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;
+var _Control: TSOS.Control;
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode: boolean = false;
@@ -88,15 +89,16 @@ var _Pcb: TSOS.Pcb;
 
 var _ResidentQueue: TSOS.Queue;
 
-var _Control: TSOS.Control;
 
+//current process
 var _currPID: number;
+var _currPcb: any = null;
 
 var _Interrupt: TSOS.Interrupt;
 
-var _currPcb: any = null;
-
+//single step mode
 var singleStepMode: boolean = false;
+var step: boolean = false;
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();

@@ -182,13 +182,15 @@ module TSOS {
                     //01 in xregprint the integer stored in the y register
                     //02 in xreg print the 00 terminated string stored at the y register
                     if (this.Xreg == 1){
-                        _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, this.Yreg));
+                        console.log("y reg: " + this.Yreg);
+                        _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, String(this.Yreg)));
                     }else if (this.Xreg == 2){
                         address = parseInt(String(this.Yreg), 16);
                         val = parseInt(this.fetch(address), 16);
                         var char = String.fromCharCode(val);
                         _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, char));
                     }
+                    this.PC+=1;
                     break;
                 default:
                     var msg = "Not a valid op code.";
