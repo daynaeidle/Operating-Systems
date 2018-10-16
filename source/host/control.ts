@@ -97,6 +97,8 @@ module TSOS {
             // .. enable the Halt and Reset buttons ...
             (<HTMLButtonElement>document.getElementById("btnHaltOS")).disabled = false;
             (<HTMLButtonElement>document.getElementById("btnReset")).disabled = false;
+            (<HTMLButtonElement>document.getElementById("btnSingleStep")).disabled = false;
+
 
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
@@ -130,6 +132,19 @@ module TSOS {
             // Stop the interval that's simulating our clock pulse.
             clearInterval(_hardwareClockID);
             // TODO: Is there anything else we need to do here?
+        }
+
+        public static hostBtnSingStep_click(btn): void{
+
+            if (singleStepMode == false){
+                (<HTMLButtonElement>document.getElementById("btnStep")).disabled = false;
+                singleStepMode = true;
+            }else{
+                (<HTMLButtonElement>document.getElementById("btnStep")).disabled = true;
+                singleStepMode = false;
+            }
+
+
         }
 
         public static hostBtnReset_click(btn): void {
@@ -169,10 +184,16 @@ module TSOS {
 
         }
 
+        public static updateMemoryTable(pid: number): void{
+
+
+
+        }
+
         public static updateCPUTable(pc, ir, acc, x, y, z): void{
 
             (<HTMLElement> document.getElementById("cpu-pc")).innerHTML = String(pc);
-            (<HTMLElement> document.getElementById("cpu-IR")).innerHTML = String(ir);
+            (<HTMLElement> document.getElementById("cpu-ir")).innerHTML = String(ir);
             (<HTMLElement> document.getElementById("cpu-acc")).innerHTML = String(acc);
             (<HTMLElement> document.getElementById("cpu-x")).innerHTML = String(x);
             (<HTMLElement> document.getElementById("cpu-y")).innerHTML = String(y);

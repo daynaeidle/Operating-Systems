@@ -86,13 +86,17 @@ var	_MemoryAccessor: TSOS.MemoryAccessor;
 var	_MemoryManager: any	= null;
 var _Pcb: TSOS.Pcb;
 
-var _ReadyQueue: TSOS.Queue;
+var _ResidentQueue: TSOS.Queue;
 
 var _Control: TSOS.Control;
 
 var _currPID: number;
 
 var _Interrupt: TSOS.Interrupt;
+
+var _currPcb: any = null;
+
+var singleStepMode: boolean = false;
 
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();

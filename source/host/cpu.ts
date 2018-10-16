@@ -44,19 +44,22 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
-            _Pcb.PC = this.PC;
-            _Pcb.Acc = this.Acc;
-            _Pcb.IR = this.IR;
-            _Pcb.Xreg = this.Xreg;
-            _Pcb.Yreg = this.Yreg;
-            _Pcb.Zflag = this.Zflag;
+            for (var i =0; i < _ResidentQueue.getSize(); i++) {
+                _currPcb = _ResidentQueue.dequeue();
+                if (_currPcb.PID == _currPID) {
+                    _currPcb.Acc = this.Acc;
+                    _currPcb.IR = this.IR;
+                    _currPcb.Xreg = this.Xreg;
+                    _currPcb.Yreg = this.Yreg;
+                    _currPcb.Zflag = this.Zflag;
+                    break;
+                }
+
+            }
 
 
             var opCode = this.fetch(this.PC);
             this.IR = opCode;
-            console.log("PC: " + this.PC);
-            console.log("Acc: " + this.Acc);
-            console.log("IR: " + this.IR);
             this.decode(String(opCode));
         }
 
@@ -157,7 +160,11 @@ module TSOS {
                     //DOUBLE CHECK THIS
                     //branch n bytes if zflag = 0
                     if (this.Zflag == 0){
-                        this.PC =  Number(parseInt(this.fetch(this.PC + 1), 16));
+                        this.PC +=  (Number(parseInt(this.fetch(this.PC + 1), 16)) + 2);
+                        if (this.PC > _currPcb.base + 255){
+                            var overflow = this.PC - (_currPcb.base + 255);
+                            this.PC = overflow + _currPcb.base;
+                        }
                     }else{
                         this.PC += 2;
                     }
@@ -189,8 +196,8 @@ module TSOS {
             }
             console.log("IR: " + this.IR);
             console.log("PID: " + _currPID);
-            //TSOS.Control.updateCPUTable(this.PC, this.IR, this.Acc, this.Xreg, this.Yreg, this.Zflag);
-            //TSOS.Control.updatePCBTable(_currPID, _Pcb.state,  this.PC, this.IR, this.Acc, this.Xreg, this.Yreg, this.Zflag);
+            TSOS.Control.updateCPUTable(this.PC, this.IR, this.Acc, this.Xreg, this.Yreg, this.Zflag);
+            //TSOS.Control.updatePCBTable(_currPID, _currPcb.state,  this.PC, _currPcb.IR, _currPcb.Acc, _currPcb.Xreg, _currPcb.Yreg, _currPcb.Zflag);
 
         }
 

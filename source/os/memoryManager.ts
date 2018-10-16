@@ -12,8 +12,6 @@ module TSOS {
         public loadMem(userProgram){
             console.log("base 1: " + this.base1);
 
-
-
             console.log("first element of memory: " + _Memory.mainMem[this.base1]);
             //put the program in the first available area of memory and return the base value
             if (_Memory.mainMem[this.base1] == "00"){
@@ -32,12 +30,12 @@ module TSOS {
                 }
                 return this.base3;
             }else{
-                //return 0 if no memory is available
+                //return -1 if no memory is available
                 console.log("Out of memory space.");
                 return -1;
             }
 
-            console.log("User program in memory: " + _Memory.mainMem);
+            console.log("User program in memory: " + _Memory.mainMem[0]);
         }
 
     }

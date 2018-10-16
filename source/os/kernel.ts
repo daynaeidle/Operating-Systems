@@ -55,7 +55,7 @@ module TSOS {
             _Pcb = new Pcb(0, 0, "ready", 0, "00", 0, 0, 0, 0);
             _Pcb.init();
 
-            _ReadyQueue = new Queue();
+            _ResidentQueue = new Queue();
 
 
             // Enable the OS Interrupts.  (Not the CPU clock interrupt, as that is done in the hardware sim.)
@@ -175,22 +175,23 @@ module TSOS {
 
         public createProcess(base: number){
 
-            var newProcess = new Pcb(_Pid, base, "ready", 0, "00", 0, 0, 0, 0);
+            var newProcess = new Pcb(_Pid, base, "ready", base, "00", 0, 0, 0, 0);
             _Pid++;
-            _ReadyQueue.enqueue(newProcess);
-            for (var i = 0; i < _ReadyQueue.q.length; i++){
-                console.log(_ReadyQueue.q[i]);
+            _ResidentQueue.enqueue(newProcess);
+            for (var i = 0; i < _ResidentQueue.q.length; i++){
+                console.log(_ResidentQueue.q[i]);
             }
         }
 
         public executeProcess(pid: number){
-            for (var i =0; i < _ReadyQueue.getSize(); i++){
-                var pcb = _ReadyQueue.dequeue();
+            for (var i =0; i < _ResidentQueue.getSize(); i++){
+                var pcb = _ResidentQueue.dequeue();
                 if (pcb.PID == pid){
                     _currPID = pid;
                     pcb.state = "Running";
                     _CPU.isExecuting = true;
-                    _ReadyQueue.enqueue(pcb);
+                    //_ReadyQueue.enqueue(pcb);
+                    break;
                 }
 
             }
@@ -198,12 +199,12 @@ module TSOS {
         }
 
         public exitProcess(pid:number){
-            for (var i =0; i < _ReadyQueue.getSize(); i++){
-                var pcb = _ReadyQueue.dequeue();
+            for (var i =0; i < _ResidentQueue.getSize(); i++){
+                var pcb = _ResidentQueue.dequeue();
                 if (pcb.PID == pid) {
                     _currPID = pid;
-                    pcb.state = "Running";
-                    _CPU.isExecuting = true;
+                    pcb.state = "Terminated";
+                    _CPU.isExecuting = false;
                     var base = pcb.base;
                     for (var j = base; j < base + 255; j++){
                         _Memory.mainMem[j] = "00";
@@ -222,6 +223,7 @@ module TSOS {
                     _CPU.Xreg = 0;
                     _CPU.Yreg = 0;
                     _CPU.Zflag = 0;
+                    _currPID = -1;
                 }
 
 

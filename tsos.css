@@ -67,14 +67,22 @@ h3 {
   padding-top: 20px;
 }
 
-th, td {
-  border: 1px solid black;
+td {
 
 }
 
-#memDisplay, #cpuDisplay, #pcbDisplay{
+#cpuDisplay, #pcbDisplay{
   margin: 50px;
   border: 1px solid black;
   display: inline-block;
+
+}
+
+#memDisplay{
+  margin: 50px;
+  border: 1px solid black;
+  display: inline-block;
+  height: 100px;
+  overflow: auto;
 
 }
