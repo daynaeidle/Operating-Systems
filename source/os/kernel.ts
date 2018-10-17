@@ -214,8 +214,9 @@ module TSOS {
         }
 
         public exitProcess(pid:number){
-
+            console.log("Process exited");
             _StdOut.advanceLine();
+            _OsShell.putPrompt();
 
             _currPcb.state = "Terminated";
             _CPU.isExecuting = false;
@@ -235,7 +236,7 @@ module TSOS {
 
 
 
-            //TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
+            TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
 
 
 

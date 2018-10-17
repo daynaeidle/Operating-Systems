@@ -158,11 +158,11 @@ module TSOS {
                     //branch n bytes if zflag = 0
                     if (this.Zflag == 0){
                         this.PC +=  (parseInt(this.fetch(this.PC + 1), 16) + 2);
-                        console.log("branch pc: " + this.PC);
+                        //console.log("branch pc: " + this.PC);
                         if (this.PC > _currPcb.base + 255){
                             var overflow = this.PC - (_currPcb.base + 256);
                             this.PC = overflow + _currPcb.base;
-                            console.log("branch pc: " + this.PC);
+                            //console.log("branch pc: " + this.PC);
                         }
                     }else{
                         this.PC += 2;
@@ -181,30 +181,28 @@ module TSOS {
                     //01 in xregprint the integer stored in the y register
                     //02 in xreg print the 00 terminated string stored at the y register
                     if (this.Xreg == 1){
-                        console.log("y reg: " + this.Yreg);
-                        _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, String(this.Yreg)));
                         this.PC+=1;
+                        _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, String(this.Yreg)));
+
                     }else if (this.Xreg == 2){
 
                         address = this.Yreg;
-                        //console.log("Yreg address: " + address);
-
                         var char = String.fromCharCode(val);
                         var yString = "";
 
                         while (val != "0"){
+                            console.log("IS THIS TRUE OR NAH: " + (val != "0"));
                             val = parseInt(this.fetch(address), 16);
 
-                            //console.log("val from address: " + val);
                             char = String.fromCharCode(val);
-                            //console.log("Char from val: " + char);
                             yString += char;
-                            //console.log(yString);
                             address++;
                         }
-                        _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, yString));
                         this.PC+=1;
+                        _KernelInterruptQueue.enqueue(new Interrupt(OUTPUT_IRQ, yString));
+
                     }
+                    console.log("sys call ir: " + this.IR);
                     break;
                 default:
                     var msg = "Not a valid op code.";

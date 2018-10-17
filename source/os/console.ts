@@ -67,8 +67,6 @@ module TSOS {
             var len = this.buffer.length;
             //make a substring of the buffer (one less character) and set it to newValue
             var newValue = (this.buffer).substring(0, len - 1);
-            console.log(this.currentYPosition);
-            console.log(newValue);
             //clear the line
             this.clearLine();
             //set the buffer to the new value
@@ -122,15 +120,11 @@ module TSOS {
 
                 //make an array of the words on the line, found by spaces as a separator
                 var words = text.split(" ");
-                console.log("Words: " + words);
+                //console.log("Words: " + words);
                 //create a current line variable
                 var currLine = '';
 
                 //Linewrap
-                //Because this is linewrap by word, if you input a single word that is longer
-                //than the length of the canvas, it won't wrap around to a new line because the characters
-                //aren't accounted for.
-                //Would like to enhance this later to account for both words and characters
                 //Used html5canvastutorials documentation for this part as a resource.
 
                 //if its just one word, then don't bother with the second half of the code
@@ -208,10 +202,6 @@ module TSOS {
             //scrolling
             //if the lines go below the canvas height
             if (this.currentYPosition > _Canvas.height){
-                /*console.log("Below frame");
-                console.log("Canvas height: " + _Canvas.height);
-                console.log("Y Pos: " + this.currentYPosition);
-                console.log("Line height: " + lineHeight);*/
 
                 //get the image data(text) from the y position at the bottom of the first line to the current y position
                 var data = _DrawingContext.getImageData(0, lineHeight, _Canvas.width, this.currentYPosition);
