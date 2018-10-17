@@ -11,7 +11,7 @@ module TSOS {
             var memAddress = base + address;
 
             //check to see if memory address created is within the process bounds in memory
-            if (memAddress < (base + limit)){
+            if (memAddress <= (base + limit)){
                 //return value at address in memory
                 return _Memory.mainMem[memAddress];
             }else{

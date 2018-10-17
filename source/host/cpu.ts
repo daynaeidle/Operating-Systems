@@ -92,14 +92,14 @@ module TSOS {
                 case ("8D"):
                     //store the accumulator in memory
                     val = (this.Acc).toString(16).toUpperCase();
-                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     _MemoryAccessor.writeValue(address, val);
                     this.PC += 3;
                     break;
                 case("6D"):
                     //add with carry
-                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     this.Acc = this.Acc + val;
@@ -113,7 +113,7 @@ module TSOS {
                     break;
                 case("AE"):
                     //load x register from memory
-                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     this.Xreg = val;
@@ -127,7 +127,7 @@ module TSOS {
                     break;
                 case("AC"):
                     //load y register from memory
-                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     this.Yreg = val;
@@ -144,7 +144,7 @@ module TSOS {
                     break;
                 case("EC"):
                     //compares a byte in memory to the xreg - changes zflag if equal
-                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     if (this.Xreg == val){
@@ -157,10 +157,12 @@ module TSOS {
                 case("D0"):
                     //branch n bytes if zflag = 0
                     if (this.Zflag == 0){
-                        this.PC +=  (Number(parseInt(this.fetch(this.PC + 1), 16)) + 1);
+                        this.PC +=  (parseInt(this.fetch(this.PC + 1), 16) + 2);
+                        console.log("branch pc: " + this.PC);
                         if (this.PC > _currPcb.base + 255){
-                            var overflow = this.PC - (_currPcb.base + 255);
+                            var overflow = this.PC - (_currPcb.base + 256);
                             this.PC = overflow + _currPcb.base;
+                            console.log("branch pc: " + this.PC);
                         }
                     }else{
                         this.PC += 2;
@@ -168,7 +170,7 @@ module TSOS {
                     break;
                 case("EE"):
                     //incrememnt the value of a byte
-                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     _MemoryAccessor.writeValue(address, val + 1);
@@ -215,8 +217,8 @@ module TSOS {
             _currPcb.Xreg = this.Xreg;
             _currPcb.Yreg = this.Yreg;
             _currPcb.Zflag = this.Zflag;
-            TSOS.Control.updateCPUTable(this.PC, this.IR, this.Acc, this.Xreg, this.Yreg, this.Zflag);
-            TSOS.Control.updatePCBTable(_currPID, _currPcb.state,  _currPcb.PC, _currPcb.IR, _currPcb.Acc, _currPcb.Xreg, _currPcb.Yreg, _currPcb.Zflag);
+            TSOS.Control.updateCPUTable(this.PC, this.IR, this.Acc.toString(16), this.Xreg.toString(16), this.Yreg.toString(16), this.Zflag.toString(16));
+            TSOS.Control.updatePCBTable(_currPID, _currPcb.state,  _currPcb.PC, _currPcb.IR, _currPcb.Acc.toString(16), _currPcb.Xreg.toString(16), _currPcb.Yreg.toString(16), _currPcb.Zflag.toString(16));
 
         }
 

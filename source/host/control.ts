@@ -172,7 +172,7 @@ module TSOS {
                 if (row.length == 8){
                     var html =
                     `<tr>` +
-                        `<td>0x${hexVar.toString(16)}</td>`+
+                        `<td>0x${hexVar.toString(16).toUpperCase()}</td>`+
                         `<td>${row[0]}</td>`+
                         `<td>${row[1]}</td>`+
                         `<td>${row[2]}</td>`+
