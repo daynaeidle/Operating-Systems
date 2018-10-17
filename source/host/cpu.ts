@@ -64,6 +64,7 @@ module TSOS {
 
             var val;
             var address;
+            var hexAddr;
 
             switch(opCode){
 
@@ -77,7 +78,7 @@ module TSOS {
                 case("AD"):
                     //load the accumulator from memory
                     //parse the given value in memory as decimal, set to accumulator, and increase PC by 3
-                    var hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
+                    hexAddr = String((this.fetch(this.PC + 2))) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     this.Acc = val;
@@ -87,7 +88,7 @@ module TSOS {
                     //store the accumulator in memory
                     //store accumulator value as hex, parse address, write acc to address, increase PC by 3
                     val = (this.Acc).toString(16).toUpperCase();
-                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
+                    hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     _MemoryAccessor.writeValue(address, val);
                     this.PC += 3;
@@ -95,7 +96,7 @@ module TSOS {
                 case("6D"):
                     //add with carry
                     //parse address in memory, add value at that location to acc and set to acc, increase PC by 3
-                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
+                    hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     this.Acc = this.Acc + val;
@@ -111,7 +112,7 @@ module TSOS {
                 case("AE"):
                     //load x register from memory
                     //parse given value in memory as decimal, set to xreg, increase PC by 3
-                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
+                    hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     this.Xreg = val;
@@ -127,7 +128,7 @@ module TSOS {
                 case("AC"):
                     //load y register from memory
                     //parse given value in memory as decimal, set to yreg, increase PC by 3
-                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
+                    hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     this.Yreg = val;
@@ -149,7 +150,7 @@ module TSOS {
                 case("EC"):
                     //compares a byte in memory to the xreg - changes zflag if equal
                     //parse address in memory, get/parse val at that address - if xreg = that value, set zflag to 1 otherwise set zflag to 0, increase PC by 3
-                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
+                    hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     if (this.Xreg == val){
@@ -180,7 +181,7 @@ module TSOS {
                 case("EE"):
                     //incrememnt the value of a byte
                     //parse address in memory and find val at that location -- write val + 1 to memory and increase PC by 3
-                    var hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
+                    hexAddr = String(this.fetch(this.PC + 2)) + String(this.fetch(this.PC + 1));
                     address = parseInt(hexAddr, 16);
                     val = parseInt(this.fetch(address), 16);
                     _MemoryAccessor.writeValue(address, val + 1);
