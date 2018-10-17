@@ -3,10 +3,12 @@ module TSOS {
 
     export class MemoryAccessor {
 
+        //read value from memory
         public readValue(address: number){
 
             var base = _currPcb.base;
             var limit = 255;
+
             //create memory address from base of process
             var memAddress = base + address;
 
@@ -22,6 +24,7 @@ module TSOS {
 
         }
 
+        //write value to memory
         public writeValue(address: number, value: number){
 
             var base = _currPcb.base;
@@ -32,7 +35,7 @@ module TSOS {
             //check to see if memory address created is within the process bounds in memory
             if (memAddress <= (base + limit)){
                 //set value at memory location
-                _Memory.mainMem[memAddress] = String(value);
+                _Memory.mainMem[memAddress] = value.toString(16);
             }else{
                 console.log("Memory address out of bounds.");
             }

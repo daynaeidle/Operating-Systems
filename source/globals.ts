@@ -92,7 +92,7 @@ var _RunningProcess: any[];
 
 
 //current process
-var _currPID: number;
+var _currPID: string;
 var _currPcb: TSOS.Pcb;
 
 var _Interrupt: TSOS.Interrupt;

@@ -187,25 +187,36 @@ module TSOS {
         // - WriteFile
         // - CloseFile
 
+        //create a new process
         public createProcess(base: number){
 
+            //create a new process control block based on base of program in memory
             var newProcess = new Pcb(_Pid.toString(), base, "ready", 0, "-", 0, 0, 0, 0);
+
+            //update pcb table
             TSOS.Control.updatePCBTable(newProcess.PID, newProcess.state,  newProcess.PC, newProcess.IR, newProcess.Acc, newProcess.Xreg, newProcess.Yreg, newProcess.Zflag);
-            //console.log("New process: " + newProcess);
+
+            //update pid
             _Pid++;
+            //add new process to resident queue
             _ResidentQueue.enqueue(newProcess);
+
+            //print to test
             for (var i = 0; i < _ResidentQueue.q.length; i++){
                 console.log(_ResidentQueue.q[i]);
             }
         }
 
+        //execute a specified process
         public executeProcess(pid: number){
+            //find the correct process in the resident queue based on pid
             for (var i =0; i < _ResidentQueue.getSize(); i++){
+                //set it to a global pcb variable
                 var _currPcb = _ResidentQueue.dequeue();
                 if (_currPcb.PID == pid){
-                    _currPID = pid;
+                    //set a global pid, change the state and set executing to true; break out of loop
+                    _currPID = pid.toString();
                     _currPcb.state = "Running";
-                    //console.log(`THeres no more un`,_currPcb)
                     _CPU.isExecuting = true;
                     //_ResidentQueue.enqueue(_currPcb);
                     break;
@@ -213,17 +224,25 @@ module TSOS {
             }
         }
 
-        public exitProcess(pid:number){
+        //exit a process
+        public exitProcess(pid:string){
             console.log("Process exited");
+
+            //advance line and put prompt
             _StdOut.advanceLine();
             _OsShell.putPrompt();
 
+            //set state to terminated and executing to false
             _currPcb.state = "Terminated";
             _CPU.isExecuting = false;
+
+            //reset main mem using base
             var base = _currPcb.base;
             for (var j = base; j < base + 255; j++) {
                 _Memory.mainMem[j] = "00";
             }
+
+            //reset pcb and cpu variables
             _currPcb.init();
 
             _CPU.PC = 0;
@@ -232,13 +251,11 @@ module TSOS {
             _CPU.Xreg = 0;
             _CPU.Yreg = 0;
             _CPU.Zflag = 0;
-            _currPID = -1;
+            _currPID = "-";
 
 
 
             TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
-
-
 
         }
 

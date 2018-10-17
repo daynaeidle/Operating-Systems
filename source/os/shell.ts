@@ -496,15 +496,18 @@ module TSOS {
                 valid = false;
             } else if (valid == true){
 
+                //put user program in array and check size
                 _userProgram = programInput.split(" ");
                 if (_userProgram.length > 255){
                     _StdOut.putText("Program too  large for available memory space.")
                 }else{
+                    //load into memory
                     var base = _MemoryManager.loadMem(_userProgram);
                     if (base == -1){
                         _StdOut.putText("Out of memory.");
                     }else{
                         _StdOut.putText("Program loaded into memory with Process ID " + _Pid);
+                        //call kernel to create a new process
                         _Kernel.createProcess(base);
                     }
 

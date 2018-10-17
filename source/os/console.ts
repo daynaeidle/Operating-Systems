@@ -220,9 +220,9 @@ module TSOS {
             var cmdList = _OsShell.commandList;
             var buf = this.buffer;
             var bufLen = buf.length;
-            console.log("Length: " + buf.length);
+            //console.log("Length: " + buf.length);
             var matchList = [];
-            console.log(matchList.length);
+            //console.log(matchList.length);
             //for each index in cmdlist
             for (let i in cmdList) {
                 //get a command at that index
@@ -253,8 +253,8 @@ module TSOS {
 
         //up key to scroll up through commandlist
         private cmdRecallUp(): void{
-            console.log(cmdListLoc);
-            console.log(_Commands);
+            //console.log(cmdListLoc);
+            //console.log(_Commands);
 
             //if the index is 0
             if (cmdListLoc == 0){
@@ -273,7 +273,7 @@ module TSOS {
 
         //down key to scroll down through commandlist
         private cmdRecallDown(): void{
-            console.log(cmdListLoc);
+            //console.log(cmdListLoc);
 
             //if the index is greater than or equal to the length - 1 (last element) of the commands list...
             if (cmdListLoc >= _Commands.length - 1){
