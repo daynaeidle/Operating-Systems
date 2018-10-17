@@ -234,8 +234,20 @@ module TSOS {
             _currPcb.Xreg = this.Xreg;
             _currPcb.Yreg = this.Yreg;
             _currPcb.Zflag = this.Zflag;
-            TSOS.Control.updateCPUTable(this.PC, this.IR, this.Acc.toString(16), this.Xreg.toString(16), this.Yreg.toString(16), this.Zflag.toString(16));
-            TSOS.Control.updatePCBTable(_currPID, _currPcb.state,  _currPcb.PC, _currPcb.IR, _currPcb.Acc.toString(16), _currPcb.Xreg.toString(16), _currPcb.Yreg.toString(16), _currPcb.Zflag.toString(16));
+            TSOS.Control.updateCPUTable(this.PC,
+                                        this.IR,
+                                        this.Acc.toString(16).toUpperCase(),
+                                        this.Xreg.toString(16).toUpperCase(),
+                                        this.Yreg.toString(16).toUpperCase(),
+                                        this.Zflag.toString(16).toUpperCase());
+            TSOS.Control.updatePCBTable(_currPID,
+                                        _currPcb.state,
+                                        _currPcb.PC,
+                                        _currPcb.IR,
+                                        _currPcb.Acc.toString(16).toUpperCase(),
+                                        _currPcb.Xreg.toString(16).toUpperCase(),
+                                        _currPcb.Yreg.toString(16).toUpperCase(),
+                                        _currPcb.Zflag.toString(16).toUpperCase());
 
         }
 
