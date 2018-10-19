@@ -53,7 +53,7 @@ module TSOS {
             _MemoryAccessor	=	new	MemoryAccessor();
 
 
-            _currPcb = new Pcb("-", 0, "ready", 0, "-", 0, 0, 0, 0);
+            _currPcb = new Pcb("-", 0, "ready", 0, "-", 0, 0, 0, 0, 0, 0);
             _currPcb.init();
 
             _ResidentQueue = new Queue();
@@ -191,7 +191,7 @@ module TSOS {
         public createProcess(base: number){
 
             //create a new process control block based on base of program in memory
-            var newProcess = new Pcb(_Pid.toString(), base, "ready", 0, "-", 0, 0, 0, 0);
+            var newProcess = new Pcb(_Pid.toString(), base, "ready", 0, "-", 0, 0, 0, 0, 0, 0);
 
             //update pcb table
             TSOS.Control.updatePCBTable(newProcess.PID, newProcess.state,  newProcess.PC, newProcess.IR, newProcess.Acc, newProcess.Xreg, newProcess.Yreg, newProcess.Zflag);
@@ -228,6 +228,11 @@ module TSOS {
         public exitProcess(pid:string){
             console.log("Process exited");
 
+            _StdOut.advanceLine();
+            _StdOut.putText("Turnaround Time: " + _currPcb.turnaround);
+            _StdOut.advanceLine();
+            _StdOut.putText("Wait Time: " + _currPcb.waittime);
+
             //advance line and put prompt
             _StdOut.advanceLine();
             _OsShell.putPrompt();
@@ -235,6 +240,7 @@ module TSOS {
             //set state to terminated and executing to false
             _currPcb.state = "Terminated";
             _CPU.isExecuting = false;
+
 
             //reset main mem using base
             var base = _currPcb.base;

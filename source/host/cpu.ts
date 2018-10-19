@@ -227,6 +227,9 @@ module TSOS {
                     var msg = opCode + " is not a valid op code.";
                     _KernelInterruptQueue.enqueue(new Interrupt(OPCODE_ERROR_IRQ, msg));
             }
+
+            _currPcb.turnaround += 1;
+
             //update all variables and display tables
             _currPcb.PC = this.PC;
             _currPcb.Acc = this.Acc;
