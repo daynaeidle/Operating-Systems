@@ -58,6 +58,8 @@ module TSOS {
             }
 
 
+
+
         }
 
         public static hostLog(msg: string, source: string = "?"): void {
@@ -77,7 +79,7 @@ module TSOS {
             //get datetime for task bar
             //Create a date variable
             var dt = new Date().toLocaleString();
-            console.log(dt);
+            // console.log(dt);
             // Set the datetime and status(global) to the taskbar
             (<HTMLElement> document.getElementById("taskBar")).innerHTML = "<p1>" + dt + " ~ " + _Status + "</p1>";
 
@@ -95,6 +97,8 @@ module TSOS {
             // .. enable the Halt and Reset buttons ...
             (<HTMLButtonElement>document.getElementById("btnHaltOS")).disabled = false;
             (<HTMLButtonElement>document.getElementById("btnReset")).disabled = false;
+            (<HTMLButtonElement>document.getElementById("btnSingleStep")).disabled = false;
+
 
             // .. set focus on the OS console display ...
             document.getElementById("display").focus();
@@ -108,6 +112,8 @@ module TSOS {
             // .. and call the OS Kernel Bootstrap routine.
             _Kernel = new Kernel();
             _Kernel.krnBootstrap();  // _GLaDOS.afterStartup() will get called in there, if configured.
+
+            this.createMemoryTable();
 
 
 
@@ -123,12 +129,95 @@ module TSOS {
             // TODO: Is there anything else we need to do here?
         }
 
+        public static hostBtnSingStep_click(btn): void{
+
+            if (singleStepMode == false){
+                (<HTMLButtonElement>document.getElementById("btnStep")).disabled = false;
+                singleStepMode = true;
+            }else{
+                (<HTMLButtonElement>document.getElementById("btnStep")).disabled = true;
+                singleStepMode = false;
+            }
+        }
+
+        public static hostBtnStep_click(btn): void{
+
+            if (step == false){
+                step = true;
+            }else{
+                step = false;
+            }
+
+
+        }
+
         public static hostBtnReset_click(btn): void {
             // The easiest and most thorough way to do this is to reload (not refresh) the document.
             location.reload(true);
             // That boolean parameter is the 'forceget' flag. When it is true it causes the page to always
             // be reloaded from the server. If it is false or not specified the browser may reload the
             // page from its cache, which is not what we want.
+        }
+
+        public static createMemoryTable(): void{
+            var row = [];
+            var table = "";
+            var hexVar = 0;
+
+            for (var i = 0; i < _Memory.mainMem.length; i++){
+
+
+                row.push(_Memory.mainMem[i]);
+
+                if (row.length == 8){
+                    var html =
+                    `<tr>` +
+                        `<td>0x${hexVar.toString(16).toUpperCase()}</td>`+
+                        `<td>${row[0]}</td>`+
+                        `<td>${row[1]}</td>`+
+                        `<td>${row[2]}</td>`+
+                        `<td>${row[3]}</td>`+
+                        `<td>${row[4]}</td>`+
+                        `<td>${row[5]}</td>`+
+                        `<td>${row[6]}</td>`+
+                        `<td>${row[7]}</td>`+
+                    `</tr>`
+
+                    hexVar += 8;
+                    table += html;
+                    row = [];
+
+                }
+            }
+
+            document.getElementById('memTable').innerHTML = table;
+
+        }
+
+
+        public static updateCPUTable(pc, ir, acc, x, y, z): void{
+
+            (<HTMLElement> document.getElementById("cpu-pc")).innerHTML = String(pc);
+            (<HTMLElement> document.getElementById("cpu-ir")).innerHTML = String(ir);
+            (<HTMLElement> document.getElementById("cpu-acc")).innerHTML = String(acc);
+            (<HTMLElement> document.getElementById("cpu-x")).innerHTML = String(x);
+            (<HTMLElement> document.getElementById("cpu-y")).innerHTML = String(y);
+            (<HTMLElement> document.getElementById("cpu-z")).innerHTML = String(z);
+
+
+        }
+
+        public static updatePCBTable(pid, state, pc, ir, acc, x, y, z){
+
+            (<HTMLElement> document.getElementById("pcb-pid")).innerHTML = String(pid);
+            (<HTMLElement> document.getElementById("pcb-state")).innerHTML = String(state);
+            (<HTMLElement> document.getElementById("pcb-pc")).innerHTML = String(pc);
+            (<HTMLElement> document.getElementById("pcb-ir")).innerHTML = ir;
+            (<HTMLElement> document.getElementById("pcb-acc")).innerHTML = String(acc);
+            (<HTMLElement> document.getElementById("pcb-x")).innerHTML = String(x);
+            (<HTMLElement> document.getElementById("pcb-y")).innerHTML = String(y);
+            (<HTMLElement> document.getElementById("pcb-z")).innerHTML = String(z);
+
         }
     }
 }

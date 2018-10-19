@@ -44,6 +44,20 @@ module TSOS {
             //
             // ... more?
             //
+            //memory manager
+            _MemoryManager	=	new	MemoryManager();
+            _CPU	=	new	Cpu();
+            _CPU.init();
+            _Memory	=	new	Memory();
+            _Memory.init();
+            _MemoryAccessor	=	new	MemoryAccessor();
+
+
+            _currPcb = new Pcb("-", 0, "ready", 0, "-", 0, 0, 0, 0);
+            _currPcb.init();
+
+            _ResidentQueue = new Queue();
+
 
             // Enable the OS Interrupts.  (Not the CPU clock interrupt, as that is done in the hardware sim.)
             this.krnTrace("Enabling the interrupts.");
@@ -86,11 +100,24 @@ module TSOS {
                 // TODO: Implement a priority queue based on the IRQ number/id to enforce interrupt priority.
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
-            } else if (_CPU.isExecuting) { // If there are no interrupts then run one CPU cycle if there is anything being processed. {
-                _CPU.cycle();
+            } else if (_CPU.isExecuting) {// If there are no interrupts then run one CPU cycle if there is anything being processed. {
+                if (singleStepMode == true){
+                    if (step == true){
+                        _CPU.cycle();
+                        step = false;
+                    }else{
+                        console.log("do nothing");
+                    }
+
+                }else{
+                    _CPU.cycle();
+                }
+
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle. {
                 this.krnTrace("Idle");
             }
+
+            TSOS.Control.createMemoryTable();
         }
 
 
@@ -126,6 +153,15 @@ module TSOS {
                     _krnKeyboardDriver.isr(params);   // Kernel mode device driver
                     _StdIn.handleInput();
                     break;
+                case OPCODE_ERROR_IRQ:
+                    _StdOut.putText("Not a valid OP Code.");
+                    break;
+                case OUTPUT_IRQ:
+                    _StdOut.putText(params);
+                    break;
+                case COMPLETE_PROC_IRQ:
+                    this.exitProcess(params);
+                    break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }
@@ -150,6 +186,80 @@ module TSOS {
         // - ReadFile
         // - WriteFile
         // - CloseFile
+
+        //create a new process
+        public createProcess(base: number){
+
+            //create a new process control block based on base of program in memory
+            var newProcess = new Pcb(_Pid.toString(), base, "ready", 0, "-", 0, 0, 0, 0);
+
+            //update pcb table
+            TSOS.Control.updatePCBTable(newProcess.PID, newProcess.state,  newProcess.PC, newProcess.IR, newProcess.Acc, newProcess.Xreg, newProcess.Yreg, newProcess.Zflag);
+
+            //update pid
+            _Pid++;
+            //add new process to resident queue
+            _ResidentQueue.enqueue(newProcess);
+
+            //print to test
+            for (var i = 0; i < _ResidentQueue.q.length; i++){
+                console.log(_ResidentQueue.q[i]);
+            }
+        }
+
+        //execute a specified process
+        public executeProcess(pid: number){
+            //find the correct process in the resident queue based on pid
+            for (var i =0; i < _ResidentQueue.getSize(); i++){
+                //set it to a global pcb variable
+                var _currPcb = _ResidentQueue.dequeue();
+                if (_currPcb.PID == pid){
+                    //set a global pid, change the state and set executing to true; break out of loop
+                    _currPID = pid.toString();
+                    _currPcb.state = "Running";
+                    _CPU.isExecuting = true;
+                    //_ResidentQueue.enqueue(_currPcb);
+                    break;
+                }
+            }
+        }
+
+        //exit a process
+        public exitProcess(pid:string){
+            console.log("Process exited");
+
+            //advance line and put prompt
+            _StdOut.advanceLine();
+            _OsShell.putPrompt();
+
+            //set state to terminated and executing to false
+            _currPcb.state = "Terminated";
+            _CPU.isExecuting = false;
+
+            //reset main mem using base
+            var base = _currPcb.base;
+            for (var j = base; j < base + 255; j++) {
+                _Memory.mainMem[j] = "00";
+            }
+
+            //reset pcb and cpu variables
+            _currPcb.init();
+
+            _CPU.PC = 0;
+            _CPU.IR = "-";
+            _CPU.Acc = 0;
+            _CPU.Xreg = 0;
+            _CPU.Yreg = 0;
+            _CPU.Zflag = 0;
+            _currPID = "-";
+
+
+
+            TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
+
+        }
+
+
 
 
         //

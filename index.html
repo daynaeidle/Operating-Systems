@@ -15,6 +15,8 @@
    <script type="text/javascript" src="distrib/host/control.js"></script>
    <script type="text/javascript" src="distrib/host/devices.js"></script>
    <script type="text/javascript" src="distrib/host/cpu.js"></script>
+   <script type="text/javascript" src="distrib/host/memory.js"></script>
+   <script type="text/javascript" src="distrib/host/memoryAccessor.js"></script>
 
    <!-- Virtual OS Routines: Make sure Kernel code is last, since it needs those above it. -->
    <script type="text/javascript" src="distrib/os/interrupt.js"></script>
@@ -27,11 +29,14 @@
    <script type="text/javascript" src="distrib/os/shellCommand.js"></script>
    <script type="text/javascript" src="distrib/os/userCommand.js"></script>
    <script type="text/javascript" src="distrib/os/kernel.js"></script>
+   <script type="text/javascript" src="distrib/os/memoryManager.js"></script>
+   <script type="text/javascript" src="distrib/os/pcb.js"></script>
+
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. -->
-   <script type="text/javascript" src="test/glados-ip1.js"></script>
+   <script type="text/javascript" src="test/glados-ip2.js"></script>
    
 </head>
 
@@ -75,6 +80,24 @@
              value="Reset"
              tabindex="2"
              onclick="TSOS.Control.hostBtnReset_click(this);">
+
+      <input type="button"
+             id="btnSingleStep"
+             name="btnSingleStep"
+             class="normal_button"
+             disabled="disabled"
+             value="Single Step Mode"
+             tabindex="3"
+             onclick="TSOS.Control.hostBtnSingStep_click(this);">
+
+      <input type="button"
+             id="btnStep"
+             name="btnStep"
+             class="normal_button"
+             disabled="disabled"
+             value=">>"
+             tabindex="4"
+             onclick="TSOS.Control.hostBtnStep_click(this);">
    </div>
 
    <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
@@ -109,10 +132,65 @@
                    id  ="taProgramInput"
                    rows="8"
                    cols="48"
-         ></textarea>
+         >A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00</textarea>
       </label>
    </div>
 
+   <div id="memDisplay">
+      <label>Memory</label>
+      <table id="memTable">
+      </table>
+   </div>
+
+   <div id="cpuDisplay">
+      <label>CPU</label>
+      <table id="cpuTable"; style="width:50%">
+         <tr>
+            <th>PC</th>
+            <th>IR</th>
+            <th>ACC</th>
+            <th>X</th>
+            <th>Y</th>
+            <th>Z</th>
+         </tr>
+         <tr>
+            <td id="cpu-pc">0</td>
+            <td id="cpu-ir">0</td>
+            <td id="cpu-acc">0</td>
+            <td id="cpu-x">0</td>
+            <td id="cpu-y">0</td>
+            <td id="cpu-z">0</td>
+         </tr>
+      </table>
+
+   </div>
+
+   <div id="pcbDisplay">
+      <label>PCB</label>
+      <table id="pcbTable"; style="width:50%">
+         <tr>
+            <th>PID</th>
+            <th>State</th>
+            <th>PC</th>
+            <th>IR</th>
+            <th>ACC</th>
+            <th>X</th>
+            <th>Y</th>
+            <th>Z</th>
+         </tr>
+         <tr>
+            <td id="pcb-pid">0</td>
+            <td id="pcb-state">0</td>
+            <td id="pcb-pc">0</td>
+            <td id="pcb-ir">0</td>
+            <td id="pcb-acc">0</td>
+            <td id="pcb-x">0</td>
+            <td id="pcb-y">0</td>
+            <td id="pcb-z">0</td>
+         </tr>
+      </table>
+
+   </div>
 </div>
 
 

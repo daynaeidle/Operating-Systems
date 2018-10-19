@@ -117,6 +117,13 @@ module TSOS {
                                   " - Traps an OS error.");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellRun,
+                                  "run",
+                                   "<pid> - Runs the specified process.");
+            this.commandList[this.commandList.length] = sc;
+
+
+
             // ps  - list the running processes and their IDs
             // kill <id> - kills the specified process id.
 
@@ -329,6 +336,9 @@ module TSOS {
                     case "error":
                         _StdOut.putText("Error simulates an OS error.");
                         break;
+                    case "run":
+                        _StdOut.putText("Run executes the specified process.");
+                        break;
                     case "?":
                         _StdOut.putText("TOPICS:")
                         for (var i=0; i<_OsShell.commandList.length; i++){
@@ -349,7 +359,6 @@ module TSOS {
                         _StdOut.putText("No manual entry for " + args[0] + ".");
                 }
             } else {
-                // TODO: Hopefully change this to a ? instead of top
                 _StdOut.putText("Usage: man <topic>  Please supply a topic or ? for a list of topics.");
             }
         }
@@ -468,13 +477,13 @@ module TSOS {
         public shellLoad(args){
             //store the user input in a variable
             var programInput = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
-            console.log(programInput);
+            //console.log(programInput);
 
             //set valid to true
             var valid = true;
 
-            //regex pattern for NOT characters a-f, A-F, 0-9 and " "(space)
-            var hex = new RegExp('[^a-fA-F0-9 ]+');
+            //regex pattern
+            var hex = new RegExp('([a-fA-F0-9][a-fA-F0-9]([ ]*))+');
 
             //if no input is in the text area
             if (programInput == ""){
@@ -482,23 +491,49 @@ module TSOS {
                 _StdOut.putText("No user program entered.");
                 valid = false;
                 //if something besides valid hex is found
-            } else if (programInput.search(hex) != -1){
-                //write an error message and set valid to false
-                _StdOut.putText("Input error in the user program! Must input valid hex code.");
+            } else if (programInput.search(hex) == -1){
+                _StdOut.putText("User code is invalid.");
                 valid = false;
+            } else if (valid == true){
+
+                //put user program in array and check size
+                _userProgram = programInput.split(" ");
+                if (_userProgram.length > 255){
+                    _StdOut.putText("Program too  large for available memory space.")
+                }else{
+                    //load into memory
+                    var base = _MemoryManager.loadMem(_userProgram);
+                    if (base == -1){
+                        _StdOut.putText("Out of memory.");
+                    }else{
+                        _StdOut.putText("Program loaded into memory with Process ID " + _Pid);
+                        //call kernel to create a new process
+                        _Kernel.createProcess(base);
+                    }
+
+                }
+
             }
 
-            //if valid is true...
-            if (valid == true){
-                //write a validation message
-                _StdOut.putText("User code is valid.");
-            }
+
         }
 
         //traps an os error and displays BSOD
         public shellError(args){
             _Kernel.krnTrapError("ERROR");
             (<HTMLElement> document.getElementById("blueScreen")).style.display = "block";
+        }
+
+        public shellRun(args){
+            var pid = args[0];
+
+            if (pid >= 0 && pid < _Pid){
+                _Kernel.executeProcess(pid);
+            }else{
+                _StdOut.putText("Not a valid Pid");
+            }
+
+
         }
 
 
