@@ -12,9 +12,8 @@ module TSOS {
 
         public loadMem(userProgram){
 
-            //console.log("first element of memory: " + _Memory.mainMem[this.base1]);
-
             //put the program in the first available area of memory and return the base value
+            //section 1 of memory
             if (_Memory.mainMem[this.base1] == "00"){
                 for (var i = 0; i < userProgram.length; i++){
                     _Memory.mainMem[this.base1 + i] = userProgram[i];
@@ -22,12 +21,14 @@ module TSOS {
                 }
                 return this.base1;
 
+             //section 2 of memory
             }else if (_Memory.mainMem[this.base2] == "00"){
                 for (var i = 0; i < userProgram.length; i++){
                     _Memory.mainMem[this.base2 + i] = userProgram[i];
                 }
                 return this.base2;
 
+            //section 3 of memory
             }else if (_Memory.mainMem[this.base3] == "00"){
                 for (var i = 0; i < userProgram.length; i++){
                     _Memory.mainMem[this.base3 + i] = userProgram[i];
