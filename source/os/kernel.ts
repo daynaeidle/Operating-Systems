@@ -57,6 +57,7 @@ module TSOS {
             _currPcb.init();
 
             _ResidentQueue = new Queue();
+            _ReadyQueue = new Queue();
 
 
             // Enable the OS Interrupts.  (Not the CPU clock interrupt, as that is done in the hardware sim.)
@@ -201,6 +202,15 @@ module TSOS {
             //add new process to resident queue
             _ResidentQueue.enqueue(newProcess);
 
+            _ReadyQueue.enqueue(1);
+            _ReadyQueue.enqueue(2);
+            _ReadyQueue.enqueue(3);
+
+            for (var i = 0; i < _ReadyQueue.q.length; i++){
+                console.log(_ReadyQueue.q[i]);
+            }
+
+
             //print to test
             for (var i = 0; i < _ResidentQueue.q.length; i++){
                 console.log(_ResidentQueue.q[i]);
@@ -222,6 +232,12 @@ module TSOS {
                     break;
                 }
             }
+        }
+
+        //execute all processes
+        public executeAll(){
+            //call the scheduler
+
         }
 
         //exit a process

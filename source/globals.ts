@@ -88,7 +88,9 @@ var	_MemoryManager: any	= null;
 var _Pcb: TSOS.Pcb;
 
 var _ResidentQueue: TSOS.Queue;
+var _ReadyQueue: TSOS.Queue;
 var _RunningProcess: any[];
+var cpuCycles: number = 0;
 
 
 //current process
