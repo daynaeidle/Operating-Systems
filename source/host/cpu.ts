@@ -45,6 +45,12 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
+            if (runall == true){
+                _CpuScheduler.schedule();
+            }
+
+            console.log("CURRENT: " + _currPcb);
+
             //fetch the opcode, set it to the IR, and decode it
             var opCode = this.fetch(this.PC);
             this.IR = opCode;
@@ -228,7 +234,9 @@ module TSOS {
                     _KernelInterruptQueue.enqueue(new Interrupt(OPCODE_ERROR_IRQ, msg));
             }
 
+            cpuCycles += 1;
             _currPcb.turnaround += 1;
+            console.log("Clock cycles: " + cpuCycles);
 
             //update all variables and display tables
             _currPcb.PC = this.PC;

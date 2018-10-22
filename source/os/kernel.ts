@@ -51,9 +51,10 @@ module TSOS {
             _Memory	=	new	Memory();
             _Memory.init();
             _MemoryAccessor	=	new	MemoryAccessor();
+            _CpuScheduler	=	new	cpuScheduler();
 
 
-            _currPcb = new Pcb("-", 0, "ready", 0, "-", 0, 0, 0, 0, 0, 0);
+            _currPcb = new Pcb("-", 0, "Ready", 0, "-", 0, 0, 0, 0, 0, 0);
             _currPcb.init();
 
             _ResidentQueue = new Queue();
@@ -192,13 +193,14 @@ module TSOS {
         public createProcess(base: number){
 
             //create a new process control block based on base of program in memory
-            var newProcess = new Pcb(_Pid.toString(), base, "ready", 0, "-", 0, 0, 0, 0, 0, 0);
+            var newProcess = new Pcb(_Pid.toString(), base, "Resident", 0, "-", 0, 0, 0, 0, 0, 0);
 
             //update pcb table
             TSOS.Control.updatePCBTable(newProcess.PID, newProcess.state,  newProcess.PC, newProcess.IR, newProcess.Acc, newProcess.Xreg, newProcess.Yreg, newProcess.Zflag);
 
             //update pid
             _Pid++;
+
             //add new process to resident queue
             _ResidentQueue.enqueue(newProcess);
 
@@ -223,12 +225,13 @@ module TSOS {
             for (var i =0; i < _ResidentQueue.getSize(); i++){
                 //set it to a global pcb variable
                 var _currPcb = _ResidentQueue.dequeue();
+                console.log("regular execution pcb: " + _currPcb);
                 if (_currPcb.PID == pid){
                     //set a global pid, change the state and set executing to true; break out of loop
                     _currPID = pid.toString();
                     _currPcb.state = "Running";
                     _CPU.isExecuting = true;
-                    //_ResidentQueue.enqueue(_currPcb);
+                    _ReadyQueue.enqueue(_currPcb);
                     break;
                 }
             }
@@ -237,6 +240,12 @@ module TSOS {
         //execute all processes
         public executeAll(){
             //call the scheduler
+            runall = true;
+            var _currPcb = _ResidentQueue.q[0];
+            console.log("IN kernel - curr PCB:" + _currPcb);
+            _currPcb.state = "Running";
+            _CPU.isExecuting = true;
+            _CpuScheduler.schedule();
 
         }
 

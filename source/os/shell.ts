@@ -117,9 +117,16 @@ module TSOS {
                                   " - Traps an OS error.");
             this.commandList[this.commandList.length] = sc;
 
+            // run
             sc = new ShellCommand(this.shellRun,
                                   "run",
                                    "<pid> - Runs the specified process.");
+            this.commandList[this.commandList.length] = sc;
+
+            //run all
+            sc = new ShellCommand(this.shellRunAll,
+                                  "runall",
+                                   " - Runs all loaded processes.");
             this.commandList[this.commandList.length] = sc;
 
 
@@ -524,6 +531,8 @@ module TSOS {
             (<HTMLElement> document.getElementById("blueScreen")).style.display = "block";
         }
 
+
+        //runs the specified process
         public shellRun(args){
             var pid = args[0];
 
@@ -533,7 +542,16 @@ module TSOS {
                 _StdOut.putText("Not a valid Pid");
             }
 
+        }
 
+
+        //runs all loaded processes
+        public shellRunAll(args){
+            if (_ResidentQueue.getSize() == 0){
+                _StdOut.putText("No processes to run");
+            }else{
+                _Kernel.executeAll();
+            }
         }
 
 

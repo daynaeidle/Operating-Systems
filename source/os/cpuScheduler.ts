@@ -14,43 +14,48 @@ module TSOS {
 
     export class cpuScheduler {
 
-        constructor(public quantum: number = 5,
-                    public readyLength: number,
-                    public procIndex: number = 0) {
+        public quantum: number = 6;
+        public readyLength: number;
+        public procIndex: number = 0;
 
-        }
 
         public init(): void {
 
         }
 
 
-        public getNewProc(){
+        public getNewProc(): void{
             //if resident queue has items in it
             if (_ResidentQueue.getSize() > 0){
                 //take the first item off the resident queue and make it the current pcb
                 _currPcb = _ResidentQueue.dequeue();
+                _currPcb.state = "Running";
             //otherwise
             }else{
                 //the the first item off the ready queue and make it pcb
                 _currPcb = _ReadyQueue.dequeue();
+                _currPcb.state = "Running";
             }
         }
 
 
-        public schedule(){
+        public schedule(): void{
 
             //if cpu cycles = quantum.. switch the process
-
             if (cpuCycles == this.quantum){
+                console.log("New process");
                 //switch the process
+                _currPcb.state = "Ready";
                 _ReadyQueue.enqueue(_currPcb);
+                cpuCycles = 0;
+                _currPcb.init();
                 this.getNewProc();
             }else{
-                //continue with the same process
+                console.log("same process");
             }
 
         }
+
 
 
     }

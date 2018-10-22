@@ -66,6 +66,7 @@ var _StdOut;
 var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;
 var _Control: TSOS.Control;
+var _CpuScheduler: TSOS.cpuScheduler;
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode: boolean = false;
@@ -98,6 +99,9 @@ var _currPID: string;
 var _currPcb: TSOS.Pcb;
 
 var _Interrupt: TSOS.Interrupt;
+
+//run all
+var runall: boolean = false;
 
 //single step mode
 var singleStepMode: boolean = false;
