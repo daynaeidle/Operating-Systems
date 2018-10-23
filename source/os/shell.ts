@@ -135,6 +135,12 @@ module TSOS {
                                   " - Clears any processes in memory.");
             this.commandList[this.commandList.length] = sc;
 
+            //quantum
+            sc = new ShellCommand(this.shellQuantum,
+                                  "quantum",
+                                  " - Set the quantum for Round Robin scheduling.");
+            this.commandList[this.commandList.length] = sc;
+
 
 
             // ps  - list the running processes and their IDs
@@ -358,6 +364,9 @@ module TSOS {
                     case "clearmem":
                         _StdOut.putText("Clearmem clears all processes from memory.");
                         break;
+                    case "quantum":
+                        _StdOut.putText("Quantum sets the quantum for Round Robin scheduling. Must be greater than 0.");
+                        break;
                     case "?":
                         _StdOut.putText("TOPICS:")
                         for (var i=0; i<_OsShell.commandList.length; i++){
@@ -571,6 +580,22 @@ module TSOS {
         public shellClearMem(args){
 
             _Kernel.clearMemory();
+
+        }
+
+
+        //sets quantum for round robin
+        public shellQuantum(args){
+
+            var quantNum = args[0];
+
+            if (quantNum > 0){
+                _CpuScheduler.quantum = quantNum;
+            }else{
+                _StdOut.putText("Quantum must be greater than 0.");
+            }
+
+
 
         }
 

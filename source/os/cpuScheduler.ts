@@ -42,6 +42,7 @@ module TSOS {
         public schedule(): void{
 
             //if cpu cycles = quantum.. switch the process
+            console.log("Quantum: " + this.quantum);
             if (cpuCycles == this.quantum){
                 console.log("New process");
                 //switch the process
