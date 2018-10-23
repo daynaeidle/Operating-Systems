@@ -291,6 +291,13 @@ module TSOS {
         }
 
 
+        public clearMemory(){
+            for (var i = 0; i < 768; i++){
+                _Memory.mainMem[i] = "00";
+            }
+        }
+
+
 
 
         //

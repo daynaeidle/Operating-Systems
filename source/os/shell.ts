@@ -129,6 +129,12 @@ module TSOS {
                                    " - Runs all loaded processes.");
             this.commandList[this.commandList.length] = sc;
 
+            //clear mem
+            sc = new ShellCommand(this.shellClearMem,
+                                  "clearmem",
+                                  " - Clears any processes in memory.");
+            this.commandList[this.commandList.length] = sc;
+
 
 
             // ps  - list the running processes and their IDs
@@ -346,6 +352,12 @@ module TSOS {
                     case "run":
                         _StdOut.putText("Run executes the specified process.");
                         break;
+                    case "runall":
+                        _StdOut.putText("Runall executes all processes loaded into memory.");
+                        break;
+                    case "clearmem":
+                        _StdOut.putText("Clearmem clears all processes from memory.");
+                        break;
                     case "?":
                         _StdOut.putText("TOPICS:")
                         for (var i=0; i<_OsShell.commandList.length; i++){
@@ -552,6 +564,14 @@ module TSOS {
             }else{
                 _Kernel.executeAll();
             }
+        }
+
+
+        //clear mem
+        public shellClearMem(args){
+
+            _Kernel.clearMemory();
+
         }
 
 
