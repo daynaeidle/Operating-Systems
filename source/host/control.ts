@@ -209,14 +209,55 @@ module TSOS {
 
         public static updatePCBTable(pid, state, pc, ir, acc, x, y, z){
 
-            (<HTMLElement> document.getElementById("pcb-pid")).innerHTML = String(pid);
-            (<HTMLElement> document.getElementById("pcb-state")).innerHTML = String(state);
-            (<HTMLElement> document.getElementById("pcb-pc")).innerHTML = String(pc);
-            (<HTMLElement> document.getElementById("pcb-ir")).innerHTML = ir;
-            (<HTMLElement> document.getElementById("pcb-acc")).innerHTML = String(acc);
-            (<HTMLElement> document.getElementById("pcb-x")).innerHTML = String(x);
-            (<HTMLElement> document.getElementById("pcb-y")).innerHTML = String(y);
-            (<HTMLElement> document.getElementById("pcb-z")).innerHTML = String(z);
+            var readyLen = _ReadyQueue.getSize();
+            var residentLen = _ResidentQueue.getSize();
+            var index: number;
+
+            if (residentLen == 0){
+                index = _ReadyQueue.q.indexOf(_currPcb);
+            }else{
+                if (_ResidentQueue.q.indexOf(_currPcb) == -1){
+                    index = _ReadyQueue.q.indexOf(_currPcb);
+                }else{
+                    index = _ResidentQueue.q.indexOf(_currPcb) + readyLen;
+                }
+            }
+
+            console.log("Index: " + index);
+
+            if (index == 0){
+                (<HTMLElement> document.getElementById("pcb1-pid")).innerHTML = String(pid);
+                (<HTMLElement> document.getElementById("pcb1-state")).innerHTML = String(state);
+                (<HTMLElement> document.getElementById("pcb1-pc")).innerHTML = String(pc);
+                (<HTMLElement> document.getElementById("pcb1-ir")).innerHTML = ir;
+                (<HTMLElement> document.getElementById("pcb1-acc")).innerHTML = String(acc);
+                (<HTMLElement> document.getElementById("pcb1-x")).innerHTML = String(x);
+                (<HTMLElement> document.getElementById("pcb1-y")).innerHTML = String(y);
+                (<HTMLElement> document.getElementById("pcb1-z")).innerHTML = String(z);
+            } else if (index == 1){
+                (<HTMLElement> document.getElementById("pcb2-pid")).innerHTML = String(pid);
+                (<HTMLElement> document.getElementById("pcb2-state")).innerHTML = String(state);
+                (<HTMLElement> document.getElementById("pcb2-pc")).innerHTML = String(pc);
+                (<HTMLElement> document.getElementById("pcb2-ir")).innerHTML = ir;
+                (<HTMLElement> document.getElementById("pcb2-acc")).innerHTML = String(acc);
+                (<HTMLElement> document.getElementById("pcb2-x")).innerHTML = String(x);
+                (<HTMLElement> document.getElementById("pcb2-y")).innerHTML = String(y);
+                (<HTMLElement> document.getElementById("pcb2-z")).innerHTML = String(z);
+            }else{
+                (<HTMLElement> document.getElementById("pcb3-pid")).innerHTML = String(pid);
+                (<HTMLElement> document.getElementById("pcb3-state")).innerHTML = String(state);
+                (<HTMLElement> document.getElementById("pcb3-pc")).innerHTML = String(pc);
+                (<HTMLElement> document.getElementById("pcb3-ir")).innerHTML = ir;
+                (<HTMLElement> document.getElementById("pcb3-acc")).innerHTML = String(acc);
+                (<HTMLElement> document.getElementById("pcb3-x")).innerHTML = String(x);
+                (<HTMLElement> document.getElementById("pcb3-y")).innerHTML = String(y);
+                (<HTMLElement> document.getElementById("pcb3-z")).innerHTML = String(z);
+            }
+
+
+
+
+
 
         }
     }

@@ -141,10 +141,17 @@ module TSOS {
                                   " - Set the quantum for Round Robin scheduling.");
             this.commandList[this.commandList.length] = sc;
 
-
-
             // ps  - list the running processes and their IDs
+            sc = new ShellCommand(this.shellPS,
+                                  "ps",
+                                  " - Displays the process ids of the running processes.");
+            this.commandList[this.commandList.length] = sc;
+
             // kill <id> - kills the specified process id.
+            sc = new ShellCommand(this.shellKill,
+                                  "kill",
+                                  "<pid> - Kills the specified process.");
+            this.commandList[this.commandList.length] = sc;
 
             //
             // Display the initial prompt.
@@ -366,6 +373,12 @@ module TSOS {
                         break;
                     case "quantum":
                         _StdOut.putText("Quantum sets the quantum for Round Robin scheduling. Must be greater than 0.");
+                        break;
+                    case "ps":
+                        _StdOut.putText("PS displays a list of the process ids of the current running processes.");
+                        break;
+                    case "kill":
+                        _StdOut.putText("Kill well... kills the specified process. Sorry to be so morbid.");
                         break;
                     case "?":
                         _StdOut.putText("TOPICS:")
@@ -595,7 +608,56 @@ module TSOS {
                 _StdOut.putText("Quantum must be greater than 0.");
             }
 
+        }
 
+        //displays the current processes and their states
+        public shellPS(args){
+
+            var resLen = _ResidentQueue.getSize();
+            console.log("Len res: " + resLen);
+            var readyLen = _ReadyQueue.getSize();
+            console.log("Len ready: " + readyLen);
+
+            for (var j = 0; j < readyLen; j++){
+                console.log(_ReadyQueue.q[j]);
+            }
+
+            if ((resLen == 0) && (readyLen == 0)){
+                _StdOut.putText("No current processes loaded.");
+            }else if ((resLen > 0) && (readyLen == 0)){
+                console.log("res > 0, ready = 0");
+                for (var i = 0; i < resLen; i++){
+                    var pcb = _ResidentQueue.q[i];
+                    _StdOut.putText(pcb.PID + ": " + pcb.state);
+                    _StdOut.advanceLine();
+                }
+            }else if ((resLen == 0) && (readyLen > 0)){
+                console.log("res = 0, ready > 0");
+                for (var i = 0; i < readyLen; i++){
+                    var pcb = _ReadyQueue.q[i];
+                    _StdOut.putText(pcb.PID + ": " + pcb.state);
+                    _StdOut.advanceLine();
+                }
+            }else{
+                for (var i = 0; i < readyLen; i++){
+                    console.log("res > 0, ready > 0");
+                    var pcb = _ReadyQueue.q[i];
+                    _StdOut.putText(pcb.PID + ": " + pcb.state);
+                    _StdOut.advanceLine();
+                }
+
+                for (var i = 0; i < resLen; i++){
+                    var pcb = _ResidentQueue.q[i];
+                    _StdOut.putText(pcb.PID + ": " + pcb.state);
+                    _StdOut.advanceLine();
+                }
+            }
+
+
+        }
+
+
+        public shellKill(args){
 
         }
 

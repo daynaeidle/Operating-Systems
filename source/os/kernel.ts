@@ -156,7 +156,8 @@ module TSOS {
                     _StdIn.handleInput();
                     break;
                 case OPCODE_ERROR_IRQ:
-                    _StdOut.putText("Not a valid OP Code.");
+                    _StdOut.putText(params);
+
                     break;
                 case OUTPUT_IRQ:
                     _StdOut.putText(params);
@@ -203,10 +204,6 @@ module TSOS {
 
             //add new process to resident queue
             _ResidentQueue.enqueue(newProcess);
-
-            _ReadyQueue.enqueue(1);
-            _ReadyQueue.enqueue(2);
-            _ReadyQueue.enqueue(3);
 
             for (var i = 0; i < _ReadyQueue.q.length; i++){
                 console.log(_ReadyQueue.q[i]);
@@ -266,6 +263,14 @@ module TSOS {
             _currPcb.state = "Terminated";
             _CPU.isExecuting = false;
 
+            for (var i = 0; i < _ReadyQueue.getSize(); i++){
+                var temp = _ReadyQueue.dequeue();
+                if (_currPcb.PID == temp.PID){
+                    break;
+                }else{
+                    _ReadyQueue.enqueue(temp);
+                }
+            }
 
             //reset main mem using base
             var base = _currPcb.base;
@@ -283,8 +288,6 @@ module TSOS {
             _CPU.Yreg = 0;
             _CPU.Zflag = 0;
             _currPID = "-";
-
-
 
             TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
 
