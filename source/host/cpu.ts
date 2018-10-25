@@ -49,7 +49,7 @@ module TSOS {
                 _CpuScheduler.schedule();
             }
 
-            console.log("CURRENT: " + _currPcb);
+            console.log("CURRENT: " + _currPcb.PID);
 
             //fetch the opcode, set it to the IR, and decode it
             var opCode = this.fetch(this.PC);
@@ -251,7 +251,7 @@ module TSOS {
                                         this.Xreg.toString(16).toUpperCase(),
                                         this.Yreg.toString(16).toUpperCase(),
                                         this.Zflag.toString(16).toUpperCase());
-            TSOS.Control.updatePCBTable(_currPID,
+            TSOS.Control.updatePCBTable(_currPcb.PID,
                                         _currPcb.state,
                                         _currPcb.PC,
                                         _currPcb.IR,

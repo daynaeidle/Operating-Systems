@@ -107,9 +107,9 @@ module TSOS {
                     if (step == true){
                         _CPU.cycle();
                         step = false;
-                    }else{
-                        console.log("do nothing");
-                    }
+                    }//else{
+                        //console.log("do nothing");
+                    //}
 
                 }else{
                     _CPU.cycle();
@@ -241,11 +241,11 @@ module TSOS {
         public executeAll(){
             //call the scheduler
             runall = true;
-            var _currPcb = _ResidentQueue.q[0];
-            console.log("IN kernel - curr PCB:" + _currPcb);
+            var _currPcb = _ResidentQueue.dequeue();
+            console.log("IN kernel - curr PCB:" + _currPcb.PID);
             _currPcb.state = "Running";
             _CPU.isExecuting = true;
-            _CpuScheduler.schedule();
+            //_CpuScheduler.schedule();
 
         }
 

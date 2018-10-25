@@ -38,24 +38,36 @@ module TSOS {
             }
         }
 
+        public setCPU(): void{
+            _CPU.PC = _currPcb.PC;
+            _CPU.Acc = _currPcb.Acc;
+            _CPU.IR = _currPcb.IR;
+            _CPU.Xreg = _currPcb.Xreg;
+            _CPU.Yreg = _currPcb.Yreg;
+            _CPU.Zflag = _currPcb.Zflag;
+        }
+
 
         public schedule(): void{
 
             //if cpu cycles = quantum.. switch the process
-            console.log("Quantum: " + this.quantum);
+            //console.log("Quantum: " + this.quantum);
             if (cpuCycles == this.quantum){
                 console.log("New process");
                 //switch the process
                 _currPcb.state = "Ready";
                 _ReadyQueue.enqueue(_currPcb);
                 cpuCycles = 0;
-                _currPcb.init();
+                //_currPcb.init();
                 this.getNewProc();
+                this.setCPU();
             }else{
                 console.log("same process");
             }
 
         }
+
+
 
 
 
