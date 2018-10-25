@@ -26,7 +26,7 @@ module TSOS {
 
         public getNewProc(): void{
             //if resident queue has items in it
-            if (_ResidentQueue.getSize() > 0){
+            /*if (_ResidentQueue.getSize() > 0){
                 //take the first item off the resident queue and make it the current pcb
                 _currPcb = _ResidentQueue.dequeue();
                 _currPcb.state = "Running";
@@ -35,7 +35,11 @@ module TSOS {
                 //the the first item off the ready queue and make it pcb
                 _currPcb = _ReadyQueue.dequeue();
                 _currPcb.state = "Running";
-            }
+            }*/
+
+            _currPcb = _ReadyQueue.dequeue();
+            _currPcb.state = "Running";
+
         }
 
         public setCPU(): void{
@@ -49,6 +53,18 @@ module TSOS {
 
 
         public schedule(): void{
+
+            console.log("top of ready queue");
+            if (_ReadyQueue.getSize() != 0){
+
+                for (var i = 0; i < _ReadyQueue.getSize(); i++){
+                    console.log(_ReadyQueue.q[i]);
+                }
+
+            }
+
+            console.log("bottom of ready queue");
+
 
             //if cpu cycles = quantum.. switch the process
             //console.log("Quantum: " + this.quantum);

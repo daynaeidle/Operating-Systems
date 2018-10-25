@@ -91,7 +91,7 @@ module TSOS {
                     //add one to the cmdListLoc variable since a command was added
                     //set the cmdListLoc to the length of the commands array to use as an index variable
                     cmdListLoc = _Commands.length;
-                    console.log(cmdListLoc);
+                    //console.log(cmdListLoc);
 
                     _OsShell.handleInput(this.buffer);
                     // ... and reset our buffer.

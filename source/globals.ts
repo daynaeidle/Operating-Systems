@@ -95,7 +95,7 @@ var cpuCycles: number = 0;
 
 
 //current process
-var _currPID: string;
+//var _currPID: string;
 var _currPcb: TSOS.Pcb;
 
 var _Interrupt: TSOS.Interrupt;

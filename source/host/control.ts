@@ -223,7 +223,7 @@ module TSOS {
                 }
             }
 
-            console.log("Index: " + index);
+            //console.log("Index: " + index);
 
             if (index == 0){
                 (<HTMLElement> document.getElementById("pcb1-pid")).innerHTML = String(pid);

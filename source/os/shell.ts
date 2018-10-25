@@ -540,10 +540,11 @@ module TSOS {
                 //put user program in array and check size
                 _userProgram = programInput.split(" ");
                 if (_userProgram.length > 255){
-                    _StdOut.putText("Program too  large for available memory space.")
+                    _StdOut.putText("Program too large for available memory space.")
                 }else{
                     //load into memory
                     var base = _MemoryManager.loadMem(_userProgram);
+                    console.log("Base on load: " + base);
                     if (base == -1){
                         _StdOut.putText("Out of memory.");
                     }else{
@@ -570,7 +571,22 @@ module TSOS {
         public shellRun(args){
             var pid = args[0];
 
-            if (pid >= 0 && pid < _Pid){
+            var valid = false;
+
+            var resLen = _ResidentQueue.getSize();
+
+            for (var i = 0; i < resLen; i++){
+                var temp = _ResidentQueue.q[i].PID;
+
+                if (temp == pid.toString()){
+                    //_Kernel.executeProcess(pid);
+                    valid = true;
+                    break;
+                }
+            }
+
+
+            if (valid){
                 _Kernel.executeProcess(pid);
             }else{
                 _StdOut.putText("Not a valid Pid");

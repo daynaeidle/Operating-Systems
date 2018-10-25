@@ -55,7 +55,7 @@ module TSOS {
 
 
             _currPcb = new Pcb("-", 0, "Ready", 0, "-", 0, 0, 0, 0, 0, 0);
-            _currPcb.init();
+            //_currPcb.init();
 
             _ResidentQueue = new Queue();
             _ReadyQueue = new Queue();
@@ -157,7 +157,7 @@ module TSOS {
                     break;
                 case OPCODE_ERROR_IRQ:
                     _StdOut.putText(params);
-
+                    this.exitProcess(_currPcb.PID);
                     break;
                 case OUTPUT_IRQ:
                     _StdOut.putText(params);
@@ -205,13 +205,8 @@ module TSOS {
             //add new process to resident queue
             _ResidentQueue.enqueue(newProcess);
 
-            for (var i = 0; i < _ReadyQueue.q.length; i++){
-                console.log(_ReadyQueue.q[i]);
-            }
-
-
             //print to test
-            for (var i = 0; i < _ResidentQueue.q.length; i++){
+            for (var i = 0; i < _ResidentQueue.getSize(); i++){
                 console.log(_ResidentQueue.q[i]);
             }
         }
@@ -219,13 +214,15 @@ module TSOS {
         //execute a specified process
         public executeProcess(pid: number){
             //find the correct process in the resident queue based on pid
-            for (var i =0; i < _ResidentQueue.getSize(); i++){
+
+            var resLen = _ResidentQueue.getSize();
+            for (var i = 0; i < resLen; i++){
                 //set it to a global pcb variable
+                console.log("Resident queue pid: " + i + " : " +  _ResidentQueue.q[i]);
                 var _currPcb = _ResidentQueue.dequeue();
-                console.log("regular execution pcb: " + _currPcb);
-                if (_currPcb.PID == pid){
-                    //set a global pid, change the state and set executing to true; break out of loop
-                    _currPID = pid.toString();
+                console.log("regular execution pcb pid: " + _currPcb.PID);
+                if (_currPcb.PID == pid.toString()){
+                    //change the state and set executing to true; break out of loop
                     _currPcb.state = "Running";
                     _CPU.isExecuting = true;
                     _ReadyQueue.enqueue(_currPcb);
@@ -236,13 +233,30 @@ module TSOS {
 
         //execute all processes
         public executeAll(){
+
+            /*console.log("In execute all before convert from res to ready");
+            for (var i = 0; i < _ResidentQueue.getSize(); i++){
+                console.log(_ResidentQueue.q[i]);
+            }*/
+
+            var resLength = _ResidentQueue.getSize();
+
+            for (var i = 0; i < resLength; i++){
+                var temp = _ResidentQueue.dequeue();
+                _ReadyQueue.enqueue(temp);
+            }
+
+            /*console.log("In execute all after convert from res to ready");
+            for (var i = 0; i < _ReadyQueue.getSize(); i++){
+                console.log(_ReadyQueue.q[i]);
+            }*/
+
             //call the scheduler
             runall = true;
-            var _currPcb = _ResidentQueue.dequeue();
+            _currPcb = _ReadyQueue.dequeue();
             console.log("IN kernel - curr PCB:" + _currPcb.PID);
             _currPcb.state = "Running";
             _CPU.isExecuting = true;
-            //_CpuScheduler.schedule();
 
         }
 
@@ -265,7 +279,7 @@ module TSOS {
 
             for (var i = 0; i < _ReadyQueue.getSize(); i++){
                 var temp = _ReadyQueue.dequeue();
-                if (_currPcb.PID == temp.PID){
+                if (pid == temp.PID){
                     break;
                 }else{
                     _ReadyQueue.enqueue(temp);
@@ -274,20 +288,20 @@ module TSOS {
 
             //reset main mem using base
             var base = _currPcb.base;
+            console.log("In exit: " + _currPcb.base);
             for (var j = base; j < base + 255; j++) {
                 _Memory.mainMem[j] = "00";
             }
 
             //reset pcb and cpu variables
-            _currPcb.init();
-
+            //_currPcb.init();
             _CPU.PC = 0;
             _CPU.IR = "-";
             _CPU.Acc = 0;
             _CPU.Xreg = 0;
             _CPU.Yreg = 0;
             _CPU.Zflag = 0;
-            _currPID = "-";
+            //_currPcb.PID = "-";
 
             TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
 
@@ -338,7 +352,7 @@ module TSOS {
             _CPU.Xreg = 0;
             _CPU.Yreg = 0;
             _CPU.Zflag = 0;
-            _currPID = "-";
+            //_currPID = "-";
 
             TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
 

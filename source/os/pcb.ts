@@ -29,6 +29,7 @@ module TSOS {
         }
 
         public init(): void {
+            console.log("In init");
             this.PID = "-";
             this.base = 0;
             this.state = "-";
