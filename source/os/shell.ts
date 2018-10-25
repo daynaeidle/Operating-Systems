@@ -659,6 +659,34 @@ module TSOS {
 
         public shellKill(args){
 
+            var pid = args[0];
+
+            var found = false;
+
+            for (var i = 0; i < _ResidentQueue.getSize(); i++){
+                var temp = _ResidentQueue.q[i];
+                if (pid == temp.PID){
+                    found = true;
+                }
+            }
+
+            for (var i = 0; i < _ReadyQueue.getSize(); i++){
+                var temp = _ReadyQueue.q[i];
+                if (pid == temp.PID){
+                    found = true;
+                }
+            }
+
+            if (found){
+                _Kernel.killProcess(pid);
+            }else{
+                _StdOut.putText("No process with that PID.");
+            }
+
+
+
+
+
         }
 
 

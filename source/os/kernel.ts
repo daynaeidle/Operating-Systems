@@ -293,6 +293,58 @@ module TSOS {
 
         }
 
+        public killProcess(pid: number){
+
+            var temp;
+
+            for (var i = 0; i < _ResidentQueue.getSize(); i++){
+                temp = _ResidentQueue.dequeue();
+                if (pid == temp.PID){
+                    break;
+                }else{
+                    _ResidentQueue.enqueue(temp);
+                }
+            }
+
+            for (var i = 0; i < _ReadyQueue.getSize(); i++){
+                temp = _ReadyQueue.dequeue();
+                if (pid == temp.PID){
+                    break;
+                }else{
+                    _ReadyQueue.enqueue(temp);
+                }
+            }
+
+
+            _StdOut.advanceLine();
+            _StdOut.putText("PID: " + temp.pid);
+            _StdOut.advanceLine();
+            _StdOut.putText("Turnaround Time: " + temp.turnaround);
+            _StdOut.advanceLine();
+            _StdOut.putText("Wait Time: " + temp.waittime);
+
+            _CPU.isExecuting = false;
+
+            //reset main mem using base
+            var base = _currPcb.base;
+            for (var j = base; j < base + 255; j++) {
+                _Memory.mainMem[j] = "00";
+            }
+
+
+            _CPU.PC = 0;
+            _CPU.IR = "-";
+            _CPU.Acc = 0;
+            _CPU.Xreg = 0;
+            _CPU.Yreg = 0;
+            _CPU.Zflag = 0;
+            _currPID = "-";
+
+            TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
+
+
+        }
+
 
         public clearMemory(){
             for (var i = 0; i < 768; i++){

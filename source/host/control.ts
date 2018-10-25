@@ -214,12 +214,12 @@ module TSOS {
             var index: number;
 
             if (residentLen == 0){
-                index = _ReadyQueue.q.indexOf(_currPcb);
+                index = _ReadyQueue.q.indexOf(pid);
             }else{
-                if (_ResidentQueue.q.indexOf(_currPcb) == -1){
-                    index = _ReadyQueue.q.indexOf(_currPcb);
+                if (_ResidentQueue.q.indexOf(pid) == -1){
+                    index = _ReadyQueue.q.indexOf(pid);
                 }else{
-                    index = _ResidentQueue.q.indexOf(_currPcb) + readyLen;
+                    index = _ResidentQueue.q.indexOf(pid) + readyLen;
                 }
             }
 
