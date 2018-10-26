@@ -150,7 +150,6 @@ module TSOS {
                     console.log(this.IR, " ", _currPcb.IR);
                     TSOS.Control.updateCPUTable(this.PC, this.IR, this.Acc.toString(16), this.Xreg.toString(16), this.Yreg.toString(16), this.Zflag.toString(16));
                     TSOS.Control.updatePCBTable(_currPcb.PID, _currPcb.state,  _currPcb.PC, _currPcb.IR, _currPcb.Acc.toString(16), _currPcb.Xreg.toString(16), _currPcb.Yreg.toString(16), _currPcb.Zflag.toString(16));
-                    this.isExecuting = false;
                     _KernelInterruptQueue.enqueue(new Interrupt(COMPLETE_PROC_IRQ, _currPcb.PID));
                     break;
                 case("EC"):

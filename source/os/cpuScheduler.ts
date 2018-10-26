@@ -69,17 +69,22 @@ module TSOS {
             //if cpu cycles = quantum.. switch the process
             //console.log("Quantum: " + this.quantum);
             //console.log("In schedule: " + _currPcb.PID);
-            if (cpuCycles == this.quantum){
-                console.log("New process");
-                //switch the process
-                _currPcb.state = "Ready";
-                _ReadyQueue.enqueue(_currPcb);
-                cpuCycles = 0;
-                this.getNewProc();
-                this.setCPU();
-            }else{
-                console.log("same process");
+            if (_ReadyQueue.getSize() > 0){
+                if (cpuCycles == this.quantum){
+                    console.log("New process");
+                    //switch the process
+                    _currPcb.state = "Ready";
+                    _ReadyQueue.enqueue(_currPcb);
+                    cpuCycles = 0;
+                    this.getNewProc();
+                    this.setCPU();
+                }else{
+                    console.log("same process");
+                }
+
             }
+
+
 
         }
 

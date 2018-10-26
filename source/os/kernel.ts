@@ -268,6 +268,8 @@ module TSOS {
             console.log("Process exited");
 
             _StdOut.advanceLine();
+            _StdOut.putText("Process: " + pid);
+            _StdOut.advanceLine();
             _StdOut.putText("Turnaround Time: " + _currPcb.turnaround);
             _StdOut.advanceLine();
             _StdOut.putText("Wait Time: " + _currPcb.waittime);
@@ -278,16 +280,22 @@ module TSOS {
 
             //set state to terminated and executing to false
             _currPcb.state = "Terminated";
-            _CPU.isExecuting = false;
 
-            for (var i = 0; i < _ReadyQueue.getSize(); i++){
-                var temp = _ReadyQueue.dequeue();
-                if (pid == temp.PID){
-                    break;
-                }else{
-                    _ReadyQueue.enqueue(temp);
+            /*if (_currPcb.pid == pid) {
+
+            }else{
+                for (var i = 0; i < _ReadyQueue.getSize(); i++){
+                    var temp = _ReadyQueue.dequeue();
+                    if (pid == temp.PID){
+                        break;
+                    }else{
+                        _ReadyQueue.enqueue(temp);
+                    }
                 }
-            }
+
+            }*/
+
+
 
             //reset main mem using base
             var base = _currPcb.base;
@@ -296,14 +304,32 @@ module TSOS {
                 _Memory.mainMem[j] = "00";
             }
 
+            if (_ReadyQueue.isEmpty()){
+                _CPU.isExecuting = false;
+                _CPU.PC = 0;
+                _CPU.IR = "-";
+                _CPU.Acc = 0;
+                _CPU.Xreg = 0;
+                _CPU.Yreg = 0;
+                _CPU.Zflag = 0;
+            }else{
+                _currPcb = _ReadyQueue.dequeue();
+                _CPU.PC = _currPcb.PC;
+                _CPU.IR = _currPcb.IR;
+                _CPU.Acc = _currPcb.Acc;
+                _CPU.Xreg = _currPcb.Xreg;
+                _CPU.Yreg = _currPcb.Yreg;
+                _CPU.Zflag = _currPcb.Zflag;
+            }
+
             //reset pcb and cpu variables
             //_currPcb.init();
-            _CPU.PC = 0;
-            _CPU.IR = "-";
-            _CPU.Acc = 0;
-            _CPU.Xreg = 0;
-            _CPU.Yreg = 0;
-            _CPU.Zflag = 0;
+            _CPU.PC = _currPcb.PC;
+            _CPU.IR = _currPcb.IR;
+            _CPU.Acc = _currPcb.Acc;
+            _CPU.Xreg = _currPcb.Xreg;
+            _CPU.Yreg = _currPcb.Yreg;
+            _CPU.Zflag = _currPcb.Zflag;
             //_currPcb.PID = "-";
 
             TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
