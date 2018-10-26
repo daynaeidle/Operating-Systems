@@ -15,7 +15,7 @@ module TSOS {
             //create memory address from base of process
             var memAddress = Number(base + address);
 
-            console.log("current pcb and address: " + _currPcb.PID, + " : " + memAddress);
+            console.log("current pcb and address: " + _currPcb.PID + " : " + memAddress);
 
             //check to see if memory address created is within the process bounds in memory
             if (memAddress <= (base + limit)){
