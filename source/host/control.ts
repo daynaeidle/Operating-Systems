@@ -213,19 +213,9 @@ module TSOS {
             var residentLen = _ResidentQueue.getSize();
             var index: number;
 
-            if (residentLen == 0){
-                index = _ReadyQueue.q.indexOf(pid);
-            }else{
-                if (_ResidentQueue.q.indexOf(pid) == -1){
-                    index = _ReadyQueue.q.indexOf(pid);
-                }else{
-                    index = _ResidentQueue.q.indexOf(pid) + readyLen;
-                }
-            }
-
             //console.log("Index: " + index);
 
-            if (index == 0){
+            if (pid == "0"){
                 (<HTMLElement> document.getElementById("pcb1-pid")).innerHTML = String(pid);
                 (<HTMLElement> document.getElementById("pcb1-state")).innerHTML = String(state);
                 (<HTMLElement> document.getElementById("pcb1-pc")).innerHTML = String(pc);
@@ -234,7 +224,7 @@ module TSOS {
                 (<HTMLElement> document.getElementById("pcb1-x")).innerHTML = String(x);
                 (<HTMLElement> document.getElementById("pcb1-y")).innerHTML = String(y);
                 (<HTMLElement> document.getElementById("pcb1-z")).innerHTML = String(z);
-            } else if (index == 1){
+            } else if (pid == "1"){
                 (<HTMLElement> document.getElementById("pcb2-pid")).innerHTML = String(pid);
                 (<HTMLElement> document.getElementById("pcb2-state")).innerHTML = String(state);
                 (<HTMLElement> document.getElementById("pcb2-pc")).innerHTML = String(pc);

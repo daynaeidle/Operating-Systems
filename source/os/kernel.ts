@@ -218,7 +218,7 @@ module TSOS {
             var resLen = _ResidentQueue.getSize();
             for (var i = 0; i < resLen; i++){
                 //set it to a global pcb variable
-                console.log("Resident queue pid: " + i + " : " +  _ResidentQueue.q[i]);
+                //console.log("Resident queue pid: " + i + " : " +  _ResidentQueue.q[i]);
                 var _currPcb = _ResidentQueue.dequeue();
                 console.log("regular execution pcb pid: " + _currPcb.PID);
                 if (_currPcb.PID == pid.toString()){
@@ -226,7 +226,10 @@ module TSOS {
                     _currPcb.state = "Running";
                     _CPU.isExecuting = true;
                     _ReadyQueue.enqueue(_currPcb);
+                    console.log("Current pcb pid after enqueue: " + _currPcb.PID);
                     break;
+                }else{
+                    _ResidentQueue.enqueue(_currPcb);
                 }
             }
         }
