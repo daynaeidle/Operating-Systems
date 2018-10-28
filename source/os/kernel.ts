@@ -312,53 +312,107 @@ module TSOS {
 
         }
 
-        public killProcess(pid: number){
+        public killProcess(pid: number, loc: string){
 
             var temp;
 
-            for (var i = 0; i < _ResidentQueue.getSize(); i++){
-                temp = _ResidentQueue.dequeue();
-                if (pid == temp.PID){
-                    break;
-                }else{
-                    _ResidentQueue.enqueue(temp);
+            if (loc == "current"){
+
+                _StdOut.advanceLine();
+                _StdOut.putText("PID: " + _currPcb.PID);
+                _StdOut.advanceLine();
+                _StdOut.putText("Turnaround Time: " + _currPcb.turnaround);
+                _StdOut.advanceLine();
+                _StdOut.putText("Wait Time: " + _currPcb.waittime);
+
+                //reset main mem using base
+                var base = _currPcb.base;
+                for (var j = base; j < base + 255; j++) {
+                    _Memory.mainMem[j] = "00";
                 }
-            }
 
-            for (var i = 0; i < _ReadyQueue.getSize(); i++){
-                temp = _ReadyQueue.dequeue();
-                if (pid == temp.PID){
-                    break;
+                if (_ReadyQueue.getSize() > 0){
+
+                    _currPcb = _ReadyQueue.dequeue();
+                    _CPU.PC = _currPcb.PC;
+                    _CPU.IR = _currPcb.IR;
+                    _CPU.Acc = _currPcb.Acc;
+                    _CPU.Xreg = _currPcb.Xreg;
+                    _CPU.Yreg = _currPcb.Yreg;
+                    _CPU.Zflag = _currPcb.Zflag;
+
                 }else{
-                    _ReadyQueue.enqueue(temp);
+
+                    _CPU.isExecuting = false;
+                    _currPcb.init();
+
+                    _CPU.PC = 0;
+                    _CPU.IR = "-";
+                    _CPU.Acc = 0;
+                    _CPU.Xreg = 0;
+                    _CPU.Yreg = 0;
+                    _CPU.Zflag = 0;
+
+                    TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
+
                 }
+
+            }else if (loc == "resident"){
+
+                for (var i = 0; i < _ResidentQueue.getSize(); i++){
+                    temp = _ResidentQueue.dequeue();
+                    if (pid == temp.PID){
+                        break;
+                    }else{
+                        _ResidentQueue.enqueue(temp);
+                    }
+                }
+
+                _StdOut.advanceLine();
+                _StdOut.putText("PID: " + temp.PID);
+                _StdOut.advanceLine();
+                _StdOut.putText("Turnaround Time: " + temp.turnaround);
+                _StdOut.advanceLine();
+                _StdOut.putText("Wait Time: " + temp.waittime);
+
+                //reset main mem using base
+                base = temp.base;
+                for (var j = base; j < base + 255; j++) {
+                    _Memory.mainMem[j] = "00";
+                }
+
+            }else if (loc == "ready"){
+
+                for (var i = 0; i < _ReadyQueue.getSize(); i++){
+                    temp = _ReadyQueue.dequeue();
+                    if (pid == temp.PID){
+                        break;
+                    }else{
+                        _ReadyQueue.enqueue(temp);
+                    }
+                }
+
+                _StdOut.advanceLine();
+                _StdOut.putText("PID: " + temp.PID);
+                _StdOut.advanceLine();
+                _StdOut.putText("Turnaround Time: " + temp.turnaround);
+                _StdOut.advanceLine();
+                _StdOut.putText("Wait Time: " + temp.waittime);
+
+                //reset main mem using base
+                base = temp.base;
+                for (var j = base; j < base + 255; j++) {
+                    _Memory.mainMem[j] = "00";
+                }
+
             }
 
 
-            _StdOut.advanceLine();
-            _StdOut.putText("PID: " + temp.pid);
-            _StdOut.advanceLine();
-            _StdOut.putText("Turnaround Time: " + temp.turnaround);
-            _StdOut.advanceLine();
-            _StdOut.putText("Wait Time: " + temp.waittime);
-
-            _CPU.isExecuting = false;
-
-            //reset main mem using base
-            var base = _currPcb.base;
-            for (var j = base; j < base + 255; j++) {
-                _Memory.mainMem[j] = "00";
-            }
 
 
-            _CPU.PC = 0;
-            _CPU.IR = "-";
-            _CPU.Acc = 0;
-            _CPU.Xreg = 0;
-            _CPU.Yreg = 0;
-            _CPU.Zflag = 0;
 
-            TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
+
+
 
 
         }

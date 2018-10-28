@@ -607,7 +607,6 @@ module TSOS {
 
         //clear mem
         public shellClearMem(args){
-
             _Kernel.clearMemory();
 
         }
@@ -685,12 +684,20 @@ module TSOS {
 
             var pid = args[0];
 
+            var location;
+
             var found = false;
+
+            if (_currPcb.PID == pid){
+                found = true;
+                location = "current";
+            }
 
             for (var i = 0; i < _ResidentQueue.getSize(); i++){
                 var temp = _ResidentQueue.q[i];
                 if (pid == temp.PID){
                     found = true;
+                    location = "resident";
                 }
             }
 
@@ -698,11 +705,12 @@ module TSOS {
                 var temp = _ReadyQueue.q[i];
                 if (pid == temp.PID){
                     found = true;
+                    location = "ready";
                 }
             }
 
             if (found){
-                _Kernel.killProcess(pid);
+                _Kernel.killProcess(pid, location);
             }else{
                 _StdOut.putText("No process with that PID.");
             }
