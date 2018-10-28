@@ -638,6 +638,13 @@ module TSOS {
                 console.log(_ReadyQueue.q[j]);
             }
 
+            //need to add if here when you figure out the problem with the pid
+            if (_currPcb.PID != "-"){
+                _StdOut.putText(_currPcb.PID + ": " + _currPcb.state);
+                _StdOut.advanceLine();
+            }
+
+
             if ((resLen == 0) && (readyLen == 0)){
                 _StdOut.putText("No current processes loaded.");
             }else if ((resLen > 0) && (readyLen == 0)){
@@ -668,6 +675,7 @@ module TSOS {
                     _StdOut.advanceLine();
                 }
             }
+
 
 
         }
