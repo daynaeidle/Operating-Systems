@@ -6,16 +6,16 @@ module TSOS {
         //read value from memory
         public readValue(address: number){
 
-            console.log(address);
+            //console.log(address);
 
             var base = _currPcb.base;
-            console.log("base in mem access: " + base);
+            //console.log("base in mem access: " + base);
             var limit = 255;
 
             //create memory address from base of process
             var memAddress = Number(base + address);
 
-            console.log("current pcb and address: " + _currPcb.PID + " : " + memAddress);
+            //console.log("current pcb and address: " + _currPcb.PID + " : " + memAddress);
 
             //check to see if memory address created is within the process bounds in memory
             if (memAddress <= (base + limit)){

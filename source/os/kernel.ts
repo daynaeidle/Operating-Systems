@@ -163,6 +163,9 @@ module TSOS {
                 case COMPLETE_PROC_IRQ:
                     this.exitProcess(params);
                     break;
+                case CONTEXT_SWITCH_IRQ:
+                    this.contextSwitch();
+                    break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }
@@ -365,6 +368,15 @@ module TSOS {
             for (var i = 0; i < 768; i++){
                 _Memory.mainMem[i] = "00";
             }
+        }
+
+        public contextSwitch(){
+            console.log("in context switch");
+            _currPcb.state = "Ready";
+            _ReadyQueue.enqueue(_currPcb);
+            cpuCycles = 0;
+            _CpuScheduler.getNewProc();
+            _CpuScheduler.setCPU()
         }
 
 
