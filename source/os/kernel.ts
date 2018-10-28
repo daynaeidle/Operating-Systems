@@ -368,6 +368,17 @@ module TSOS {
             for (var i = 0; i < 768; i++){
                 _Memory.mainMem[i] = "00";
             }
+
+            var resLen = _ResidentQueue.getSize();
+            var readyLen = _ReadyQueue.getSize();
+
+            for (var i = 0; i < resLen; i++){
+                _ResidentQueue.dequeue();
+            }
+
+            for (var j = 0; j < readyLen; j++){
+                _ReadyQueue.dequeue();
+            }
         }
 
         public contextSwitch(){
@@ -376,6 +387,7 @@ module TSOS {
             _ReadyQueue.enqueue(_currPcb);
             cpuCycles = 0;
             _CpuScheduler.getNewProc();
+            console.log("current pcb after get new proc: " + _currPcb.PID);
             _CpuScheduler.setCPU()
         }
 

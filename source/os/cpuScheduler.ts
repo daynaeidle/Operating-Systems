@@ -68,7 +68,7 @@ module TSOS {
 
             //if cpu cycles = quantum.. switch the process
             if (_ReadyQueue.getSize() > 0){
-                if (cpuCycles == this.quantum - 1){
+                if (cpuCycles >= this.quantum){
                     console.log("New process");
                     _KernelInterruptQueue.enqueue(new Interrupt(CONTEXT_SWITCH_IRQ, _currPcb));
                     //switch the process
