@@ -68,6 +68,8 @@ module TSOS {
         public decode(opCode: string){
             //find out what the instruction means
 
+            console.log("current opcode: " + opCode);
+
             var val;
             var address;
             var hexAddr;
@@ -174,7 +176,7 @@ module TSOS {
                         this.PC +=  (parseInt(this.fetch(this.PC + 1), 16) + 2);
                         //console.log("branch pc: " + this.PC);
                         //if value is larger than allotted space -- wrap around
-                        if (this.PC > 255){
+                        if (this.PC > _limit){
                             var overflow = this.PC - 256;
                             this.PC = overflow;
                             //console.log("branch pc: " + this.PC);

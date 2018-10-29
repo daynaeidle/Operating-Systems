@@ -91,6 +91,7 @@ module TSOS {
 
 
         public krnOnCPUClockPulse() {
+            console.log("current pcb id in krnclockpulse: " + _currPcb.PID);
             /* This gets called from the host hardware simulation every time there is a hardware clock pulse.
                This is NOT the same as a TIMER, which causes an interrupt and is handled like other interrupts.
                This, on the other hand, is the clock pulse from the hardware / VM / host that tells the kernel
@@ -228,14 +229,15 @@ module TSOS {
                 var _currPcb = _ResidentQueue.dequeue();
                 console.log("regular execution pcb pid: " + _currPcb.PID);
                 if (_currPcb.PID == pid.toString()){
+                    console.log("currpcb pid in id statement: " + _currPcb.PID)
                     //change the state and set executing to true; break out of loop
                     _currPcb.state = "Running";
                     _CPU.isExecuting = true;
                     //_ReadyQueue.enqueue(_currPcb);
-
                     break;
                 }else{
                     _ResidentQueue.enqueue(_currPcb);
+                    _currPcb.init();
                 }
             }
 
@@ -280,6 +282,15 @@ module TSOS {
 
             //set state to terminated and executing to false
             _currPcb.state = "Terminated";
+
+            TSOS.Control.updatePCBTable(_currPcb.PID,
+                _currPcb.state,
+                _currPcb.PC,
+                _currPcb.IR,
+                _currPcb.Acc.toString(16).toUpperCase(),
+                _currPcb.Xreg.toString(16).toUpperCase(),
+                _currPcb.Yreg.toString(16).toUpperCase(),
+                _currPcb.Zflag.toString(16).toUpperCase());
 
 
             //reset main mem using base
@@ -331,6 +342,15 @@ module TSOS {
                     _Memory.mainMem[j] = "00";
                 }
 
+                TSOS.Control.updatePCBTable(_currPcb.PID,
+                                            _currPcb.state,
+                                            _currPcb.PC,
+                                            _currPcb.IR,
+                                            _currPcb.Acc.toString(16).toUpperCase(),
+                                            _currPcb.Xreg.toString(16).toUpperCase(),
+                                            _currPcb.Yreg.toString(16).toUpperCase(),
+                                            _currPcb.Zflag.toString(16).toUpperCase());
+
                 if (_ReadyQueue.getSize() > 0){
 
                     _currPcb = _ReadyQueue.dequeue();
@@ -345,6 +365,7 @@ module TSOS {
 
                     _CPU.isExecuting = false;
                     _currPcb.init();
+                    _CPU.init();
 
                     _CPU.PC = 0;
                     _CPU.IR = "-";
@@ -353,9 +374,11 @@ module TSOS {
                     _CPU.Yreg = 0;
                     _CPU.Zflag = 0;
 
-                    TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
+
 
                 }
+
+                TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
 
             }else if (loc == "resident"){
 
@@ -367,6 +390,15 @@ module TSOS {
                         _ResidentQueue.enqueue(temp);
                     }
                 }
+
+                TSOS.Control.updatePCBTable(temp.PID,
+                                            temp.state,
+                                            temp.PC,
+                                            temp.IR,
+                                            temp.Acc.toString(16).toUpperCase(),
+                                            temp.Xreg.toString(16).toUpperCase(),
+                                            temp.Yreg.toString(16).toUpperCase(),
+                                            temp.Zflag.toString(16).toUpperCase());
 
                 _StdOut.advanceLine();
                 _StdOut.putText("PID: " + temp.PID);
@@ -392,6 +424,15 @@ module TSOS {
                     }
                 }
 
+                TSOS.Control.updatePCBTable(temp.PID,
+                                            temp.state,
+                                            temp.PC,
+                                            temp.IR,
+                                            temp.Acc.toString(16).toUpperCase(),
+                                            temp.Xreg.toString(16).toUpperCase(),
+                                            temp.Yreg.toString(16).toUpperCase(),
+                                            temp.Zflag.toString(16).toUpperCase());
+
                 _StdOut.advanceLine();
                 _StdOut.putText("PID: " + temp.PID);
                 _StdOut.advanceLine();
@@ -406,14 +447,6 @@ module TSOS {
                 }
 
             }
-
-
-
-
-
-
-
-
 
         }
 

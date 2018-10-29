@@ -94,6 +94,9 @@ var _ResidentQueue: TSOS.Queue;
 var _ReadyQueue: TSOS.Queue;
 var cpuCycles: number = 0;
 
+//limit reg;
+var _limit: number = 255;
+
 
 //current process
 var _currPcb: TSOS.Pcb;

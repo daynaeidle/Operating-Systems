@@ -10,7 +10,6 @@ module TSOS {
 
             var base = _currPcb.base;
             //console.log("base in mem access: " + base);
-            var limit = 255;
 
             //create memory address from base of process
             var memAddress = Number(base + address);
@@ -18,7 +17,7 @@ module TSOS {
             //console.log("current pcb and address: " + _currPcb.PID + " : " + memAddress);
 
             //check to see if memory address created is within the process bounds in memory
-            if (memAddress <= (base + limit)){
+            if (memAddress <= (base + _limit)){
                 //return value at address in memory
                 return _Memory.mainMem[memAddress];
             }else{
@@ -33,13 +32,12 @@ module TSOS {
         public writeValue(address: number, value: number){
 
             var base = _currPcb.base;
-            var limit = 255;
             //create memory address from base of process
             var memAddress = base + address;
 
 
             //check to see if memory address created is within the process bounds in memory
-            if (memAddress <= (base + limit)){
+            if (memAddress <= (base + _limit)){
                 //set value at memory location
                 _Memory.mainMem[memAddress] = value.toString(16);
             }else{
