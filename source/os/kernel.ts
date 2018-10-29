@@ -108,10 +108,18 @@ module TSOS {
                 if (singleStepMode == true){
                     if (step == true){
                         _CPU.cycle();
+                        if (runall == true){
+                            _CpuScheduler.schedule();
+                            _CpuScheduler.updateWaitAndTurnaround()
+                        }
                         step = false;
                     }
                 }else{
                     _CPU.cycle();
+                    if (runall == true){
+                        _CpuScheduler.schedule();
+                        _CpuScheduler.updateWaitAndTurnaround()
+                    }
                 }
 
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle. {
@@ -471,6 +479,14 @@ module TSOS {
         public contextSwitch(){
             console.log("in context switch");
             _currPcb.state = "Ready";
+            TSOS.Control.updatePCBTable(_currPcb.PID,
+                _currPcb.state,
+                _currPcb.PC,
+                _currPcb.IR,
+                _currPcb.Acc.toString(16).toUpperCase(),
+                _currPcb.Xreg.toString(16).toUpperCase(),
+                _currPcb.Yreg.toString(16).toUpperCase(),
+                _currPcb.Zflag.toString(16).toUpperCase());
             _ReadyQueue.enqueue(_currPcb);
             cpuCycles = 0;
             _CpuScheduler.getNewProc();

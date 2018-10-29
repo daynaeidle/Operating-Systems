@@ -70,9 +70,9 @@ module TSOS {
             if (_ReadyQueue.getSize() > 0){
                 if (cpuCycles >= this.quantum){
                     console.log("New process");
-                    //_KernelInterruptQueue.enqueue(new Interrupt(CONTEXT_SWITCH_IRQ, _currPcb));
+                    _KernelInterruptQueue.enqueue(new Interrupt(CONTEXT_SWITCH_IRQ, _currPcb));
                     //switch the process
-                    _currPcb.state = "Ready";
+                    /*_currPcb.state = "Ready";
                     TSOS.Control.updatePCBTable(_currPcb.PID,
                                                 _currPcb.state,
                                                 _currPcb.PC,
@@ -84,7 +84,7 @@ module TSOS {
                     _ReadyQueue.enqueue(_currPcb);
                     cpuCycles = 0;
                     this.getNewProc();
-                    this.setCPU();
+                    this.setCPU();*/
                 }else{
                     console.log("same process");
                 }
