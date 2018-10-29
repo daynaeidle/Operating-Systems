@@ -47,6 +47,7 @@ module TSOS {
 
             if (runall == true){
                 _CpuScheduler.schedule();
+                _CpuScheduler.updateWaitAndTurnaround()
             }
 
             console.log("CURRENT: " + _currPcb.PID);

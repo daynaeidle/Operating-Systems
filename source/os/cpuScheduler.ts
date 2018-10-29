@@ -95,6 +95,20 @@ module TSOS {
 
         }
 
+        public updateWaitAndTurnaround(): void{
+
+            var readyLength = _ReadyQueue.getSize();
+
+            for (var i = 0; i < readyLength; i++){
+
+                var proc = _ReadyQueue.q[i];
+                console.log("wait and turnaround pid: " + proc.PID);
+
+                proc.turnaround += 1;
+                proc.waittime +=1;
+            }
+        }
+
 
 
 
