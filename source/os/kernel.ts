@@ -55,7 +55,7 @@ module TSOS {
 
 
             //pcb setting in bootstrap
-            _currPcb = new Pcb("-", 0, "Ready", 0, "-", 0, 0, 0, 0, 0, 0);
+            _currPcb = new Pcb("-", 0, "-", 0, "-", 0, 0, 0, 0, 0, 0);
 
             _ResidentQueue = new Queue();
             _ReadyQueue = new Queue();
@@ -234,7 +234,7 @@ module TSOS {
             var resLen = _ResidentQueue.getSize();
             for (var i = 0; i < resLen; i++){
                 //set it to a global pcb variable
-                var _currPcb = _ResidentQueue.dequeue();
+                _currPcb = _ResidentQueue.dequeue();
                 console.log("regular execution pcb pid: " + _currPcb.PID);
                 if (_currPcb.PID == pid.toString()){
                     console.log("currpcb pid in id statement: " + _currPcb.PID)

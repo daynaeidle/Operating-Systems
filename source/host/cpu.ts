@@ -69,7 +69,7 @@ module TSOS {
         public decode(opCode: string){
             //find out what the instruction means
 
-            console.log("current opcode: " + opCode);
+            //console.log("current opcode: " + opCode);
 
             var val;
             var address;
@@ -239,7 +239,7 @@ module TSOS {
 
             cpuCycles += 1;
             _currPcb.turnaround += 1;
-            console.log("Clock cycles: " + cpuCycles);
+            //console.log("Clock cycles: " + cpuCycles);
 
             //update all variables and display tables
             _currPcb.PC = this.PC;
