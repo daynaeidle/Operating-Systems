@@ -710,7 +710,10 @@ module TSOS {
             }
 
             if (found){
-                _Kernel.killProcess(pid, location);
+                var killInfo  = [];
+                killInfo[0] = pid;
+                killInfo[1] = location;
+                _KernelInterruptQueue.enqueue(new Interrupt(KILL_PROC_IRQ, killInfo));
             }else{
                 _StdOut.putText("No process with that PID.");
             }

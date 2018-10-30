@@ -28,6 +28,8 @@ const COMPLETE_PROC_IRQ: number = 4;
 
 const CONTEXT_SWITCH_IRQ: number = 5
 
+const KILL_PROC_IRQ: number = 6;
+
 
 //
 // Global Variables

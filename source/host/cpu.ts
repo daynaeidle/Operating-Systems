@@ -45,11 +45,6 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
-            /*if (runall == true){
-                _CpuScheduler.schedule();
-                _CpuScheduler.updateWaitAndTurnaround()
-            }*/
-
             console.log("CURRENT: " + _currPcb.PID);
 
             //fetch the opcode, set it to the IR, and decode it
@@ -69,7 +64,7 @@ module TSOS {
         public decode(opCode: string){
             //find out what the instruction means
 
-            //console.log("current opcode: " + opCode);
+            console.log("current opcode: " + opCode);
 
             var val;
             var address;
@@ -239,7 +234,7 @@ module TSOS {
 
             cpuCycles += 1;
             _currPcb.turnaround += 1;
-            //console.log("Clock cycles: " + cpuCycles);
+            console.log("Clock cycles: " + cpuCycles);
 
             //update all variables and display tables
             _currPcb.PC = this.PC;

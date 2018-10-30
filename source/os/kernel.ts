@@ -91,7 +91,7 @@ module TSOS {
 
 
         public krnOnCPUClockPulse() {
-            console.log("current pcb id in krnclockpulse: " + _currPcb.PID);
+            //console.log("current pcb id in krnclockpulse: " + _currPcb.PID);
             /* This gets called from the host hardware simulation every time there is a hardware clock pulse.
                This is NOT the same as a TIMER, which causes an interrupt and is handled like other interrupts.
                This, on the other hand, is the clock pulse from the hardware / VM / host that tells the kernel
@@ -104,7 +104,7 @@ module TSOS {
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             } else if (_CPU.isExecuting) {// If there are no interrupts then run one CPU cycle if there is anything being processed. {
-                console.log("In kernel in cycle curr pcb pid: " + _currPcb.PID)
+                //console.log("In kernel in cycle curr pcb pid: " + _currPcb.PID)
                 if (singleStepMode == true){
                     if (step == true){
                         _CPU.cycle();
@@ -175,6 +175,9 @@ module TSOS {
                 case CONTEXT_SWITCH_IRQ:
                     this.contextSwitch();
                     break;
+                case KILL_PROC_IRQ:
+                    this.killProcess(params[0], params[1]);
+                    break;
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }
@@ -235,21 +238,23 @@ module TSOS {
             for (var i = 0; i < resLen; i++){
                 //set it to a global pcb variable
                 _currPcb = _ResidentQueue.dequeue();
-                console.log("regular execution pcb pid: " + _currPcb.PID);
+                //console.log("regular execution pcb pid: " + _currPcb.PID);
                 if (_currPcb.PID == pid.toString()){
-                    console.log("currpcb pid in id statement: " + _currPcb.PID)
+                    //console.log("currpcb pid in id statement: " + _currPcb.PID)
                     //change the state and set executing to true; break out of loop
                     _currPcb.state = "Running";
                     _CPU.isExecuting = true;
-                    //_ReadyQueue.enqueue(_currPcb);
                     break;
                 }else{
                     _ResidentQueue.enqueue(_currPcb);
-                    _currPcb.init();
                 }
             }
 
-            console.log("Current pcb pid at end of execute process: " + _currPcb.PID);
+            for (var i = 0; i < _ResidentQueue.getSize(); i++){
+                console.log(_ResidentQueue.q[i]);
+            }
+
+            //console.log("Current pcb pid at end of execute process: " + _currPcb.PID);
         }
 
         //execute all processes
@@ -267,7 +272,7 @@ module TSOS {
             runall = true;
             //take the first pcb off the ready queue and set it to _currPcb
             _currPcb = _ReadyQueue.dequeue();
-            console.log("IN kernel - curr PCB:" + _currPcb.PID);
+            //console.log("IN kernel - curr PCB:" + _currPcb.PID);
             _currPcb.state = "Running";
             _CPU.isExecuting = true;
 
@@ -290,6 +295,9 @@ module TSOS {
 
             //set state to terminated and executing to false
             _currPcb.state = "Terminated";
+
+            //reset clock cycles
+            cpuCycles = 0;
 
             TSOS.Control.updatePCBTable(_currPcb.PID,
                 _currPcb.state,
@@ -329,6 +337,10 @@ module TSOS {
 
             TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
 
+            for (var i = 0; i < _ReadyQueue.getSize(); i++){
+                console.log(_ReadyQueue.q[i]);
+            }
+
         }
 
         public killProcess(pid: number, loc: string){
@@ -343,6 +355,14 @@ module TSOS {
                 _StdOut.putText("Turnaround Time: " + _currPcb.turnaround);
                 _StdOut.advanceLine();
                 _StdOut.putText("Wait Time: " + _currPcb.waittime);
+
+                //advance line and put prompt
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
+
+                //reset cpu cycles 
+                cpuCycles = 0;
+
 
                 //reset main mem using base
                 var base = _currPcb.base;
@@ -415,6 +435,11 @@ module TSOS {
                 _StdOut.advanceLine();
                 _StdOut.putText("Wait Time: " + temp.waittime);
 
+                //advance line and put prompt
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
+
+
                 //reset main mem using base
                 base = temp.base;
                 for (var j = base; j < base + 255; j++) {
@@ -447,6 +472,11 @@ module TSOS {
                 _StdOut.putText("Turnaround Time: " + temp.turnaround);
                 _StdOut.advanceLine();
                 _StdOut.putText("Wait Time: " + temp.waittime);
+
+                //advance line and put prompt
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
+
 
                 //reset main mem using base
                 base = temp.base;

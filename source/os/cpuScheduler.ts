@@ -54,7 +54,7 @@ module TSOS {
 
         public schedule(): void{
 
-            console.log("top of ready queue");
+            /*console.log("top of ready queue");
             if (_ReadyQueue.getSize() != 0){
 
                 for (var i = 0; i < _ReadyQueue.getSize(); i++){
@@ -63,7 +63,7 @@ module TSOS {
 
             }
 
-            console.log("bottom of ready queue");
+            console.log("bottom of ready queue");*/
 
 
             //if cpu cycles = quantum.. switch the process
