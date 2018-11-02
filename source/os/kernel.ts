@@ -360,7 +360,7 @@ module TSOS {
                 _StdOut.advanceLine();
                 _OsShell.putPrompt();
 
-                //reset cpu cycles 
+                //reset cpu cycles
                 cpuCycles = 0;
 
 
