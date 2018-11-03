@@ -62,59 +62,90 @@
 
 </div>
 
-   <div id="divMain" style="width:100%;">
+<div id="row1">
 
-      <div id="divButtonBar" style="margin:4px;">
-         <input type="button"
-                id = "btnStartOS"
-                name="brnStartOS"
-                class="normal_button"
-                value="Start"
-                tabindex="0"
-                onclick="TSOS.Control.hostBtnStartOS_click(this);">
+   <div id="divButtonBar" style="margin:8px;">
+      <input type="button"
+             id = "btnStartOS"
+             name="brnStartOS"
+             class="normal_button"
+             value="Start"
+             tabindex="0"
+             onclick="TSOS.Control.hostBtnStartOS_click(this);">
 
-         <input type="button"
-                id = "btnHaltOS"
-                name="brnHaltOS"
-                class="normal_button"
-                disabled="disabled"
-                value="Halt"
-                tabindex="1"
-                onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+      <input type="button"
+             id = "btnHaltOS"
+             name="brnHaltOS"
+             class="normal_button"
+             disabled="disabled"
+             value="Halt"
+             tabindex="1"
+             onclick="TSOS.Control.hostBtnHaltOS_click(this);">
 
-         <input type="button"
-                id = "btnReset"
-                name="brnReset"
-                class="normal_button"
-                disabled="disabled"
-                value="Reset"
-                tabindex="2"
-                onclick="TSOS.Control.hostBtnReset_click(this);">
+      <input type="button"
+             id = "btnReset"
+             name="brnReset"
+             class="normal_button"
+             disabled="disabled"
+             value="Reset"
+             tabindex="2"
+             onclick="TSOS.Control.hostBtnReset_click(this);">
 
-         <input type="button"
-                id="btnSingleStep"
-                name="btnSingleStep"
-                class="normal_button"
-                disabled="disabled"
-                value="Single Step Mode"
-                tabindex="3"
-                onclick="TSOS.Control.hostBtnSingStep_click(this);">
+      <input type="button"
+             id="btnSingleStep"
+             name="btnSingleStep"
+             class="normal_button"
+             disabled="disabled"
+             value="Single Step Mode"
+             tabindex="3"
+             onclick="TSOS.Control.hostBtnSingStep_click(this);">
 
-         <input type="button"
-                id="btnStep"
-                name="btnStep"
-                class="normal_button"
-                disabled="disabled"
-                value=">>"
-                tabindex="4"
-                onclick="TSOS.Control.hostBtnStep_click(this);">
+      <input type="button"
+             id="btnStep"
+             name="btnStep"
+             class="normal_button"
+             disabled="disabled"
+             value=">>"
+             tabindex="4"
+             onclick="TSOS.Control.hostBtnStep_click(this);">
+   </div>
+
+   <div id="taskBar" class="task" style="margin:15px;">
+      <p1></p1>
+   </div>
+
+</div>
+
+
+<div id="row2">
+
+   <div id="info">
+
+      <div id="divUserProgramInput" style="margin-left:520px;">
+         <label>
+            User Program Input
+            <br>
+            <textarea name="taProgramInput"
+                      id  ="taProgramInput"
+                      rows="8"
+                      cols="48"
+            >A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00</textarea>
+         </label>
       </div>
 
-      <div id="taskBar" class="task" style="...">
-         <p1></p1>
+      <div id="divLog" style="margin-left:520px;">
+         <label>
+            Host Log
+            <br>
+            <textarea name="taHostLog"
+                      id  ="taHostLog"
+                      rows="26"
+                      cols="48"
+            ></textarea>
+         </label>
       </div>
 
-
+   </div>
 
 
 
@@ -122,112 +153,102 @@
       <canvas id="display"
               width="500px"
               height="500px"
-              tabindex="3">
+              tabindex="3"
+              color="white">
       </canvas>
    </div>
 
 
 
-   <div id="divLog" style="margin-left:520px;">
-      <label>
-         Host Log
-         <br>
-         <textarea name="taHostLog"
-                   id  ="taHostLog"
-                   rows="26"
-                   cols="48"
-         ></textarea>
-      </label>
+   <div id="programDisplays">
+
+      <div id="cpuDisplays">
+         <div id="memDisplay" class="table">
+            <label class="tableId">Memory</label>
+            <table id="memTable">
+            </table>
+         </div>
+
+
+         <div id="cpuDisplay">
+            <label class="tableId">CPU</label>
+            <table id="cpuTable"; style="width:50%" class="table">
+               <tr>
+                  <th>PC</th>
+                  <th>IR</th>
+                  <th>ACC</th>
+                  <th>X</th>
+                  <th>Y</th>
+                  <th>Z</th>
+               </tr>
+               <tr>
+                  <td id="cpu-pc">0</td>
+                  <td id="cpu-ir">0</td>
+                  <td id="cpu-acc">0</td>
+                  <td id="cpu-x">0</td>
+                  <td id="cpu-y">0</td>
+                  <td id="cpu-z">0</td>
+               </tr>
+            </table>
+
+         </div>
+
+         <div id="pcbDisplay">
+            <label class="tableId">PCB</label>
+            <table id="pcbTable"; style="width:50%" class="table">
+               <tr>
+                  <th>PID</th>
+                  <th>State</th>
+                  <th>PC</th>
+                  <th>IR</th>
+                  <th>ACC</th>
+                  <th>X</th>
+                  <th>Y</th>
+                  <th>Z</th>
+               </tr>
+               <tr>
+                  <td id="pcb1-pid">-</td>
+                  <td id="pcb1-state">-</td>
+                  <td id="pcb1-pc">0</td>
+                  <td id="pcb1-ir">-</td>
+                  <td id="pcb1-acc">0</td>
+                  <td id="pcb1-x">0</td>
+                  <td id="pcb1-y">0</td>
+                  <td id="pcb1-z">0</td>
+               </tr>
+               <tr>
+                  <td id="pcb2-pid">-</td>
+                  <td id="pcb2-state">-</td>
+                  <td id="pcb2-pc">0</td>
+                  <td id="pcb2-ir">-</td>
+                  <td id="pcb2-acc">0</td>
+                  <td id="pcb2-x">0</td>
+                  <td id="pcb2-y">0</td>
+                  <td id="pcb2-z">0</td>
+               </tr>
+               <tr>
+                  <td id="pcb3-pid">-</td>
+                  <td id="pcb3-state">-</td>
+                  <td id="pcb3-pc">0</td>
+                  <td id="pcb3-ir">-</td>
+                  <td id="pcb3-acc">0</td>
+                  <td id="pcb3-x">0</td>
+                  <td id="pcb3-y">0</td>
+                  <td id="pcb3-z">0</td>
+               </tr>
+            </table>
+
+         </div>
+      </div>
    </div>
 
-   <div id="divUserProgramInput" style="margin-left:520px;">
-      <label>
-         User Program Input
-         <br>
-         <textarea name="taProgramInput"
-                   id  ="taProgramInput"
-                   rows="8"
-                   cols="48"
-         >A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00</textarea>
-      </label>
-   </div>
 
-   <div id="memDisplay">
-      <label>Memory</label>
-      <table id="memTable">
-      </table>
-   </div>
-
-   <div id="cpuDisplay">
-      <label>CPU</label>
-      <table id="cpuTable"; style="width:50%">
-         <tr>
-            <th>PC</th>
-            <th>IR</th>
-            <th>ACC</th>
-            <th>X</th>
-            <th>Y</th>
-            <th>Z</th>
-         </tr>
-         <tr>
-            <td id="cpu-pc">0</td>
-            <td id="cpu-ir">0</td>
-            <td id="cpu-acc">0</td>
-            <td id="cpu-x">0</td>
-            <td id="cpu-y">0</td>
-            <td id="cpu-z">0</td>
-         </tr>
-      </table>
-
-   </div>
-
-   <div id="pcbDisplay">
-      <label>PCB</label>
-      <table id="pcbTable"; style="width:50%">
-         <tr>
-            <th>PID</th>
-            <th>State</th>
-            <th>PC</th>
-            <th>IR</th>
-            <th>ACC</th>
-            <th>X</th>
-            <th>Y</th>
-            <th>Z</th>
-         </tr>
-         <tr>
-            <td id="pcb1-pid">-</td>
-            <td id="pcb1-state">-</td>
-            <td id="pcb1-pc">0</td>
-            <td id="pcb1-ir">-</td>
-            <td id="pcb1-acc">0</td>
-            <td id="pcb1-x">0</td>
-            <td id="pcb1-y">0</td>
-            <td id="pcb1-z">0</td>
-         </tr>
-         <tr>
-            <td id="pcb2-pid">-</td>
-            <td id="pcb2-state">-</td>
-            <td id="pcb2-pc">0</td>
-            <td id="pcb2-ir">-</td>
-            <td id="pcb2-acc">0</td>
-            <td id="pcb2-x">0</td>
-            <td id="pcb2-y">0</td>
-            <td id="pcb2-z">0</td>
-         </tr>
-         <tr>
-            <td id="pcb3-pid">-</td>
-            <td id="pcb3-state">-</td>
-            <td id="pcb3-pc">0</td>
-            <td id="pcb3-ir">-</td>
-            <td id="pcb3-acc">0</td>
-            <td id="pcb3-x">0</td>
-            <td id="pcb3-y">0</td>
-            <td id="pcb3-z">0</td>
-         </tr>
-      </table>
-
-   </div>
 </div>
+
+
+
+
+
 
 
 <p class="footerText" style="clear:both;">
