@@ -607,7 +607,13 @@ module TSOS {
 
         //clear mem
         public shellClearMem(args){
-            _Kernel.clearMemory();
+
+            if (_CPU.isExecuting == false){
+                _Kernel.clearMemory();
+            }else{
+                _StdOut.putText("Cannot clear memory while program is running.");
+            }
+
 
         }
 

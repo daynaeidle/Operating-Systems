@@ -178,6 +178,9 @@ module TSOS {
                 case KILL_PROC_IRQ:
                     this.killProcess(params[0], params[1]);
                     break;
+                case MEMORY_ACCESS_IRQ:
+                    _StdOut.putText("Memory access request out of bounds.");
+                    this.killProcess(params[0], params[1]);
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }

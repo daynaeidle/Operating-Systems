@@ -161,7 +161,7 @@ td {
   border: 3px solid purple;
   border-radius: 4px;
   background-color: white;
-  width: 120%;
+  width: 80%;
   text-align: center;
 
 }
@@ -172,7 +172,7 @@ td {
   border: 3px solid purple;
   border-radius: 4px;
   background-color: white;
-  width: 180%;
+  width: 80%;
   text-align: center;
 
 }
@@ -184,7 +184,7 @@ td {
   height: 100px;
   overflow: auto;
   background-color: white;
-  width: 120%;
+  width: 80%;
   text-align: center;
 
 }

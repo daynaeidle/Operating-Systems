@@ -30,6 +30,8 @@ const CONTEXT_SWITCH_IRQ: number = 5
 
 const KILL_PROC_IRQ: number = 6;
 
+const MEMORY_ACCESS_IRQ: number = 7;
+
 
 //
 // Global Variables

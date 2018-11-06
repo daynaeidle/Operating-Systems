@@ -21,7 +21,9 @@ module TSOS {
                 //return value at address in memory
                 return _Memory.mainMem[memAddress];
             }else{
-                console.log("Memory address out of bounds.");
+                //console.log("Memory address out of bounds.");
+                var killInfo = [_currPcb.PID, "current"];
+                _KernelInterruptQueue.enqueue(new Interrupt(MEMORY_ACCESS_IRQ, killInfo));
             }
 
 
@@ -41,7 +43,9 @@ module TSOS {
                 //set value at memory location
                 _Memory.mainMem[memAddress] = value.toString(16);
             }else{
-                console.log("Memory address out of bounds.");
+                //console.log("Memory address out of bounds.");
+                var killInfo = [_currPcb.PID, "current"];
+                _KernelInterruptQueue.enqueue(new Interrupt(MEMORY_ACCESS_IRQ, killInfo));
             }
 
         }
