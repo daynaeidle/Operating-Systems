@@ -365,6 +365,8 @@ module TSOS {
                 _StdOut.advanceLine();
                 _OsShell.putPrompt();
 
+                _currPcb.state = "Terminated";
+
                 //reset cpu cycles
                 cpuCycles = 0;
 
@@ -374,6 +376,8 @@ module TSOS {
                 for (var j = base; j < base + 255; j++) {
                     _Memory.mainMem[j] = "00";
                 }
+
+
 
                 TSOS.Control.updatePCBTable(_currPcb.PID,
                                             _currPcb.state,
@@ -425,6 +429,8 @@ module TSOS {
                     }
                 }
 
+                temp.state = "Terminated";
+
                 TSOS.Control.updatePCBTable(temp.PID,
                                             temp.state,
                                             temp.PC,
@@ -463,6 +469,8 @@ module TSOS {
                         _ReadyQueue.enqueue(temp);
                     }
                 }
+
+                temp.state = "Terminated";
 
                 TSOS.Control.updatePCBTable(temp.PID,
                                             temp.state,
