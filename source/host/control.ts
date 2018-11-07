@@ -207,15 +207,10 @@ module TSOS {
 
         }
 
-        public static updatePCBTable(pid, state, pc, ir, acc, x, y, z){
+        public static updatePCBTable(pid, state, pc, ir, acc, x, y, z, base){
 
-            var readyLen = _ReadyQueue.getSize();
-            var residentLen = _ResidentQueue.getSize();
-            var index: number;
 
-            //console.log("Index: " + index);
-
-            if (pid == "0"){
+            if (base == 0){
                 (<HTMLElement> document.getElementById("pcb1-pid")).innerHTML = String(pid);
                 (<HTMLElement> document.getElementById("pcb1-state")).innerHTML = String(state);
                 (<HTMLElement> document.getElementById("pcb1-pc")).innerHTML = String(pc);
@@ -224,7 +219,7 @@ module TSOS {
                 (<HTMLElement> document.getElementById("pcb1-x")).innerHTML = String(x);
                 (<HTMLElement> document.getElementById("pcb1-y")).innerHTML = String(y);
                 (<HTMLElement> document.getElementById("pcb1-z")).innerHTML = String(z);
-            } else if (pid == "1"){
+            } else if (base == 256){
                 (<HTMLElement> document.getElementById("pcb2-pid")).innerHTML = String(pid);
                 (<HTMLElement> document.getElementById("pcb2-state")).innerHTML = String(state);
                 (<HTMLElement> document.getElementById("pcb2-pc")).innerHTML = String(pc);

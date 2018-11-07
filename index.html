@@ -43,10 +43,12 @@
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. -->
    <!--<script type="text/javascript" src="test/glados-ip3.js"></script>-->
+
+   <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.3/minty/bootstrap.min.css" rel="stylesheet" integrity="sha384-Qt9Hug5NfnQDGMoaQYXN1+PiQvda7poO7/5k4qAmMN6evu0oDFMJTyjqaoTGHdqf" crossorigin="anonymous">
    
 </head>
 
-<body onload="onDocumentLoad()">
+<body>
 
 
 <div id="blueScreen" style="height:100%; width: 100%; display: none; background-color: blue; position: fixed;z-index:2;">
@@ -62,117 +64,116 @@
 
 </div>
 
-<div id="row1">
+<div class="container-fluid">
 
-   <div id="divButtonBar" style="margin:8px;">
-      <input type="button"
-             id = "btnStartOS"
-             name="brnStartOS"
-             class="normal_button"
-             value="Start"
-             tabindex="0"
-             onclick="TSOS.Control.hostBtnStartOS_click(this);">
+   <div class="row">
+      <div class="col-lg-6" >
+         <div id="divButtonBar" style="margin:8px;" class="text-center">
+            <input type="button"
+                   id = "btnStartOS"
+                   name="brnStartOS"
+                   class="btn btn-info"
+                   value="Start"
+                   tabindex="0"
+                   onclick="TSOS.Control.hostBtnStartOS_click(this);">
 
-      <input type="button"
-             id = "btnHaltOS"
-             name="brnHaltOS"
-             class="normal_button"
-             disabled="disabled"
-             value="Halt"
-             tabindex="1"
-             onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+            <input type="button"
+                   id = "btnHaltOS"
+                   name="brnHaltOS"
+                   class="btn btn-info"
+                   disabled="disabled"
+                   value="Halt"
+                   tabindex="1"
+                   onclick="TSOS.Control.hostBtnHaltOS_click(this);">
 
-      <input type="button"
-             id = "btnReset"
-             name="brnReset"
-             class="normal_button"
-             disabled="disabled"
-             value="Reset"
-             tabindex="2"
-             onclick="TSOS.Control.hostBtnReset_click(this);">
+            <input type="button"
+                   id = "btnReset"
+                   name="brnReset"
+                   class="btn btn-info"
+                   disabled="disabled"
+                   value="Reset"
+                   tabindex="2"
+                   onclick="TSOS.Control.hostBtnReset_click(this);">
 
-      <input type="button"
-             id="btnSingleStep"
-             name="btnSingleStep"
-             class="normal_button"
-             disabled="disabled"
-             value="Single Step Mode"
-             tabindex="3"
-             onclick="TSOS.Control.hostBtnSingStep_click(this);">
+            <input type="button"
+                   id="btnSingleStep"
+                   name="btnSingleStep"
+                   class="btn btn-info"
+                   disabled="disabled"
+                   value="Single Step Mode"
+                   tabindex="3"
+                   onclick="TSOS.Control.hostBtnSingStep_click(this);">
 
-      <input type="button"
-             id="btnStep"
-             name="btnStep"
-             class="normal_button"
-             disabled="disabled"
-             value=">>"
-             tabindex="4"
-             onclick="TSOS.Control.hostBtnStep_click(this);">
-   </div>
-
-   <div id="taskBar" class="task" style="margin:15px;">
-      <p1></p1>
-   </div>
-
-</div>
-
-
-<div id="row2">
-
-   <div id="info">
-
-      <div id="divUserProgramInput" style="margin-left:520px;">
-         <label>
-            User Program Input
-            <br>
-            <textarea name="taProgramInput"
-                      id  ="taProgramInput"
-                      rows="8"
-                      cols="48"
-            >A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00</textarea>
-         </label>
-      </div>
-
-      <div id="divLog" style="margin-left:520px;">
-         <label>
-            Host Log
-            <br>
-            <textarea name="taHostLog"
-                      id  ="taHostLog"
-                      rows="26"
-                      cols="48"
-            ></textarea>
-         </label>
-      </div>
-
-   </div>
-
-
-
-   <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
-      <canvas id="display"
-              width="500px"
-              height="500px"
-              tabindex="3"
-              color="white">
-      </canvas>
-   </div>
-
-
-
-   <div id="programDisplays">
-
-      <div id="cpuDisplays">
-         <div id="memDisplay" class="table">
-            <label class="tableId">Memory</label>
-            <table id="memTable">
-            </table>
+            <input type="button"
+                   id="btnStep"
+                   name="btnStep"
+                   class="btn btn-info"
+                   disabled="disabled"
+                   value=">>"
+                   tabindex="4"
+                   onclick="TSOS.Control.hostBtnStep_click(this);">
          </div>
+      </div>
+
+      <div class="col-lg-6 text-center">
+         <div id="taskBar" style="margin:15px;" >
+            <p1></p1>
+         </div>
+      </div>
+   </div>
+
+   <div class="row">
+      <div class="col-lg-3">
+
+         <div id="divUserProgramInput" >
+            <label>
+               User Program Input
+               <br>
+               <textarea name="taProgramInput"
+                         id  ="taProgramInput"
+                         rows="8"
+                         cols="48"
+               >A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00</textarea>
+            </label>
+         </div>
+
+
+         <div id="divLog" >
+            <label>
+               Host Log
+               <br>
+               <textarea name="taHostLog"
+                         id  ="taHostLog"
+                         rows="26"
+                         cols="48"
+               ></textarea>
+            </label>
+         </div>
+
+
+
+
+      </div>
+      <div class="col-lg-6 text-center">
+         <body onload="onDocumentLoad();">
+            <div id="divConsole">
+               <canvas id="display"
+                       width="500px"
+                       height="500px"
+                        tabindex="3">
+               </canvas>
+            </div>
+         </body>
+
+
+      </div>
+
+      <div class="col-lg-3 text-center">
 
 
          <div id="cpuDisplay">
             <label class="tableId">CPU</label>
-            <table id="cpuTable"; style="width:50%" class="table">
+            <table id="cpuTable"  class="table">
                <tr>
                   <th>PC</th>
                   <th>IR</th>
@@ -195,7 +196,7 @@
 
          <div id="pcbDisplay">
             <label class="tableId">PCB</label>
-            <table id="pcbTable"; style="width:50%" class="table">
+            <table id="pcbTable"; class="table">
                <tr>
                   <th>PID</th>
                   <th>State</th>
@@ -239,8 +240,22 @@
             </table>
 
          </div>
+
+         <div id="memDisplay" class="table">
+            <label class="tableId">Memory</label>
+            <table id="memTable">
+            </table>
+         </div>
+
+
       </div>
+
    </div>
+
+</div>
+
+
+
 
 
 </div>

@@ -6,36 +6,7 @@
   background-color: white;
 }
 
-#row1{
-  width: 100%;
-  overflow: hidden;
-}
 
-#row2{
-  width: 100%;
-  overflow: hidden;
-}
-
-#info{
-  width: 33%;
-  float: left;
-
-}
-
-#divConsole{
-
-  width: 33%;
-  float: left;
-
-}
-
-#programDisplays{
-
-
-  width: 33%;
-  float: left;
-
-}
 
 
 
@@ -46,6 +17,8 @@
   border-radius: 5px;
   margin: auto;
   text-decoration: white;
+  height: 50px;
+  width: 100px;
 }
 
 .center{
@@ -55,20 +28,7 @@
   width: 50%;
 }
 
-.right{
 
-  display: block;
-  margin-left: 50%;
-  margin-right: auto;
-  width: 50%;
-
-}
-
-.left{
-
-  float: left;
-
-}
 
 
 body {
@@ -107,15 +67,9 @@ h3 {
   cursor: default;
 }
 
-#taskBar{
-  overflow: hidden;
-  height: 50px;
-
-}
 
 #divButtonBar{
-  width: 50%;
-  float: left;
+
 }
 
 .error{
@@ -136,18 +90,23 @@ h3 {
   text-align: center;
 }
 
-.task {
+#taskBar {
   border: 4px solid deeppink;
   border-radius: 10px;
   display: inline-block;
   text-align: center;
-  height: 40px;
-  width: 400px;
+  height: 50px;
+  width: 500px;
   position: relative;
   bottom: 10px;
   left: 10px;
   padding: auto;
   background-color: white;
+}
+
+p1{
+  font-family: "Comic Sans MS";
+  font-size: 18px;
 }
 
 td {
@@ -161,7 +120,7 @@ td {
   border: 3px solid purple;
   border-radius: 4px;
   background-color: white;
-  width: 80%;
+  width: 400px;
   text-align: center;
 
 }
@@ -172,7 +131,7 @@ td {
   border: 3px solid purple;
   border-radius: 4px;
   background-color: white;
-  width: 80%;
+  width: 400px;
   text-align: center;
 
 }
@@ -181,10 +140,10 @@ td {
   margin: 50px;
   border: 3px solid purple;
   border-radius: 4px;
-  height: 100px;
+  height: 300px;
   overflow: auto;
   background-color: white;
-  width: 80%;
+  width: 400px;
   text-align: center;
 
 }

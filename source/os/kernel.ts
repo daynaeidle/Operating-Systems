@@ -220,7 +220,8 @@ module TSOS {
                                         newProcess.Acc,
                                         newProcess.Xreg,
                                         newProcess.Yreg,
-                                        newProcess.Zflag);
+                                        newProcess.Zflag,
+                                        newProcess.base);
             //update pid
             _Pid++;
 
@@ -303,13 +304,14 @@ module TSOS {
             cpuCycles = 0;
 
             TSOS.Control.updatePCBTable(_currPcb.PID,
-                _currPcb.state,
-                _currPcb.PC,
-                _currPcb.IR,
-                _currPcb.Acc.toString(16).toUpperCase(),
-                _currPcb.Xreg.toString(16).toUpperCase(),
-                _currPcb.Yreg.toString(16).toUpperCase(),
-                _currPcb.Zflag.toString(16).toUpperCase());
+                                        _currPcb.state,
+                                        _currPcb.PC,
+                                        _currPcb.IR,
+                                        _currPcb.Acc.toString(16).toUpperCase(),
+                                        _currPcb.Xreg.toString(16).toUpperCase(),
+                                        _currPcb.Yreg.toString(16).toUpperCase(),
+                                        _currPcb.Zflag.toString(16).toUpperCase(),
+                                        _currPcb.base);
 
 
             //reset main mem using base
@@ -380,7 +382,8 @@ module TSOS {
                                             _currPcb.Acc.toString(16).toUpperCase(),
                                             _currPcb.Xreg.toString(16).toUpperCase(),
                                             _currPcb.Yreg.toString(16).toUpperCase(),
-                                            _currPcb.Zflag.toString(16).toUpperCase());
+                                            _currPcb.Zflag.toString(16).toUpperCase(),
+                                            _currPcb.base);
 
                 if (_ReadyQueue.getSize() > 0){
 
@@ -429,7 +432,8 @@ module TSOS {
                                             temp.Acc.toString(16).toUpperCase(),
                                             temp.Xreg.toString(16).toUpperCase(),
                                             temp.Yreg.toString(16).toUpperCase(),
-                                            temp.Zflag.toString(16).toUpperCase());
+                                            temp.Zflag.toString(16).toUpperCase(),
+                                            temp.base);
 
                 _StdOut.advanceLine();
                 _StdOut.putText("PID: " + temp.PID);
@@ -467,7 +471,8 @@ module TSOS {
                                             temp.Acc.toString(16).toUpperCase(),
                                             temp.Xreg.toString(16).toUpperCase(),
                                             temp.Yreg.toString(16).toUpperCase(),
-                                            temp.Zflag.toString(16).toUpperCase());
+                                            temp.Zflag.toString(16).toUpperCase(),
+                                            temp.base);
 
                 _StdOut.advanceLine();
                 _StdOut.putText("PID: " + temp.PID);
@@ -513,13 +518,14 @@ module TSOS {
             console.log("in context switch");
             _currPcb.state = "Ready";
             TSOS.Control.updatePCBTable(_currPcb.PID,
-                _currPcb.state,
-                _currPcb.PC,
-                _currPcb.IR,
-                _currPcb.Acc.toString(16).toUpperCase(),
-                _currPcb.Xreg.toString(16).toUpperCase(),
-                _currPcb.Yreg.toString(16).toUpperCase(),
-                _currPcb.Zflag.toString(16).toUpperCase());
+                                        _currPcb.state,
+                                        _currPcb.PC,
+                                        _currPcb.IR,
+                                        _currPcb.Acc.toString(16).toUpperCase(),
+                                        _currPcb.Xreg.toString(16).toUpperCase(),
+                                        _currPcb.Yreg.toString(16).toUpperCase(),
+                                        _currPcb.Zflag.toString(16).toUpperCase(),
+                                        _currPcb.base);
             _ReadyQueue.enqueue(_currPcb);
             cpuCycles = 0;
             _CpuScheduler.getNewProc();
