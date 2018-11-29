@@ -117,15 +117,41 @@ module TSOS {
                                   " - Traps an OS error.");
             this.commandList[this.commandList.length] = sc;
 
+            // run
             sc = new ShellCommand(this.shellRun,
                                   "run",
                                    "<pid> - Runs the specified process.");
             this.commandList[this.commandList.length] = sc;
 
+            //run all
+            sc = new ShellCommand(this.shellRunAll,
+                                  "runall",
+                                   " - Runs all loaded processes.");
+            this.commandList[this.commandList.length] = sc;
 
+            //clear mem
+            sc = new ShellCommand(this.shellClearMem,
+                                  "clearmem",
+                                  " - Clears any processes in memory.");
+            this.commandList[this.commandList.length] = sc;
+
+            //quantum
+            sc = new ShellCommand(this.shellQuantum,
+                                  "quantum",
+                                  " - Set the quantum for Round Robin scheduling.");
+            this.commandList[this.commandList.length] = sc;
 
             // ps  - list the running processes and their IDs
+            sc = new ShellCommand(this.shellPS,
+                                  "ps",
+                                  " - Displays the process ids of the running processes.");
+            this.commandList[this.commandList.length] = sc;
+
             // kill <id> - kills the specified process id.
+            sc = new ShellCommand(this.shellKill,
+                                  "kill",
+                                  "<pid> - Kills the specified process.");
+            this.commandList[this.commandList.length] = sc;
 
             //
             // Display the initial prompt.
@@ -339,6 +365,21 @@ module TSOS {
                     case "run":
                         _StdOut.putText("Run executes the specified process.");
                         break;
+                    case "runall":
+                        _StdOut.putText("Runall executes all processes loaded into memory.");
+                        break;
+                    case "clearmem":
+                        _StdOut.putText("Clearmem clears all processes from memory.");
+                        break;
+                    case "quantum":
+                        _StdOut.putText("Quantum sets the quantum for Round Robin scheduling. Must be greater than 0.");
+                        break;
+                    case "ps":
+                        _StdOut.putText("PS displays a list of the process ids of the current running processes.");
+                        break;
+                    case "kill":
+                        _StdOut.putText("Kill well... kills the specified process. Sorry to be so morbid.");
+                        break;
                     case "?":
                         _StdOut.putText("TOPICS:")
                         for (var i=0; i<_OsShell.commandList.length; i++){
@@ -499,10 +540,11 @@ module TSOS {
                 //put user program in array and check size
                 _userProgram = programInput.split(" ");
                 if (_userProgram.length > 255){
-                    _StdOut.putText("Program too  large for available memory space.")
+                    _StdOut.putText("Program too large for available memory space.")
                 }else{
                     //load into memory
                     var base = _MemoryManager.loadMem(_userProgram);
+                    console.log("Base on load: " + base);
                     if (base == -1){
                         _StdOut.putText("Out of memory.");
                     }else{
@@ -524,14 +566,166 @@ module TSOS {
             (<HTMLElement> document.getElementById("blueScreen")).style.display = "block";
         }
 
+
+        //runs the specified process
         public shellRun(args){
             var pid = args[0];
 
-            if (pid >= 0 && pid < _Pid){
+            var valid = false;
+
+            var resLen = _ResidentQueue.getSize();
+
+            for (var i = 0; i < resLen; i++){
+                var temp = _ResidentQueue.q[i].PID;
+
+                if (temp == pid.toString()){
+                    //_Kernel.executeProcess(pid);
+                    valid = true;
+                    break;
+                }
+            }
+
+
+            if (valid){
                 _Kernel.executeProcess(pid);
             }else{
                 _StdOut.putText("Not a valid Pid");
             }
+
+        }
+
+
+        //runs all loaded processes
+        public shellRunAll(args){
+            if (_ResidentQueue.getSize() == 0){
+                _StdOut.putText("No processes to run");
+            }else{
+                _Kernel.executeAll();
+            }
+        }
+
+
+        //clear mem
+        public shellClearMem(args){
+
+            if (_CPU.isExecuting == false){
+                _Kernel.clearMemory();
+            }else{
+                _StdOut.putText("Cannot clear memory while program is running.");
+            }
+
+
+        }
+
+
+        //sets quantum for round robin
+        public shellQuantum(args){
+
+            var quantNum = args[0];
+
+            if (quantNum > 0){
+                _CpuScheduler.quantum = quantNum;
+            }else{
+                _StdOut.putText("Quantum must be greater than 0.");
+            }
+
+        }
+
+        //displays the current processes and their states
+        public shellPS(args){
+
+            var resLen = _ResidentQueue.getSize();
+            console.log("Len res: " + resLen);
+            var readyLen = _ReadyQueue.getSize();
+            console.log("Len ready: " + readyLen);
+
+            for (var j = 0; j < readyLen; j++){
+                console.log(_ReadyQueue.q[j]);
+            }
+
+            //need to add if here when you figure out the problem with the pid
+            if (_currPcb.PID != "-"){
+                _StdOut.putText(_currPcb.PID + ": " + _currPcb.state);
+                _StdOut.advanceLine();
+            }
+
+
+            if ((resLen == 0) && (readyLen == 0)){
+                _StdOut.putText("No current processes loaded.");
+            }else if ((resLen > 0) && (readyLen == 0)){
+                console.log("res > 0, ready = 0");
+                for (var i = 0; i < resLen; i++){
+                    var pcb = _ResidentQueue.q[i];
+                    _StdOut.putText(pcb.PID + ": " + pcb.state);
+                    _StdOut.advanceLine();
+                }
+            }else if ((resLen == 0) && (readyLen > 0)){
+                console.log("res = 0, ready > 0");
+                for (var i = 0; i < readyLen; i++){
+                    var pcb = _ReadyQueue.q[i];
+                    _StdOut.putText(pcb.PID + ": " + pcb.state);
+                    _StdOut.advanceLine();
+                }
+            }else{
+                for (var i = 0; i < readyLen; i++){
+                    console.log("res > 0, ready > 0");
+                    var pcb = _ReadyQueue.q[i];
+                    _StdOut.putText(pcb.PID + ": " + pcb.state);
+                    _StdOut.advanceLine();
+                }
+
+                for (var i = 0; i < resLen; i++){
+                    var pcb = _ResidentQueue.q[i];
+                    _StdOut.putText(pcb.PID + ": " + pcb.state);
+                    _StdOut.advanceLine();
+                }
+            }
+
+
+
+        }
+
+
+        public shellKill(args){
+
+            var pid = args[0];
+
+            var location;
+
+            var found = false;
+
+            if (_currPcb.PID == pid){
+                found = true;
+                location = "current";
+            }
+
+            for (var i = 0; i < _ResidentQueue.getSize(); i++){
+                var temp = _ResidentQueue.q[i];
+                if (pid == temp.PID){
+                    found = true;
+                    location = "resident";
+                }
+            }
+
+            for (var i = 0; i < _ReadyQueue.getSize(); i++){
+                var temp = _ReadyQueue.q[i];
+                if (pid == temp.PID){
+                    found = true;
+                    location = "ready";
+                }
+            }
+
+            if (found){
+                var killInfo  = [];
+                killInfo[0] = pid;
+                killInfo[1] = location;
+                _KernelInterruptQueue.enqueue(new Interrupt(KILL_PROC_IRQ, killInfo));
+            }else{
+                _StdOut.putText("No process with that PID.");
+            }
+
+
+
 
 
         }

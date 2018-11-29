@@ -45,6 +45,8 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
+            console.log("CURRENT: " + _currPcb.PID);
+
             //fetch the opcode, set it to the IR, and decode it
             var opCode = this.fetch(this.PC);
             this.IR = opCode;
@@ -61,6 +63,8 @@ module TSOS {
         //decode an opcode
         public decode(opCode: string){
             //find out what the instruction means
+
+            console.log("current opcode: " + opCode);
 
             var val;
             var address;
@@ -142,10 +146,10 @@ module TSOS {
                     //break
                     //set executing to false and call kernel exit process
                     console.log(this.IR, " ", _currPcb.IR);
+                    console.log("Current pcb pid in 00 ", _currPcb.PID);
                     TSOS.Control.updateCPUTable(this.PC, this.IR, this.Acc.toString(16), this.Xreg.toString(16), this.Yreg.toString(16), this.Zflag.toString(16));
-                    TSOS.Control.updatePCBTable(_currPID, _currPcb.state,  _currPcb.PC, _currPcb.IR, _currPcb.Acc.toString(16), _currPcb.Xreg.toString(16), _currPcb.Yreg.toString(16), _currPcb.Zflag.toString(16));
-                    this.isExecuting = false;
-                    _Kernel.exitProcess(_currPID);
+                    TSOS.Control.updatePCBTable(_currPcb.PID, _currPcb.state,  _currPcb.PC, _currPcb.IR, _currPcb.Acc.toString(16), _currPcb.Xreg.toString(16), _currPcb.Yreg.toString(16), _currPcb.Zflag.toString(16), _currPcb.base);
+                    _KernelInterruptQueue.enqueue(new Interrupt(COMPLETE_PROC_IRQ, _currPcb.PID));
                     break;
                 case("EC"):
                     //compares a byte in memory to the xreg - changes zflag if equal
@@ -168,9 +172,9 @@ module TSOS {
                         this.PC +=  (parseInt(this.fetch(this.PC + 1), 16) + 2);
                         //console.log("branch pc: " + this.PC);
                         //if value is larger than allotted space -- wrap around
-                        if (this.PC > _currPcb.base + 255){
-                            var overflow = this.PC - (_currPcb.base + 256);
-                            this.PC = overflow + _currPcb.base;
+                        if (this.PC > _limit){
+                            var overflow = this.PC - 256;
+                            this.PC = overflow;
                             //console.log("branch pc: " + this.PC);
                         }
                     }else{
@@ -227,6 +231,11 @@ module TSOS {
                     var msg = opCode + " is not a valid op code.";
                     _KernelInterruptQueue.enqueue(new Interrupt(OPCODE_ERROR_IRQ, msg));
             }
+
+            cpuCycles += 1;
+            _currPcb.turnaround += 1;
+            console.log("Clock cycles: " + cpuCycles);
+
             //update all variables and display tables
             _currPcb.PC = this.PC;
             _currPcb.Acc = this.Acc;
@@ -240,14 +249,15 @@ module TSOS {
                                         this.Xreg.toString(16).toUpperCase(),
                                         this.Yreg.toString(16).toUpperCase(),
                                         this.Zflag.toString(16).toUpperCase());
-            TSOS.Control.updatePCBTable(_currPID,
+            TSOS.Control.updatePCBTable(_currPcb.PID,
                                         _currPcb.state,
                                         _currPcb.PC,
                                         _currPcb.IR,
                                         _currPcb.Acc.toString(16).toUpperCase(),
                                         _currPcb.Xreg.toString(16).toUpperCase(),
                                         _currPcb.Yreg.toString(16).toUpperCase(),
-                                        _currPcb.Zflag.toString(16).toUpperCase());
+                                        _currPcb.Zflag.toString(16).toUpperCase(),
+                                        _currPcb.base);
 
         }
 

@@ -51,12 +51,14 @@ module TSOS {
             _Memory	=	new	Memory();
             _Memory.init();
             _MemoryAccessor	=	new	MemoryAccessor();
+            _CpuScheduler	=	new	cpuScheduler();
 
 
-            _currPcb = new Pcb("-", 0, "ready", 0, "-", 0, 0, 0, 0);
-            _currPcb.init();
+            //pcb setting in bootstrap
+            _currPcb = new Pcb("-", 0, "-", 0, "-", 0, 0, 0, 0, 0, 0);
 
             _ResidentQueue = new Queue();
+            _ReadyQueue = new Queue();
 
 
             // Enable the OS Interrupts.  (Not the CPU clock interrupt, as that is done in the hardware sim.)
@@ -89,6 +91,7 @@ module TSOS {
 
 
         public krnOnCPUClockPulse() {
+            //console.log("current pcb id in krnclockpulse: " + _currPcb.PID);
             /* This gets called from the host hardware simulation every time there is a hardware clock pulse.
                This is NOT the same as a TIMER, which causes an interrupt and is handled like other interrupts.
                This, on the other hand, is the clock pulse from the hardware / VM / host that tells the kernel
@@ -101,16 +104,22 @@ module TSOS {
                 var interrupt = _KernelInterruptQueue.dequeue();
                 this.krnInterruptHandler(interrupt.irq, interrupt.params);
             } else if (_CPU.isExecuting) {// If there are no interrupts then run one CPU cycle if there is anything being processed. {
+                //console.log("In kernel in cycle curr pcb pid: " + _currPcb.PID)
                 if (singleStepMode == true){
                     if (step == true){
                         _CPU.cycle();
+                        if (runall == true){
+                            _CpuScheduler.schedule();
+                            _CpuScheduler.updateWaitAndTurnaround()
+                        }
                         step = false;
-                    }else{
-                        console.log("do nothing");
                     }
-
                 }else{
                     _CPU.cycle();
+                    if (runall == true){
+                        _CpuScheduler.schedule();
+                        _CpuScheduler.updateWaitAndTurnaround()
+                    }
                 }
 
             } else {                      // If there are no interrupts and there is nothing being executed then just be idle. {
@@ -154,7 +163,8 @@ module TSOS {
                     _StdIn.handleInput();
                     break;
                 case OPCODE_ERROR_IRQ:
-                    _StdOut.putText("Not a valid OP Code.");
+                    _StdOut.putText(params);
+                    this.exitProcess(_currPcb.PID);
                     break;
                 case OUTPUT_IRQ:
                     _StdOut.putText(params);
@@ -162,6 +172,15 @@ module TSOS {
                 case COMPLETE_PROC_IRQ:
                     this.exitProcess(params);
                     break;
+                case CONTEXT_SWITCH_IRQ:
+                    this.contextSwitch();
+                    break;
+                case KILL_PROC_IRQ:
+                    this.killProcess(params[0], params[1]);
+                    break;
+                case MEMORY_ACCESS_IRQ:
+                    _StdOut.putText("Memory access request out of bounds.");
+                    this.killProcess(params[0], params[1]);
                 default:
                     this.krnTrapError("Invalid Interrupt Request. irq=" + irq + " params=[" + params + "]");
             }
@@ -191,18 +210,26 @@ module TSOS {
         public createProcess(base: number){
 
             //create a new process control block based on base of program in memory
-            var newProcess = new Pcb(_Pid.toString(), base, "ready", 0, "-", 0, 0, 0, 0);
+            var newProcess = new Pcb(_Pid.toString(), base, "Resident", 0, "-", 0, 0, 0, 0, 0, 0);
 
             //update pcb table
-            TSOS.Control.updatePCBTable(newProcess.PID, newProcess.state,  newProcess.PC, newProcess.IR, newProcess.Acc, newProcess.Xreg, newProcess.Yreg, newProcess.Zflag);
-
+            TSOS.Control.updatePCBTable(newProcess.PID,
+                                        newProcess.state,
+                                        newProcess.PC,
+                                        newProcess.IR,
+                                        newProcess.Acc,
+                                        newProcess.Xreg,
+                                        newProcess.Yreg,
+                                        newProcess.Zflag,
+                                        newProcess.base);
             //update pid
             _Pid++;
+
             //add new process to resident queue
             _ResidentQueue.enqueue(newProcess);
 
             //print to test
-            for (var i = 0; i < _ResidentQueue.q.length; i++){
+            for (var i = 0; i < _ResidentQueue.getSize(); i++){
                 console.log(_ResidentQueue.q[i]);
             }
         }
@@ -210,23 +237,61 @@ module TSOS {
         //execute a specified process
         public executeProcess(pid: number){
             //find the correct process in the resident queue based on pid
-            for (var i =0; i < _ResidentQueue.getSize(); i++){
+
+            var resLen = _ResidentQueue.getSize();
+            for (var i = 0; i < resLen; i++){
                 //set it to a global pcb variable
-                var _currPcb = _ResidentQueue.dequeue();
-                if (_currPcb.PID == pid){
-                    //set a global pid, change the state and set executing to true; break out of loop
-                    _currPID = pid.toString();
+                _currPcb = _ResidentQueue.dequeue();
+                //console.log("regular execution pcb pid: " + _currPcb.PID);
+                if (_currPcb.PID == pid.toString()){
+                    //console.log("currpcb pid in id statement: " + _currPcb.PID)
+                    //change the state and set executing to true; break out of loop
                     _currPcb.state = "Running";
                     _CPU.isExecuting = true;
-                    //_ResidentQueue.enqueue(_currPcb);
                     break;
+                }else{
+                    _ResidentQueue.enqueue(_currPcb);
                 }
             }
+
+            for (var i = 0; i < _ResidentQueue.getSize(); i++){
+                console.log(_ResidentQueue.q[i]);
+            }
+
+            //console.log("Current pcb pid at end of execute process: " + _currPcb.PID);
+        }
+
+        //execute all processes
+        public executeAll(){
+
+            var resLength = _ResidentQueue.getSize();
+
+            //move everthing from the resident queue to the ready queue
+            for (var i = 0; i < resLength; i++){
+                var temp = _ResidentQueue.dequeue();
+                _ReadyQueue.enqueue(temp);
+            }
+
+            //set runall to true
+            runall = true;
+            //take the first pcb off the ready queue and set it to _currPcb
+            _currPcb = _ReadyQueue.dequeue();
+            //console.log("IN kernel - curr PCB:" + _currPcb.PID);
+            _currPcb.state = "Running";
+            _CPU.isExecuting = true;
+
         }
 
         //exit a process
         public exitProcess(pid:string){
             console.log("Process exited");
+
+            _StdOut.advanceLine();
+            _StdOut.putText("Process: " + pid);
+            _StdOut.advanceLine();
+            _StdOut.putText("Turnaround Time: " + _currPcb.turnaround);
+            _StdOut.advanceLine();
+            _StdOut.putText("Wait Time: " + _currPcb.waittime);
 
             //advance line and put prompt
             _StdOut.advanceLine();
@@ -234,29 +299,246 @@ module TSOS {
 
             //set state to terminated and executing to false
             _currPcb.state = "Terminated";
-            _CPU.isExecuting = false;
+
+            //reset clock cycles
+            cpuCycles = 0;
+
+            TSOS.Control.updatePCBTable(_currPcb.PID,
+                                        _currPcb.state,
+                                        _currPcb.PC,
+                                        _currPcb.IR,
+                                        _currPcb.Acc.toString(16).toUpperCase(),
+                                        _currPcb.Xreg.toString(16).toUpperCase(),
+                                        _currPcb.Yreg.toString(16).toUpperCase(),
+                                        _currPcb.Zflag.toString(16).toUpperCase(),
+                                        _currPcb.base);
+
 
             //reset main mem using base
             var base = _currPcb.base;
+            console.log("In exit: " + _currPcb.base);
             for (var j = base; j < base + 255; j++) {
                 _Memory.mainMem[j] = "00";
             }
 
-            //reset pcb and cpu variables
-            _currPcb.init();
-
-            _CPU.PC = 0;
-            _CPU.IR = "-";
-            _CPU.Acc = 0;
-            _CPU.Xreg = 0;
-            _CPU.Yreg = 0;
-            _CPU.Zflag = 0;
-            _currPID = "-";
-
-
+            if (_ReadyQueue.isEmpty()){
+                _CPU.isExecuting = false;
+                _CPU.PC = 0;
+                _CPU.IR = "-";
+                _CPU.Acc = 0;
+                _CPU.Xreg = 0;
+                _CPU.Yreg = 0;
+                _CPU.Zflag = 0;
+                _currPcb.init();
+            }else{
+                _currPcb = _ReadyQueue.dequeue();
+                _CPU.PC = _currPcb.PC;
+                _CPU.IR = _currPcb.IR;
+                _CPU.Acc = _currPcb.Acc;
+                _CPU.Xreg = _currPcb.Xreg;
+                _CPU.Yreg = _currPcb.Yreg;
+                _CPU.Zflag = _currPcb.Zflag;
+            }
 
             TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
 
+            for (var i = 0; i < _ReadyQueue.getSize(); i++){
+                console.log(_ReadyQueue.q[i]);
+            }
+
+        }
+
+        public killProcess(pid: number, loc: string){
+
+            var temp;
+
+            if (loc == "current"){
+
+                _StdOut.advanceLine();
+                _StdOut.putText("PID: " + _currPcb.PID);
+                _StdOut.advanceLine();
+                _StdOut.putText("Turnaround Time: " + _currPcb.turnaround);
+                _StdOut.advanceLine();
+                _StdOut.putText("Wait Time: " + _currPcb.waittime);
+
+                //advance line and put prompt
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
+
+                _currPcb.state = "Terminated";
+
+                //reset cpu cycles
+                cpuCycles = 0;
+
+
+                //reset main mem using base
+                var base = _currPcb.base;
+                for (var j = base; j < base + 255; j++) {
+                    _Memory.mainMem[j] = "00";
+                }
+
+
+
+                TSOS.Control.updatePCBTable(_currPcb.PID,
+                                            _currPcb.state,
+                                            _currPcb.PC,
+                                            _currPcb.IR,
+                                            _currPcb.Acc.toString(16).toUpperCase(),
+                                            _currPcb.Xreg.toString(16).toUpperCase(),
+                                            _currPcb.Yreg.toString(16).toUpperCase(),
+                                            _currPcb.Zflag.toString(16).toUpperCase(),
+                                            _currPcb.base);
+
+                if (_ReadyQueue.getSize() > 0){
+
+                    _currPcb = _ReadyQueue.dequeue();
+                    _CPU.PC = _currPcb.PC;
+                    _CPU.IR = _currPcb.IR;
+                    _CPU.Acc = _currPcb.Acc;
+                    _CPU.Xreg = _currPcb.Xreg;
+                    _CPU.Yreg = _currPcb.Yreg;
+                    _CPU.Zflag = _currPcb.Zflag;
+
+                }else{
+
+                    _CPU.isExecuting = false;
+                    _currPcb.init();
+                    _CPU.init();
+
+                    _CPU.PC = 0;
+                    _CPU.IR = "-";
+                    _CPU.Acc = 0;
+                    _CPU.Xreg = 0;
+                    _CPU.Yreg = 0;
+                    _CPU.Zflag = 0;
+
+
+
+                }
+
+                TSOS.Control.updateCPUTable(_CPU.PC, _CPU.IR, _CPU.Acc, _CPU.Xreg, _CPU.Yreg, _CPU.Zflag);
+
+            }else if (loc == "resident"){
+
+                for (var i = 0; i < _ResidentQueue.getSize(); i++){
+                    temp = _ResidentQueue.dequeue();
+                    if (pid == temp.PID){
+                        break;
+                    }else{
+                        _ResidentQueue.enqueue(temp);
+                    }
+                }
+
+                temp.state = "Terminated";
+
+                TSOS.Control.updatePCBTable(temp.PID,
+                                            temp.state,
+                                            temp.PC,
+                                            temp.IR,
+                                            temp.Acc.toString(16).toUpperCase(),
+                                            temp.Xreg.toString(16).toUpperCase(),
+                                            temp.Yreg.toString(16).toUpperCase(),
+                                            temp.Zflag.toString(16).toUpperCase(),
+                                            temp.base);
+
+                _StdOut.advanceLine();
+                _StdOut.putText("PID: " + temp.PID);
+                _StdOut.advanceLine();
+                _StdOut.putText("Turnaround Time: " + temp.turnaround);
+                _StdOut.advanceLine();
+                _StdOut.putText("Wait Time: " + temp.waittime);
+
+                //advance line and put prompt
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
+
+
+                //reset main mem using base
+                base = temp.base;
+                for (var j = base; j < base + 255; j++) {
+                    _Memory.mainMem[j] = "00";
+                }
+
+            }else if (loc == "ready"){
+
+                for (var i = 0; i < _ReadyQueue.getSize(); i++){
+                    temp = _ReadyQueue.dequeue();
+                    if (pid == temp.PID){
+                        break;
+                    }else{
+                        _ReadyQueue.enqueue(temp);
+                    }
+                }
+
+                temp.state = "Terminated";
+
+                TSOS.Control.updatePCBTable(temp.PID,
+                                            temp.state,
+                                            temp.PC,
+                                            temp.IR,
+                                            temp.Acc.toString(16).toUpperCase(),
+                                            temp.Xreg.toString(16).toUpperCase(),
+                                            temp.Yreg.toString(16).toUpperCase(),
+                                            temp.Zflag.toString(16).toUpperCase(),
+                                            temp.base);
+
+                _StdOut.advanceLine();
+                _StdOut.putText("PID: " + temp.PID);
+                _StdOut.advanceLine();
+                _StdOut.putText("Turnaround Time: " + temp.turnaround);
+                _StdOut.advanceLine();
+                _StdOut.putText("Wait Time: " + temp.waittime);
+
+                //advance line and put prompt
+                _StdOut.advanceLine();
+                _OsShell.putPrompt();
+
+
+                //reset main mem using base
+                base = temp.base;
+                for (var j = base; j < base + 255; j++) {
+                    _Memory.mainMem[j] = "00";
+                }
+
+            }
+
+        }
+
+
+        public clearMemory(){
+            for (var i = 0; i < 768; i++){
+                _Memory.mainMem[i] = "00";
+            }
+
+            var resLen = _ResidentQueue.getSize();
+            var readyLen = _ReadyQueue.getSize();
+
+            for (var i = 0; i < resLen; i++){
+                _ResidentQueue.dequeue();
+            }
+
+            for (var j = 0; j < readyLen; j++){
+                _ReadyQueue.dequeue();
+            }
+        }
+
+        public contextSwitch(){
+            console.log("in context switch");
+            _currPcb.state = "Ready";
+            TSOS.Control.updatePCBTable(_currPcb.PID,
+                                        _currPcb.state,
+                                        _currPcb.PC,
+                                        _currPcb.IR,
+                                        _currPcb.Acc.toString(16).toUpperCase(),
+                                        _currPcb.Xreg.toString(16).toUpperCase(),
+                                        _currPcb.Yreg.toString(16).toUpperCase(),
+                                        _currPcb.Zflag.toString(16).toUpperCase(),
+                                        _currPcb.base);
+            _ReadyQueue.enqueue(_currPcb);
+            cpuCycles = 0;
+            _CpuScheduler.getNewProc();
+            console.log("current pcb after get new proc: " + _currPcb.PID);
+            _CpuScheduler.setCPU()
         }
 
 

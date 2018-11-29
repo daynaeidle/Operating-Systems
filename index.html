@@ -5,8 +5,11 @@
    <meta name="author"             content="Alan G. Labouseur" />
    <link rel="stylesheet" href="tsos.css" type="text/css" media="screen" />
    <title>
-      TSOS - a browser-based virtual Operating System in TypeScript
+      dOnutS - a browser-based virtual Operating System in TypeScript
    </title>
+
+   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
    <!-- Globals CONSTANTS and _Variables. Must included be first. -->
    <script type="text/javascript" src="distrib/globals.js"></script>
@@ -31,16 +34,21 @@
    <script type="text/javascript" src="distrib/os/kernel.js"></script>
    <script type="text/javascript" src="distrib/os/memoryManager.js"></script>
    <script type="text/javascript" src="distrib/os/pcb.js"></script>
+   <script type="text/javascript" src="distrib/os/cpuScheduler.js"></script>
+
+   <link rel="icon" type="image/png" href="distrib/images/donut.png" sizes="192x192">
 
 
    <!-- Other Routines -->
    <script type="text/javascript" src="distrib/utils.js"></script>
    <!-- Uncomment the line below to enable GLaDOS testing. -->
-   <script type="text/javascript" src="test/glados-ip2.js"></script>
+   <script type="text/javascript" src="test/glados-ip3.js"></script>
+
+   <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.3/minty/bootstrap.min.css" rel="stylesheet" integrity="sha384-Qt9Hug5NfnQDGMoaQYXN1+PiQvda7poO7/5k4qAmMN6evu0oDFMJTyjqaoTGHdqf" crossorigin="anonymous">
    
 </head>
 
-<body onload="onDocumentLoad()">
+<body>
 
 
 <div id="blueScreen" style="height:100%; width: 100%; display: none; background-color: blue; position: fixed;z-index:2;">
@@ -50,148 +58,221 @@
    </div>
 </div>
 
+<div id="logo">
 
+   <img src="distrib/images/donutslogo.png" alt="donuts logo" class="center" style="width:35%;height: 100%;" >
 
-<div id="divMain" style="width:100%;">
-
-   <div id="divButtonBar" style="margin:4px;">
-      <input type="button"
-             id = "btnStartOS"
-             name="brnStartOS"
-             class="normal_button"
-             value="Start"
-             tabindex="0"
-             onclick="TSOS.Control.hostBtnStartOS_click(this);">
-
-      <input type="button"
-             id = "btnHaltOS"
-             name="brnHaltOS"
-             class="normal_button"
-             disabled="disabled"
-             value="Halt"
-             tabindex="1"
-             onclick="TSOS.Control.hostBtnHaltOS_click(this);">
-
-      <input type="button"
-             id = "btnReset"
-             name="brnReset"
-             class="normal_button"
-             disabled="disabled"
-             value="Reset"
-             tabindex="2"
-             onclick="TSOS.Control.hostBtnReset_click(this);">
-
-      <input type="button"
-             id="btnSingleStep"
-             name="btnSingleStep"
-             class="normal_button"
-             disabled="disabled"
-             value="Single Step Mode"
-             tabindex="3"
-             onclick="TSOS.Control.hostBtnSingStep_click(this);">
-
-      <input type="button"
-             id="btnStep"
-             name="btnStep"
-             class="normal_button"
-             disabled="disabled"
-             value=">>"
-             tabindex="4"
-             onclick="TSOS.Control.hostBtnStep_click(this);">
-   </div>
-
-   <div id="divConsole" style="margin:4px; width:500px; height:500px; float:left;">
-      <canvas id="display"
-              width="500px"
-              height="500px"
-              tabindex="3">
-      </canvas>
-   </div>
-
-   <div id="taskBar" class="task" style="...">
-      <p1></p1>
-   </div>
-
-   <div id="divLog" style="margin-left:520px;">
-      <label>
-         Host Log
-         <br>
-         <textarea name="taHostLog"
-                   id  ="taHostLog"
-                   rows="26"
-                   cols="48"
-         ></textarea>
-      </label>
-   </div>
-
-   <div id="divUserProgramInput" style="margin-left:520px;">
-      <label>
-         User Program Input
-         <br>
-         <textarea name="taProgramInput"
-                   id  ="taProgramInput"
-                   rows="8"
-                   cols="48"
-         >A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00</textarea>
-      </label>
-   </div>
-
-   <div id="memDisplay">
-      <label>Memory</label>
-      <table id="memTable">
-      </table>
-   </div>
-
-   <div id="cpuDisplay">
-      <label>CPU</label>
-      <table id="cpuTable"; style="width:50%">
-         <tr>
-            <th>PC</th>
-            <th>IR</th>
-            <th>ACC</th>
-            <th>X</th>
-            <th>Y</th>
-            <th>Z</th>
-         </tr>
-         <tr>
-            <td id="cpu-pc">0</td>
-            <td id="cpu-ir">0</td>
-            <td id="cpu-acc">0</td>
-            <td id="cpu-x">0</td>
-            <td id="cpu-y">0</td>
-            <td id="cpu-z">0</td>
-         </tr>
-      </table>
-
-   </div>
-
-   <div id="pcbDisplay">
-      <label>PCB</label>
-      <table id="pcbTable"; style="width:50%">
-         <tr>
-            <th>PID</th>
-            <th>State</th>
-            <th>PC</th>
-            <th>IR</th>
-            <th>ACC</th>
-            <th>X</th>
-            <th>Y</th>
-            <th>Z</th>
-         </tr>
-         <tr>
-            <td id="pcb-pid">0</td>
-            <td id="pcb-state">0</td>
-            <td id="pcb-pc">0</td>
-            <td id="pcb-ir">0</td>
-            <td id="pcb-acc">0</td>
-            <td id="pcb-x">0</td>
-            <td id="pcb-y">0</td>
-            <td id="pcb-z">0</td>
-         </tr>
-      </table>
-
-   </div>
 </div>
+
+<div class="container-fluid">
+
+   <div class="row">
+      <div class="col-lg-6" >
+         <div id="divButtonBar" style="margin:8px;" class="text-center">
+            <input type="button"
+                   id = "btnStartOS"
+                   name="brnStartOS"
+                   class="btn btn-info"
+                   value="Start"
+                   tabindex="0"
+                   onclick="TSOS.Control.hostBtnStartOS_click(this);">
+
+            <input type="button"
+                   id = "btnHaltOS"
+                   name="brnHaltOS"
+                   class="btn btn-info"
+                   disabled="disabled"
+                   value="Halt"
+                   tabindex="1"
+                   onclick="TSOS.Control.hostBtnHaltOS_click(this);">
+
+            <input type="button"
+                   id = "btnReset"
+                   name="brnReset"
+                   class="btn btn-info"
+                   disabled="disabled"
+                   value="Reset"
+                   tabindex="2"
+                   onclick="TSOS.Control.hostBtnReset_click(this);">
+
+            <input type="button"
+                   id="btnSingleStep"
+                   name="btnSingleStep"
+                   class="btn btn-info"
+                   disabled="disabled"
+                   value="Single Step Mode"
+                   tabindex="3"
+                   onclick="TSOS.Control.hostBtnSingStep_click(this);">
+
+            <input type="button"
+                   id="btnStep"
+                   name="btnStep"
+                   class="btn btn-info"
+                   disabled="disabled"
+                   value=">>"
+                   tabindex="4"
+                   onclick="TSOS.Control.hostBtnStep_click(this);">
+         </div>
+      </div>
+
+      <div class="col-lg-6 text-center">
+         <div id="taskBar" style="margin:15px;" >
+            <p1></p1>
+         </div>
+      </div>
+   </div>
+
+   <div class="row">
+      <div class="col-lg-3">
+
+         <div class="card text-white bg-primary mb-3" style="height: 300px; width: 450px;">
+            <div class="card-header">User Program Input</div>
+            <div class="card-body">
+               <div id="divUserProgramInput" class="text-center" >
+                  <label>
+                     <textarea name="taProgramInput"
+                               id  ="taProgramInput"
+                               rows="8"
+                               cols="40"
+                     >A9 03 8D 41 00 A9 01 8D 40 00 AC 40 00 A2 01 FF EE 40 00 AE 40 00 EC 41 00 D0 EF A9 44 8D 42 00 A9 4F 8D 43 00 A9 4E 8D 44 00 A9 45 8D 45 00 A9 00 8D 46 00 A2 02 A0 42 FF 00</textarea>
+                  </label>
+               </div>
+            </div>
+         </div>
+
+
+
+         <div class="card text-white bg-primary mb-3" style="height: 500px; width: 450px;">
+            <div class="card-header">Host Log</div>
+            <div class="card-body">
+               <div id="divLog" class="text-center">
+                  <label>
+                     <textarea name="taHostLog"
+                               id  ="taHostLog"
+                               rows="16"
+                               cols="40"
+                     ></textarea>
+                  </label>
+               </div>
+            </div>
+         </div>
+
+
+
+
+
+
+
+      </div>
+      <div class="col-lg-6 text-center">
+         <body onload="onDocumentLoad();">
+            <div id="divConsole">
+               <canvas id="display"
+                       width="500px"
+                       height="500px"
+                        tabindex="3">
+               </canvas>
+            </div>
+         </body>
+
+
+      </div>
+
+      <div class="col-lg-3 text-center">
+
+         <div id="cpuDisplay">
+            <label class="tableId">CPU</label>
+            <table id="cpuTable"  class="table">
+               <tr>
+                  <th>PC</th>
+                  <th>IR</th>
+                  <th>ACC</th>
+                  <th>X</th>
+                  <th>Y</th>
+                  <th>Z</th>
+               </tr>
+               <tr>
+                  <td id="cpu-pc">0</td>
+                  <td id="cpu-ir">0</td>
+                  <td id="cpu-acc">0</td>
+                  <td id="cpu-x">0</td>
+                  <td id="cpu-y">0</td>
+                  <td id="cpu-z">0</td>
+               </tr>
+            </table>
+
+         </div>
+
+         <div id="pcbDisplay">
+            <label class="tableId">PCB</label>
+            <table id="pcbTable"; class="table" style="width:400px;">
+               <tr>
+                  <th>PID</th>
+                  <th>State</th>
+                  <th>PC</th>
+                  <th>IR</th>
+                  <th>ACC</th>
+                  <th>X</th>
+                  <th>Y</th>
+                  <th>Z</th>
+               </tr>
+               <tr>
+                  <td id="pcb1-pid">-</td>
+                  <td id="pcb1-state">-</td>
+                  <td id="pcb1-pc">0</td>
+                  <td id="pcb1-ir">-</td>
+                  <td id="pcb1-acc">0</td>
+                  <td id="pcb1-x">0</td>
+                  <td id="pcb1-y">0</td>
+                  <td id="pcb1-z">0</td>
+               </tr>
+               <tr>
+                  <td id="pcb2-pid">-</td>
+                  <td id="pcb2-state">-</td>
+                  <td id="pcb2-pc">0</td>
+                  <td id="pcb2-ir">-</td>
+                  <td id="pcb2-acc">0</td>
+                  <td id="pcb2-x">0</td>
+                  <td id="pcb2-y">0</td>
+                  <td id="pcb2-z">0</td>
+               </tr>
+               <tr>
+                  <td id="pcb3-pid">-</td>
+                  <td id="pcb3-state">-</td>
+                  <td id="pcb3-pc">0</td>
+                  <td id="pcb3-ir">-</td>
+                  <td id="pcb3-acc">0</td>
+                  <td id="pcb3-x">0</td>
+                  <td id="pcb3-y">0</td>
+                  <td id="pcb3-z">0</td>
+               </tr>
+            </table>
+
+         </div>
+
+         <div id="memDisplay" class="table">
+            <label class="tableId">Memory</label>
+            <table id="memTable">
+            </table>
+         </div>
+
+
+      </div>
+
+   </div>
+
+</div>
+
+
+
+
+
+</div>
+
+
+
+
+
 
 
 <p class="footerText" style="clear:both;">
@@ -203,4 +284,7 @@
 </p>
 
 </body>
+
 </html>
+
+

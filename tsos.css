@@ -1,7 +1,38 @@
 /* TSOS.css */
 
+#logo{
+  width: 100%;
+  height: 100px;
+  background-color: white;
+}
+
+
+
+
+
+.normal_button{
+
+  background-color: deepskyblue;
+  border: 2px solid white;
+  border-radius: 5px;
+  margin: auto;
+  text-decoration: white;
+  height: 50px;
+  width: 100px;
+}
+
+.center{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+
+
+
 body {
-  background: #909193 url(distrib/images/linen.png) repeat;
+  background: #909193 url(distrib/images/coloreddonuts.jpg) repeat;
   font-family: Helvetica, Verdana, Arial, sans-serif;
   font-size: 12pt;
   font-weight: normal;
@@ -31,9 +62,15 @@ h3 {
 }
 
 #display {
-  background-color:#DFDBC3;
-  border: 2px solid red;
+  background-color: pink;
+  border: 4px solid white;
   cursor: default;
+  font-family: "Comic Sans MS";
+}
+
+
+#divButtonBar{
+
 }
 
 .error{
@@ -54,17 +91,23 @@ h3 {
   text-align: center;
 }
 
-.task {
-  border: 1px solid black;
+#taskBar {
+  border: 4px solid deeppink;
   border-radius: 10px;
   display: inline-block;
   text-align: center;
-  height: 40px;
-  width: 400px;
+  height: 50px;
+  width: 500px;
   position: relative;
   bottom: 10px;
   left: 10px;
-  padding-top: 20px;
+  padding: auto;
+  background-color: white;
+}
+
+p1{
+  font-family: "Comic Sans MS";
+  font-size: 18px;
 }
 
 td {
@@ -73,20 +116,41 @@ td {
 
 }
 
-#cpuDisplay, #pcbDisplay{
-  margin: 50px;
-  border: 1px solid black;
+#cpuDisplay{
+  border: 3px solid purple;
   border-radius: 4px;
-  display: inline-block;
+  background-color: white;
+  width: 400px;
+  text-align: center;
+
+}
+
+#pcbDisplay{
+  margin-top: 50px;
+  border: 3px solid purple;
+  border-radius: 4px;
+  background-color: white;
+  width: 400px;
+  text-align: center;
 
 }
 
 #memDisplay{
-  margin: 50px;
-  border: 1px solid black;
+  margin-top: 50px;
+  border: 3px solid purple;
   border-radius: 4px;
-  display: inline-block;
-  height: 100px;
+  height: 300px;
   overflow: auto;
+  background-color: white;
+  width: 400px;
+  text-align: center;
+
+}
+
+.tableId{
+  border-bottom: 3px solid purple;
+}
+
+.table{
 
 }

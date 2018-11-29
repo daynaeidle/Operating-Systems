@@ -12,7 +12,7 @@
 // Global CONSTANTS (TypeScript 1.5 introduced const. Very cool.)
 //
 const APP_NAME: string    = "dOnutS";   // 'cause Bob and I were at a loss for a better name.
-const APP_VERSION: string = "0.01";   // What did you expect?
+const APP_VERSION: string = "0.03";   // What did you expect?
 
 const CPU_CLOCK_INTERVAL: number = 100;   // This is in ms (milliseconds) so 1000 = 1 second.
 
@@ -25,6 +25,12 @@ const OPCODE_ERROR_IRQ: number = 2;
 const OUTPUT_IRQ: number = 3;
 
 const COMPLETE_PROC_IRQ: number = 4;
+
+const CONTEXT_SWITCH_IRQ: number = 5
+
+const KILL_PROC_IRQ: number = 6;
+
+const MEMORY_ACCESS_IRQ: number = 7;
 
 
 //
@@ -66,6 +72,7 @@ var _StdOut;
 var _Console: TSOS.Console;
 var _OsShell: TSOS.Shell;
 var _Control: TSOS.Control;
+var _CpuScheduler: TSOS.cpuScheduler;
 
 // At least this OS is not trying to kill you. (Yet.)
 var _SarcasticMode: boolean = false;
@@ -88,14 +95,20 @@ var	_MemoryManager: any	= null;
 var _Pcb: TSOS.Pcb;
 
 var _ResidentQueue: TSOS.Queue;
-var _RunningProcess: any[];
+var _ReadyQueue: TSOS.Queue;
+var cpuCycles: number = 0;
+
+//limit reg;
+var _limit: number = 255;
 
 
 //current process
-var _currPID: string;
 var _currPcb: TSOS.Pcb;
 
 var _Interrupt: TSOS.Interrupt;
+
+//run all
+var runall: boolean = false;
 
 //single step mode
 var singleStepMode: boolean = false;
