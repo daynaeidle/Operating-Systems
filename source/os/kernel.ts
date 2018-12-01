@@ -42,7 +42,8 @@ module TSOS {
             this.krnTrace(_krnKeyboardDriver.status);
 
             //
-            // ... more?
+            //file system
+            _krnFileSystem = new FileSystem();
             //
             //memory manager
             _MemoryManager	=	new	MemoryManager();
