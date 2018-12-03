@@ -80,5 +80,26 @@ module TSOS {
 
         }
 
+
+        public fileNameExists(filename){
+
+        }
+
+        public convertToAscii(data){
+
+            //create an empty array for the new hex values for each letter
+            var hexArr = [];
+
+            //loop through string and convert each letter to ascii hex
+            //and push to array
+            for (var i = 0; i < data.length; i++){
+                hexArr[hexArr.length] = data.charCodeAt(i).toString(16);
+            }
+
+            return hexArr;
+
+
+        }
+
     }
 }
