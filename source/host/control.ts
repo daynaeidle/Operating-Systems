@@ -238,12 +238,51 @@ module TSOS {
                 (<HTMLElement> document.getElementById("pcb3-y")).innerHTML = String(y);
                 (<HTMLElement> document.getElementById("pcb3-z")).innerHTML = String(z);
             }
+        }
 
 
+        public static loadDiskTable(){
 
+            var diskTable = (<HTMLTableElement> document.getElementById("diskTable"));
+
+            var rowNum = 0;
+
+            for (var i = 0; i < _krnFileSystem.track; i++){
+                for (var j = 0; j < _krnFileSystem.sector; j++){
+                    for (var k = 0; k < _krnFileSystem.block; ){
+                        var tsb = i.toString() + j.toString() + k.toString();
+                        var tsbString = i + ":" + j + ":" + k;
+
+                        var row = diskTable.insertRow(rowNum);
+
+                        var tsbDisplay = row.insertCell(0);
+                        tsbDisplay.innerHTML = tsbString;
+
+                        var currTsb = JSON.parse(sessionStorage.getItem(tsb));
+
+                        var availableBit = row.insertCell(1);
+                        availableBit.innerHTML = currTsb[0];
+
+                        var pointer = row.insertCell(2);
+                        pointer.innerHTML = currTsb[1] + ":" + currTsb[2] + ":" + currTsb[3];
+
+                        var data = row.insertCell(3);
+                        var dataVal = "";
+
+                        for (var a = 4; a < currTsb.length; a++){
+                            dataVal += currTsb[a];
+                        }
+
+                        data.innerHTML = dataVal;
+
+                        rowNum++;
+                    }
+                }
+            }
 
 
 
         }
     }
+
 }

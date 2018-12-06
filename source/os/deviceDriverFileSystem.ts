@@ -56,12 +56,16 @@ module TSOS {
 
         public createFile(filename){
 
-            var hexName: string = "";
+            var hexName = this.convertToAscii(filename);
 
-            for (var i = 0; i < filename.length; i++){
+            //check for existing filename
 
-                hexName += String(filename.charCodeAt(i).toString(16));
+            if (this.fileNameExists(hexName)){
+                console.log("File name already exists.");
+            }else{
+                //proceed
             }
+
 
         }
 
@@ -83,6 +87,29 @@ module TSOS {
 
         public fileNameExists(filename){
 
+            //boolean var for filenameexists
+            var filenameExists = false;
+
+            //loop through disk and look for matching filename
+            for (var i = 0; i < this.track; i++){
+                for (var j = 0; j < this.sector; j++){
+                    for (var k = 0; k < this.block; k++){
+
+                        var tsb = i.toString() + j.toString() + k.toString();
+
+                        var dirFileName = JSON.parse(sessionStorage.getItem(tsb));
+
+                        if (dirFileName == filename){
+
+                            filenameExists = true;
+
+                        }
+                    }
+                }
+            }
+
+            return filenameExists;
+
         }
 
         public convertToAscii(data){
@@ -97,7 +124,9 @@ module TSOS {
             }
 
             return hexArr;
+        }
 
+        public convertToString(str){
 
         }
 
