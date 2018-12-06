@@ -243,7 +243,7 @@ module TSOS {
 
         public static loadDiskTable(){
 
-            var diskTable = (<HTMLTableElement> document.getElementById("diskTable"));
+            var table = (<HTMLTableElement> document.getElementById("diskTable"));
 
             var rowNum = 0;
 
@@ -253,7 +253,7 @@ module TSOS {
                         var tsb = i.toString() + j.toString() + k.toString();
                         var tsbString = i + ":" + j + ":" + k;
 
-                        var row = diskTable.insertRow(rowNum);
+                        var row = table.insertRow(rowNum);
 
                         var tsbDisplay = row.insertCell(0);
                         tsbDisplay.innerHTML = tsbString;

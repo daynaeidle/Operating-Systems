@@ -43,7 +43,8 @@ module TSOS {
 
             //
             //file system
-            _krnFileSystem = new FileSystem();
+            _krnFileSystem = new DeviceDriverFileSystem();
+            _krnFileSystem.driverEntry();
             //
             //memory manager
             _MemoryManager	=	new	MemoryManager();
