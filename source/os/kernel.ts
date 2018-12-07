@@ -43,8 +43,10 @@ module TSOS {
 
             //
             //file system
+            this.krnTrace("Loading the file system device driver.");
             _krnFileSystem = new DeviceDriverFileSystem();
             _krnFileSystem.driverEntry();
+            this.krnTrace(_krnFileSystem.status);
             //
             //memory manager
             _MemoryManager	=	new	MemoryManager();
@@ -541,6 +543,30 @@ module TSOS {
             _CpuScheduler.getNewProc();
             console.log("current pcb after get new proc: " + _currPcb.PID);
             _CpuScheduler.setCPU()
+        }
+
+
+        //file modification functions
+        public createFile(filename: string){
+
+            _krnFileSystem.createFile(filename);
+
+        }
+
+        public writeFile(filename: string, data: string){
+
+        }
+
+        public readFile(filename: string,){
+
+        }
+
+        public deleteFile(filename: string){
+
+        }
+
+        public listFiles(){
+
         }
 
 

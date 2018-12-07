@@ -242,7 +242,7 @@ module TSOS {
 
 
         public static loadDiskTable(){
-
+            /*
             var table = (<HTMLTableElement> document.getElementById("diskTable"));
 
             var rowNum = 0;
@@ -278,7 +278,7 @@ module TSOS {
                         rowNum++;
                     }
                 }
-            }
+            }*/
 
 
 

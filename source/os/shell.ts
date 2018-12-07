@@ -153,6 +153,36 @@ module TSOS {
                                   "<pid> - Kills the specified process.");
             this.commandList[this.commandList.length] = sc;
 
+            //create
+            sc = new ShellCommand(this.shellCreate,
+                                  "create",
+                                  "<filename> - Creates a new file.");
+            this.commandList[this.commandList.length] = sc;
+
+            //write
+            sc = new ShellCommand(this.shellWrite,
+                                  "write",
+                                  "<filename> \"string\" - Writes data to a file");
+            this.commandList[this.commandList.length] = sc;
+
+            //read
+            sc = new ShellCommand(this.shellRead,
+                                  "read",
+                                  "<filename> - Reads a file.");
+            this.commandList[this.commandList.length] = sc;
+
+            //delete
+            sc = new ShellCommand(this.shellDelete,
+                                  "delete",
+                                  "<filename> - Deletes a file.");
+            this.commandList[this.commandList.length] = sc;
+
+            //ls
+            sc = new ShellCommand(this.shellList,
+                                  "ls",
+                                  " - Lists all files.");
+            this.commandList[this.commandList.length] = sc;
+
             //
             // Display the initial prompt.
             this.putPrompt();
@@ -379,6 +409,21 @@ module TSOS {
                         break;
                     case "kill":
                         _StdOut.putText("Kill well... kills the specified process. Sorry to be so morbid.");
+                        break;
+                    case "create":
+                        _StdOut.putText("Create creates a new file with the filename given by the user.");
+                        break;
+                    case "write":
+                        _StdOut.putText("Write writes a string to a specified file.");
+                        break;
+                    case "read":
+                        _StdOut.putText("Read reads the data in a specified file.");
+                        break;
+                    case "delete":
+                        _StdOut.putText("Delete deletes the specified file.");
+                        break;
+                    case "ls":
+                        _StdOut.putText("Ls lists all of the files in the directory.");
                         break;
                     case "?":
                         _StdOut.putText("TOPICS:")
@@ -724,9 +769,40 @@ module TSOS {
                 _StdOut.putText("No process with that PID.");
             }
 
+        }
+
+        public shellCreate(args) {
+
+            if (args.length > 0){
+
+                var filename = args[0];
+
+                if (filename.length <= _krnFileSystem.blockSize){
+
+                    _Kernel.createFile(filename);
+                }else{
+                    _StdOut.putText("File name too long - must be 60 characters or less.");
+                }
+
+            }else{
+                _StdOut.putText("Usage: create <filename> Please supply a filename string.");
+            }
+        }
 
 
+        public shellWrite(args){
 
+        }
+
+        public shellRead(args){
+
+        }
+
+        public shellDelete(args){
+
+        }
+
+        public shellList(args){
 
         }
 
