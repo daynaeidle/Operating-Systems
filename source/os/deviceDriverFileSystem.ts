@@ -242,7 +242,8 @@ module TSOS {
                 var tsb = this.getTsb(filename);
                 var currBlock = JSON.parse(sessionStorage.getItem(tsb));
                 var pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
-                console.log(JSON.parse(sessionStorage.getItem(pointerTsb)));
+                var data = JSON.parse(sessionStorage.getItem(pointerTsb));
+                console.log(this.convertToString(data));
             }else{
                 console.log("File name does not exist.");
             }
@@ -297,6 +298,16 @@ module TSOS {
         }
 
         public convertToString(str){
+
+            var index = 0;
+            var char;
+            var newStr = "";
+
+            while(index <= str.length && str[index] != "00"){
+                char = String.fromCharCode(parseInt(str[index], 16));
+                newStr+=char;
+                index++;
+            }
 
         }
 
