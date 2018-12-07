@@ -124,7 +124,7 @@ module TSOS {
 
         }
 
-
+        //write data to a file
         public writeFile(filename, str){
 
             var hexName = this.convertToAscii(filename);
@@ -145,32 +145,11 @@ module TSOS {
 
                 if (filename.length > 60){
 
-                    //separate the string into the first 60 bits and the rest
-                    var firstPart = str.substring(0, 59);
-                    var str = str.substring(60);
-
-                    //write the first 60 characters to the pointer file
-                    sessionStorage.setItem(pointerTsb, firstPart);
-
-                    //get a new pointer file to assign to the current pointer file for rest of string
-                    var newPointerTsb = this.getPointer();
-                    var newPointer = JSON.parse(sessionStorage.getItem(newPointerTsb));
-                    //change available bit of new pointer to 1
-                    newPointer[0] = "1"
-
-                    //set the new pointer to the current pointer's pointer bits
-                    for (var i = 0; i < newPointerTsb.length; i++){
-                        pointer[i + 1] = newPointerTsb[i];
-                    }
-
-                    pointer = newPointer;
-                    pointerTsb = newPointerTsb;
-
                     while (str.length > 60){
 
                         //separate the string into the first 60 bits and the rest
                         var firstPart = str.substring(0, 59);
-                        var secondPart = str.substring(60);
+                        var str = str.substring(60);
 
                         //write the first 60 characters to the pointer file
                         sessionStorage.setItem(pointerTsb, firstPart);
@@ -186,19 +165,15 @@ module TSOS {
                             pointer[i + 1] = newPointerTsb[i];
                         }
 
-                        if (secondPart.length > 60){
-                            str = secondPart;
-                            pointer = newPointer;
-                            pointerTsb = newPointerTsb;
-                        }else{
+                        pointer = newPointer;
+                        pointerTsb = newPointerTsb;
 
+                        if (str.length < 60){
+                            sessionStorage.setItem(pointerTsb, str);
                         }
 
-
-
-
-
                     }
+
 
                 }else{
                     //set the hex value of the string in the pointer block
@@ -234,18 +209,6 @@ module TSOS {
 
 
 
-        public sliceString(str){
-
-            var firstPart = str.substring(0, 59);
-            var secondPart = str.substring(60);
-
-            var parts = [firstPart, secondPart];
-
-
-
-
-        }
-
         //get tsb from a filename
         public getTsb(filename){
 
@@ -272,6 +235,17 @@ module TSOS {
 
 
         public readFile(filename){
+
+            //check if filename exists
+            if (this.fileNameExists(filename)){
+                //get the tsb and read the info at that pointer
+                var tsb = this.getTsb(filename);
+                var currBlock = JSON.parse(sessionStorage.getItem(tsb));
+                var pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
+                console.log(JSON.parse(sessionStorage.getItem(pointerTsb)));
+            }else{
+                console.log("File name does not exist.");
+            }
 
         }
 
