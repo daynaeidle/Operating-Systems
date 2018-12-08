@@ -28,7 +28,6 @@ module TSOS {
 
             if (sessionStorage){
                 console.log("im in the first if");
-                console.log("Im in the second if");
                 var tsb: string;
 
                 var lineValue = [];
@@ -44,9 +43,11 @@ module TSOS {
                 }
 
                 //create tsb for each track sector block and store in session storage with linevalue
+                sessionStorage.clear();
                 for (var i = 0; i < this.track; i++){
                     for (var j = 0; j < this.sector; j++){
-                        for (var k = 0; k < this.block; j++){
+                        for (var k = 0; k < this.block; k++){
+                            console.log("im in the loop");
                             tsb = i.toString() + j.toString() + k.toString();
                             sessionStorage.setItem(tsb, JSON.stringify(lineValue));
                         }
@@ -58,8 +59,6 @@ module TSOS {
                 console.log("Sorry your browser does not support Session Storage.");
             }
 
-            Control.loadDiskTable();
-
         }
 
 
@@ -68,7 +67,7 @@ module TSOS {
 
             var hexName = this.convertToAscii(filename);
 
-            console.log("tsb is 001" + JSON.parse(sessionStorage.getItem("001")));
+            //console.log("tsb is 001" + JSON.parse(sessionStorage.getItem("001")));
 
             //check for existing filename
 
@@ -81,7 +80,7 @@ module TSOS {
                         for (var k = 0; k < this.block; k++){
                             var tsb = i.toString() + j.toString() + k.toString();
                             console.log("TSB: " + tsb);
-                            var currBlock = JSON.parse(sessionStorage.getItem(tsb));
+                            let currBlock = JSON.parse(sessionStorage.getItem(tsb));
                             console.log("current block \n" + currBlock);
 
                             if (tsb !== "000"){
@@ -89,9 +88,10 @@ module TSOS {
                                 //check if available bit is 0 (not in use)
                                 if (currBlock[0] == "0"){
                                     //we can use this block!
+                                    //currBlock = JSON.parse(sessionStorage.getItem(tsb));
 
                                     //set available bit to 1
-                                    currBlock[0] = "1"
+                                    currBlock[0] = "1";
 
                                     //setpointer
                                     var pointerTsb = this.getPointer();
@@ -107,10 +107,14 @@ module TSOS {
                                     for (var b = 0; b < hexName.length; b++){
                                         currBlock[b+4] = hexName[b];
                                     }
-
+                                    sessionStorage.setItem(tsb, currBlock);
+                                    console.log(currBlock);
                                     console.log("Set file name: " + hexName);
                                     console.log("Original name: " + filename);
+                                    TSOS.Control.loadDiskTable();
+                                    return;
                                 }
+
 
                             }
 
@@ -268,7 +272,7 @@ module TSOS {
 
                         var tsb = i.toString() + j.toString() + k.toString();
 
-                        var dirFileName = JSON.parse(sessionStorage.getItem(tsb));
+                        var dirFileName = sessionStorage.getItem(tsb);
 
                         if (dirFileName == filename){
 

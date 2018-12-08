@@ -6,10 +6,6 @@
   background-color: white;
 }
 
-
-
-
-
 .normal_button{
 
   background-color: deepskyblue;
@@ -27,9 +23,6 @@
   margin-right: auto;
   width: 50%;
 }
-
-
-
 
 body {
   background: #909193 url(distrib/images/coloreddonuts.jpg) repeat;
@@ -111,9 +104,7 @@ p1{
 }
 
 td {
-
   text-align: center;
-
 }
 
 #cpuDisplay{
@@ -147,8 +138,23 @@ td {
 
 }
 
+#diskDisplay{
+  border: 3px solid coral;
+  border-radius: 4px;
+  background-color: white;
+  overflow: auto;;
+  text-align: center;
+  width: 500px;
+  height: 300px;
+  margin: auto;
+}
+
 .tableId{
   border-bottom: 3px solid purple;
+}
+
+.diskTableId{
+  border-bottom: 3px solid coral;
 }
 
 .table{

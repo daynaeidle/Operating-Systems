@@ -165,8 +165,6 @@ module TSOS {
             var hexVar = 0;
 
             for (var i = 0; i < _Memory.mainMem.length; i++){
-
-
                 row.push(_Memory.mainMem[i]);
 
                 if (row.length == 8){
@@ -242,45 +240,42 @@ module TSOS {
 
 
         public static loadDiskTable(){
-            /*
-            var table = (<HTMLTableElement> document.getElementById("diskTable"));
 
-            var rowNum = 0;
+            var table = "";
 
             for (var i = 0; i < _krnFileSystem.track; i++){
                 for (var j = 0; j < _krnFileSystem.sector; j++){
-                    for (var k = 0; k < _krnFileSystem.block; ){
+                    for(var k = 0; k < _krnFileSystem.block; k++){
                         var tsb = i.toString() + j.toString() + k.toString();
+
+                        var value = JSON.parse(sessionStorage.getItem(tsb));
+
                         var tsbString = i + ":" + j + ":" + k;
 
-                        var row = table.insertRow(rowNum);
+                        var availableBit = value[0];
 
-                        var tsbDisplay = row.insertCell(0);
-                        tsbDisplay.innerHTML = tsbString;
+                        var pointer = value[1] + ":" + value[2] + ":" + value[3];
 
-                        var currTsb = JSON.parse(sessionStorage.getItem(tsb));
-
-                        var availableBit = row.insertCell(1);
-                        availableBit.innerHTML = currTsb[0];
-
-                        var pointer = row.insertCell(2);
-                        pointer.innerHTML = currTsb[1] + ":" + currTsb[2] + ":" + currTsb[3];
-
-                        var data = row.insertCell(3);
-                        var dataVal = "";
-
-                        for (var a = 4; a < currTsb.length; a++){
-                            dataVal += currTsb[a];
+                        var data = []
+                        for (var a = 4; a < value.length; a++){
+                            data[a-4] = value[a];
                         }
 
-                        data.innerHTML = dataVal;
+                        var html =
+                            `<tr>` +
+                            `<td>${tsbString}</td>`+
+                            `<td>${availableBit}</td>`+
+                            `<td>${pointer}</td>`+
+                            `<td>${data.join("")}</td>`+
+                            `</tr>`
 
-                        rowNum++;
+                        table += html;
                     }
                 }
-            }*/
+            }
 
 
+            document.getElementById('diskTable').innerHTML = table;
 
         }
     }
