@@ -265,8 +265,10 @@ module TSOS {
 
         public readFile(filename){
 
+            var hexName = this.convertToAscii(filename)
+
             //check if filename exists
-            if (this.fileNameExists(filename)){
+            if (this.fileNameExists(hexName)){
                 //get the tsb of the file and data at that block
                 var tsb = this.getTsb(filename);
                 var currBlock = JSON.parse(sessionStorage.getItem(tsb));
@@ -275,19 +277,24 @@ module TSOS {
                 var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
                 //get the pointer's pointer
                 var newPointerTsb = pointer[1] + pointer[2] + pointer[3];
-                var hexStr = "";
+                var hexArr = []
                 var str = "";
 
                 if (newPointerTsb == "000"){
                     //grab the data from the pointer and convert hexstring to regular string
                     for (var i = 4; i < pointer.length; i++){
-                        hexStr += pointer[i];
+                        if (pointer[i] != "00"){
+                            hexArr[i-4] = pointer[i];
+                        }
+
                     }
-                    str = this.convertToString(hexStr);
+                    console.log(hexArr);
+                    str = this.convertToString(hexArr);
                     return str;
                 }else{
                     while (newPointerTsb != "000"){
                         //add pointer data to hexstr
+                        console.log("filler");
 
                         //go to new pointer
 
@@ -371,19 +378,18 @@ module TSOS {
             return hexArr;
         }
 
-        public convertToString(str){
+        public convertToString(hexArr){
 
-            var index = 0;
             var char;
-            var newStr = "";
+            var str = "";
 
-            while(index <= str.length && str[index] != "00"){
-                char = String.fromCharCode(parseInt(str[index], 16));
-                newStr+=char;
-                index++;
+            for (var i = 0; i < hexArr.length; i++){
+                char = String.fromCharCode(parseInt(hexArr[i], 16));
+                str += char;
+                console.log(str);
             }
 
-            return newStr;
+            return str;
 
         }
 
