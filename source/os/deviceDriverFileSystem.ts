@@ -54,6 +54,8 @@ module TSOS {
                     }
                 }
 
+
+
             }else{
 
                 console.log("Sorry your browser does not support Session Storage.");
@@ -80,15 +82,13 @@ module TSOS {
                         for (var k = 0; k < this.block; k++){
                             var tsb = i.toString() + j.toString() + k.toString();
                             console.log("TSB: " + tsb);
-                            let currBlock = JSON.parse(sessionStorage.getItem(tsb));
-                            console.log("current block \n" + currBlock);
+                            var currBlock = JSON.parse(sessionStorage.getItem(tsb));
 
                             if (tsb !== "000"){
 
                                 //check if available bit is 0 (not in use)
                                 if (currBlock[0] == "0"){
                                     //we can use this block!
-                                    //currBlock = JSON.parse(sessionStorage.getItem(tsb));
 
                                     //set available bit to 1
                                     currBlock[0] = "1";
@@ -102,16 +102,15 @@ module TSOS {
                                     //set pointer tsb available bit to 1
                                     var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
                                     pointer[0] = "1";
+                                    sessionStorage.setItem(pointerTsb, JSON.stringify(pointer));
 
                                     //set filename starting at index 4
                                     for (var b = 0; b < hexName.length; b++){
                                         currBlock[b+4] = hexName[b];
                                     }
-                                    sessionStorage.setItem(tsb, currBlock);
-                                    console.log(currBlock);
+                                    sessionStorage.setItem(tsb, JSON.stringify(currBlock));
                                     console.log("Set file name: " + hexName);
                                     console.log("Original name: " + filename);
-                                    TSOS.Control.loadDiskTable();
                                     return;
                                 }
 

@@ -243,14 +243,16 @@ module TSOS {
 
             var table = "";
 
-            for (var i = 0; i < _krnFileSystem.track; i++){
-                for (var j = 0; j < _krnFileSystem.sector; j++){
-                    for(var k = 0; k < _krnFileSystem.block; k++){
-                        var tsb = i.toString() + j.toString() + k.toString();
+            //for (var i = 0; i < _krnFileSystem.track; i++){
+              //  for (var j = 0; j < _krnFileSystem.sector; j++){
+                //    for(var k = 0; k < _krnFileSystem.block; k++){
+                  //      var tsb = i.toString() + j.toString() + k.toString();
+                    for (var i = 0; i < sessionStorage.length; i++){
+                        var tsb = sessionStorage.key(i);
 
                         var value = JSON.parse(sessionStorage.getItem(tsb));
 
-                        var tsbString = i + ":" + j + ":" + k;
+                        var tsbString = tsb[0] + ":" + tsb[1] + ":" + tsb[2];
 
                         var availableBit = value[0];
 
@@ -271,8 +273,11 @@ module TSOS {
 
                         table += html;
                     }
-                }
-            }
+
+
+                //    }
+              //  }
+            //}
 
 
             document.getElementById('diskTable').innerHTML = table;

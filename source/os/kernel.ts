@@ -132,6 +132,7 @@ module TSOS {
 
             TSOS.Control.createMemoryTable();
             TSOS.Control.loadDiskTable();
+
         }
 
 
