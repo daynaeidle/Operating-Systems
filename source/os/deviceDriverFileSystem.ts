@@ -71,7 +71,9 @@ module TSOS {
                     for (var j = 0; j < this.sector; j++){
                         for (var k = 0; k < this.block; k++){
                             var tsb = i.toString() + j.toString() + k.toString();
-                            console.log("TSB: " + tsb);
+                            if (tsb == "100"){
+                                return "Disk space is full."
+                            }
                             var currBlock = JSON.parse(sessionStorage.getItem(tsb));
 
                             if (tsb !== "000"){
