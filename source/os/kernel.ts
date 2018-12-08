@@ -565,6 +565,9 @@ module TSOS {
 
         public readFile(filename: string,){
 
+            var message = _krnFileSystem.readFile(filename);
+            _StdOut.putText(message);
+
         }
 
         public deleteFile(filename: string){

@@ -555,7 +555,7 @@ module TSOS {
                     _Status += item + " ";
                 }
             } else{
-                _StdOut.putText("Usage: status <string>  Please supply a string.")
+                _StdOut.putText("Usage: status <string>  Please supply a string.");
             }
         }
 
@@ -778,14 +778,13 @@ module TSOS {
                 var filename = args[0];
 
                 if (filename.length <= _krnFileSystem.blockSize){
-
                     _Kernel.createFile(filename);
                 }else{
                     _StdOut.putText("File name too long - must be 60 characters or less.");
                 }
 
             }else{
-                _StdOut.putText("Usage: create <filename> Please supply a filename string.");
+                _StdOut.putText("Usage: create <filename> Please supply a filename.");
             }
         }
 
@@ -794,22 +793,23 @@ module TSOS {
 
             if (args.length > 1){
 
-                console.log(args);
-
+                //set filename to args[0] and str to args[1] to start
                 var filename = args[0];
 
                 var str = args[1];
 
+                //loop through args to get all of string content into str - separating with spaces
                 for (var i = 2; i < args.length; i++){
                     str = str + " " + args[i];
                 }
 
+                //check if user pur string in double quotes
                 if (str[0] == '"' && str[str.length - 1] == '"'){
-                    console.log(str[0]);
-                    console.log(str[str.length-1]);
+                    //if they did, remove the quotes and call the writefile function in kernel
                     str = str.substring(1, str.length-1);
                     _Kernel.writeFile(filename, str);
                 }else{
+                    //if not - tell them to
                     _StdOut.putText("String must be in double quotes");
                 }
 
@@ -820,6 +820,13 @@ module TSOS {
         }
 
         public shellRead(args){
+
+            if (args.length > 0){
+                var filename = args[0];
+                _Kernel.readFile(filename);
+            }else{
+                _StdOut.putText("Usage: read <filename>  Please supply a filename.")
+            }
 
         }
 
