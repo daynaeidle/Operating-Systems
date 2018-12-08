@@ -242,11 +242,6 @@ module TSOS {
         public static loadDiskTable(){
 
             var table = "";
-
-            //for (var i = 0; i < _krnFileSystem.track; i++){
-              //  for (var j = 0; j < _krnFileSystem.sector; j++){
-                //    for(var k = 0; k < _krnFileSystem.block; k++){
-                  //      var tsb = i.toString() + j.toString() + k.toString();
                     for (var i = 0; i < sessionStorage.length; i++){
                         var tsb = sessionStorage.key(i);
 
@@ -273,12 +268,6 @@ module TSOS {
 
                         table += html;
                     }
-
-
-                //    }
-              //  }
-            //}
-
 
             document.getElementById('diskTable').innerHTML = table;
 

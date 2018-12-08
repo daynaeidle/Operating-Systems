@@ -267,14 +267,41 @@ module TSOS {
 
             //check if filename exists
             if (this.fileNameExists(filename)){
-                //get the tsb and read the info at that pointer
+                //get the tsb of the file and data at that block
                 var tsb = this.getTsb(filename);
                 var currBlock = JSON.parse(sessionStorage.getItem(tsb));
+                //find the pointer of the filename block
                 var pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
-                var data = JSON.parse(sessionStorage.getItem(pointerTsb));
-                console.log(this.convertToString(data));
+                var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
+                //get the pointer's pointer
+                var newPointerTsb = pointer[1] + pointer[2] + pointer[3];
+                var hexStr = "";
+                var str = "";
+
+                if (newPointerTsb == "000"){
+                    //grab the data from the pointer and convert hexstring to regular string
+                    for (var i = 4; i < pointer.length; i++){
+                        hexStr += pointer[i];
+                    }
+                    str = this.convertToString(hexStr);
+                    return str;
+                }else{
+                    while (newPointerTsb != "000"){
+                        //add pointer data to hexstr
+
+                        //go to new pointer
+
+                        //grab that data
+
+                        //check pointer tsb there
+
+                        //repeat if necessary
+                    }
+                }
+
+
             }else{
-                console.log("File name does not exist.");
+                return "File name does not exist.";
             }
 
         }
@@ -355,6 +382,8 @@ module TSOS {
                 newStr+=char;
                 index++;
             }
+
+            return newStr;
 
         }
 
