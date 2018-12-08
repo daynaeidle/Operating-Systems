@@ -585,8 +585,14 @@ module TSOS {
                             currBlock[a+4] = hexName[a];
                         }
 
-                        //find pointer
+                        //find pointertsb
                         var pointerTsb = this.getPointer();
+
+                        var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
+
+                        //set available bit of pointer to 1
+                        pointer[0] = "1";
+                        sessionStorage.setItem(pointerTsb, JSON.stringify(pointer));
 
                         //update pointer bits on filename block
                         for (var b = 1; b < 4; b++){
@@ -596,7 +602,7 @@ module TSOS {
                         sessionStorage.setItem(tsb, JSON.stringify(currBlock));
 
                         //write process to pointer file
-                        this.writeFile(filename, userProg);
+                        this.writeProcessToDisk(pointerTsb, userProg);
 
                         _Kernel.createProcess(-1);
                         return "Program loaded onto disk with process ID: " + pid;
@@ -615,6 +621,70 @@ module TSOS {
         }
 
         public getProcessFromDisk(){
+
+        }
+
+
+        public writeProcessToDisk(tsb, proc){
+
+            if (proc.length > 60){
+
+                var tempProc = proc;
+
+                var offset = 0;
+
+                while (tempProc > 60){
+
+                    var firstPart = [];
+
+                    for (var i = 0; i < 60; i++){
+                        firstPart[i] = proc[i + offset];
+                        tempProc.pop();
+                    }
+
+                    //get a new pointer file to assign to the current pointer file for rest of string
+                    var newPointerTsb = this.getPointer();
+                    var newPointer = JSON.parse(sessionStorage.getItem(newPointerTsb));
+                    //change available bit of new pointer to 1
+                    newPointer[0] = "1";
+                    sessionStorage.setItem(newPointerTsb, JSON.stringify(newPointer));
+
+                    //update original pointer bits with new pointer tsb
+                    for (var i = 1; i < 4; i++){
+                        currBlock[i] = newPointerTsb[i-1];
+                    }
+
+                    //update pointer file with firstpart
+                    for (var j = 0; j < firstPart.length; j++){
+                        currBlock[j+4] = firstPart[j];
+                    }
+
+                    //write the first 60 characters to the pointer file in sessionstorage
+                    sessionStorage.setItem(tsb, JSON.stringify(currBlock));
+
+                    tsb = newPointer;
+                    currBlock = newPointerTsb;
+
+                    if (proc.length < 60){
+                        for (var k = 0; k < proc.length; k++){
+                            currBlock[k+4] = proc[k + offset];
+                        }
+                        sessionStorage.setItem(tsb, JSON.stringify(currBlock));
+                    }
+
+                    offset+=60;
+
+                }
+
+            }else{
+                var currBlock = JSON.parse(sessionStorage.getItem(tsb));
+                for (var a = 0; a < proc.length; a++){
+                    currBlock[a+4] = proc[a];
+                }
+
+                sessionStorage.setItem(tsb, JSON.stringify(currBlock));
+            }
+
 
         }
 
