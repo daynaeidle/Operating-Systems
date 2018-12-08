@@ -572,6 +572,9 @@ module TSOS {
 
         public deleteFile(filename: string){
 
+            var message = _krnFileSystem.deleteFile(filename);
+            _StdOut.putText(message);
+
         }
 
         public listFiles(){

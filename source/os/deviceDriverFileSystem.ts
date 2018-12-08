@@ -140,9 +140,9 @@ module TSOS {
                     while (str.length > 60){
 
                         //separate the string into the first 60 bits and the rest
-                        var firstPart = str.substring(0, 59);
+                        var firstPart = str.substring(0, 60);
                         firstPart = this.convertToAscii(firstPart);
-                        var str = str.substring(60);
+                        var str = str.substring(61);
 
                         //get a new pointer file to assign to the current pointer file for rest of string
                         var newPointerTsb = this.getPointer();
@@ -227,6 +227,7 @@ module TSOS {
             }
 
             var currBlock = JSON.parse(sessionStorage.getItem(tsb));
+            console.log(currBlock);
 
             for (var k = 0; k < lineValue.length; k++){
                 currBlock[k] = lineValue[k];
@@ -313,6 +314,10 @@ module TSOS {
                     return str;
                 }else{
                     while (newPointerTsb != "000"){
+
+                        //check what pointer bits are
+                        newPointerTsb = pointer[1] + pointer[2] + pointer[3];
+
                         //add pointer data to hexstr
                         for (var j = 4; j < pointer.length; j++){
                             if (pointer[j] != "00"){
@@ -320,16 +325,14 @@ module TSOS {
                             }
                         }
 
+                        console.log(hexArr);
+
                         //go to new pointer
                         var newPointer = JSON.parse(sessionStorage.getItem(newPointerTsb));
 
                         //set to current pointer
                         pointer = newPointer;
                         pointerTsb = newPointerTsb;
-
-                        //check what pointer bits are
-                        newPointerTsb = pointer[1] + pointer[2] + pointer[3];
-
                     }
 
                     str = this.convertToString(hexArr);
@@ -362,15 +365,18 @@ module TSOS {
                     pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
 
                     //clear the currentLine and write to session storage
-                    currBlock = this.clearLine(currBlock);
+                    currBlock = this.clearLine(tsb);
                     sessionStorage.setItem(tsb, JSON.stringify(currBlock));
 
                     //get pointer from pointer tsb
                     pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
 
                     currBlock = pointer;
+                    tsb = pointerTsb;
 
                 }
+
+                return ("Successfully deleted file: " + filename);
 
 
 

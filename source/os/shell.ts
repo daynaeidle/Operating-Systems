@@ -832,6 +832,13 @@ module TSOS {
 
         public shellDelete(args){
 
+            if (args.length > 0){
+                var filename = args[0];
+                _Kernel.deleteFile(filename);
+            }else{
+                _StdOut.putText("Usage: delete <filename>  Please supply a filename.")
+            }
+
         }
 
         public shellList(args){
