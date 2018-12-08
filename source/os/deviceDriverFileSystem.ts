@@ -266,6 +266,8 @@ module TSOS {
         public readFile(filename){
 
             var hexName = this.convertToAscii(filename)
+            var hexArr = []
+            var str = "";
 
             //check if filename exists
             if (this.fileNameExists(hexName)){
@@ -277,8 +279,7 @@ module TSOS {
                 var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
                 //get the pointer's pointer
                 var newPointerTsb = pointer[1] + pointer[2] + pointer[3];
-                var hexArr = []
-                var str = "";
+
 
                 if (newPointerTsb == "000"){
                     //grab the data from the pointer and convert hexstring to regular string
@@ -286,24 +287,32 @@ module TSOS {
                         if (pointer[i] != "00"){
                             hexArr[i-4] = pointer[i];
                         }
-
                     }
-                    console.log(hexArr);
                     str = this.convertToString(hexArr);
                     return str;
                 }else{
                     while (newPointerTsb != "000"){
                         //add pointer data to hexstr
-                        console.log("filler");
+                        for (var j = 4; j < pointer.length; j++){
+                            if (pointer[j] != "00"){
+                                hexArr.push(pointer[j]);
+                            }
+                        }
 
                         //go to new pointer
+                        var newPointer = JSON.parse(sessionStorage.getItem(newPointerTsb));
 
-                        //grab that data
+                        //set to current pointer
+                        pointer = newPointer;
+                        pointerTsb = newPointerTsb;
 
-                        //check pointer tsb there
+                        //check what pointer bits are
+                        newPointerTsb = pointer[1] + pointer[2] + pointer[3];
 
-                        //repeat if necessary
                     }
+
+                    str = this.convertToString(hexArr);
+                    return str;
                 }
 
 
@@ -380,13 +389,14 @@ module TSOS {
 
         public convertToString(hexArr){
 
+            //create empy string and variable for char
             var char;
             var str = "";
 
+            //loop through hex array and convert each character to a letter and add to string
             for (var i = 0; i < hexArr.length; i++){
                 char = String.fromCharCode(parseInt(hexArr[i], 16));
                 str += char;
-                console.log(str);
             }
 
             return str;
