@@ -883,6 +883,8 @@ module TSOS {
 
         public shellList(args){
 
+            _Kernel.listFiles();
+
         }
 
 

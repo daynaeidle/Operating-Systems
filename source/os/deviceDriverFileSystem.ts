@@ -176,8 +176,6 @@ module TSOS {
                         }
 
                     }
-
-
                 }else{
                     //set the hex value of the string in the pointer block
                     for (var a = 0; a < hexStr.length; a++){
@@ -284,7 +282,7 @@ module TSOS {
             }
         }
 
-
+        //read data in a file
         public readFile(filename){
 
             var hexName = this.convertToAscii(filename)
@@ -342,10 +340,9 @@ module TSOS {
             }else{
                 return "File name does not exist.";
             }
-
         }
 
-
+        //delete a file
         public deleteFile(filename){
 
             var hexName = this.convertToAscii(filename);
@@ -432,7 +429,7 @@ module TSOS {
 
         }
 
-
+        //check if filename exists
         public fileNameExists(filename){
             //loop through disk and look for matching filename
             for (var i = 0; i < this.track; i++){
@@ -478,6 +475,7 @@ module TSOS {
 
         }
 
+        //convert string to ascii to hex
         public convertToAscii(data){
 
             //create an empty array for the new hex values for each letter
@@ -492,6 +490,7 @@ module TSOS {
             return hexArr;
         }
 
+        //convert hex to ascii to string
         public convertToString(hexArr){
 
             //create empy string and variable for char
@@ -527,6 +526,39 @@ module TSOS {
                     }
                 }
             }
+        }
+
+        public listFiles(){
+            var track = "0";
+            var filenames = [];
+
+            //loop through first dir (0) and skip MBR
+            for (var i = 0; i < this.sector; i++){
+                for (var j = 1; j < this.block; j++){
+                    var tsb = track + i.toString() + j.toString();
+                    var currBlock = JSON.parse(sessionStorage.getItem(tsb));
+
+                    if (currBlock[0] == "1"){
+
+                        var hexName = [];
+                        var index = 4;
+                        var filename = "";
+
+                        console.log(currBlock);
+                        while (currBlock[index] != "00"){
+                            hexName[index - 4] = currBlock[index];
+                            index++;
+                        }
+
+                        filename = this.convertToString(hexName);
+                        console.log(filename);
+                        filenames[filenames.length] = filename;
+
+                    }
+                }
+            }
+            console.log(filenames);
+            return filenames;
         }
 
     }

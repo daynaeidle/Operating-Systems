@@ -593,6 +593,13 @@ module TSOS {
 
         public listFiles(){
 
+            var filenames = _krnFileSystem.listFiles();
+
+            for (var i = 0; i < filenames.length; i++){
+                _StdOut.putText(filenames[i]);
+                _StdOut.advanceLine();
+            }
+
         }
 
 
