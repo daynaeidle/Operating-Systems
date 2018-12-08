@@ -36,12 +36,10 @@ module TSOS {
                 return this.base3;
 
             }else{
-                //return -1 if no memory is available
-                console.log("Out of memory space.");
+                //return -1 if process must go on the disk
                 return -1;
             }
-
-            //console.log("User program in memory: " + _Memory.mainMem[0]);
+            
         }
 
     }

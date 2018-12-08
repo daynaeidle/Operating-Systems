@@ -21,6 +21,8 @@ module TSOS {
                     public IR: string,
                     public turnaround: number,
                     public waittime: number,
+                    public priority: number,
+                    public location: string,
                     public Acc: number,
                     public Xreg: number,
                     public Yreg: number,
@@ -37,6 +39,8 @@ module TSOS {
             this.IR = "-";
             this.turnaround = 0;
             this.waittime = 0;
+            this.priority = 0;
+            this.location = "-";
             this.Acc = 0;
             this.Xreg = 0;
             this.Yreg = 0;

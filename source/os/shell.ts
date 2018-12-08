@@ -609,9 +609,11 @@ module TSOS {
                     var base = _MemoryManager.loadMem(_userProgram);
                     console.log("Base on load: " + base);
                     if (base == -1){
-                        _StdOut.putText("Out of memory.");
+                        _StdOut.putText("Program loaded onto disk with Process ID: " + _Pid);
+                        //call kernel to create a new process
+                        _Kernel.loadProcessToDisk(_Pid, _userProgram);
                     }else{
-                        _StdOut.putText("Program loaded into memory with Process ID " + _Pid);
+                        _StdOut.putText("Program loaded into memory with Process ID: " + _Pid);
                         //call kernel to create a new process
                         _Kernel.createProcess(base);
                     }

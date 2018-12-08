@@ -563,6 +563,61 @@ module TSOS {
             return filenames;
         }
 
+        public loadProcessToDisk(pid, userProg){
+
+            var foundLoc = false;
+
+            for (var j = 0; j < this.sector; j++){
+                for (var k = 1; k < this.block; k++){
+                    var tsb = "0" + j.toString() + k.toString();
+                    var currBlock = JSON.parse(sessionStorage.getItem(tsb));
+
+                    if (currBlock[0] == "0"){
+                        foundLoc = true;
+
+                        //change available bit to 1
+                        currBlock[0] = "1";
+
+                        //write process and pid as file name
+                        var filename = ("process: " + pid);
+                        var hexName = this.convertToAscii(filename);
+                        for (var a = 0; a < hexName.length; a++){
+                            currBlock[a+4] = hexName[a];
+                        }
+
+                        //find pointer
+                        var pointerTsb = this.getPointer();
+
+                        //update pointer bits on filename block
+                        for (var b = 1; b < 4; b++){
+                            currBlock[b] = pointerTsb[b-1];
+                        }
+
+                        sessionStorage.setItem(tsb, JSON.stringify(currBlock));
+
+                        //write process to pointer file
+                        this.writeFile(filename, userProg);
+
+                        _Kernel.createProcess(-1);
+                        return "Program loaded onto disk with process ID: " + pid;
+
+                    }
+                }
+            }
+
+            if (foundLoc == false){
+                return "Disk is full. Program could not be loaded."
+            }
+
+
+
+
+        }
+
+        public getProcessFromDisk(){
+
+        }
+
     }
 }
 

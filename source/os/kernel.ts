@@ -59,7 +59,7 @@ module TSOS {
 
 
             //pcb setting in bootstrap
-            _currPcb = new Pcb("-", 0, "-", 0, "-", 0, 0, 0, 0, 0, 0);
+            _currPcb = new Pcb("-", 0, "-", 0, "-", 0, 0, 0, "-", 0, 0, 0, 0);
 
             _ResidentQueue = new Queue();
             _ReadyQueue = new Queue();
@@ -216,7 +216,7 @@ module TSOS {
         public createProcess(base: number){
 
             //create a new process control block based on base of program in memory
-            var newProcess = new Pcb(_Pid.toString(), base, "Resident", 0, "-", 0, 0, 0, 0, 0, 0);
+            var newProcess = new Pcb(_Pid.toString(), base, "Resident", 0, "-", 0, 0, 0, "-", 0, 0, 0, 0);
 
             //update pcb table
             TSOS.Control.updatePCBTable(newProcess.PID,
@@ -547,9 +547,18 @@ module TSOS {
             _CpuScheduler.setCPU()
         }
 
+        public loadProcessToDisk(pid, userProgram){
+            _krnFileSystem.loadProcessToDisk(pid, userProgram);
 
+        }
+
+
+
+
+        //
         //file modification functions
         //calls functions in file system device driver and prints out the response to the console
+        //
         public createFile(filename: string){
 
             var message = _krnFileSystem.createFile(filename);
@@ -601,6 +610,7 @@ module TSOS {
             }
 
         }
+
 
 
 
