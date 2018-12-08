@@ -557,6 +557,8 @@ module TSOS {
 
         public writeFile(filename: string, data: string){
 
+            _krnFileSystem.writeFile(filename, data);
+
         }
 
         public readFile(filename: string,){

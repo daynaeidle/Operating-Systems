@@ -155,7 +155,7 @@ module TSOS {
                         var str = str.substring(60);
 
                         //write the first 60 characters to the pointer file
-                        sessionStorage.setItem(pointerTsb, firstPart);
+                        sessionStorage.setItem(pointerTsb, JSON.stringify(firstPart));
 
                         //get a new pointer file to assign to the current pointer file for rest of string
                         var newPointerTsb = this.getPointer();
@@ -172,7 +172,7 @@ module TSOS {
                         pointerTsb = newPointerTsb;
 
                         if (str.length < 60){
-                            sessionStorage.setItem(pointerTsb, str);
+                            sessionStorage.setItem(pointerTsb, JSON.stringify(str));
                         }
 
                     }
@@ -262,21 +262,31 @@ module TSOS {
         public fileNameExists(filename){
 
             //boolean var for filenameexists
-            var filenameExists = false;
+
 
             //loop through disk and look for matching filename
             for (var i = 0; i < this.track; i++){
                 for (var j = 0; j < this.sector; j++){
                     for (var k = 0; k < this.block; k++){
 
+                        var filenameExists = true;
+
                         var tsb = i.toString() + j.toString() + k.toString();
 
-                        var dirFileName = sessionStorage.getItem(tsb);
+                        var dirFileName = JSON.parse(sessionStorage.getItem(tsb));
 
-                        if (dirFileName == filename){
 
-                            filenameExists = true;
+                        for (var a = 0; a < filename.length; a++){
+                            console.log(dirFileName[a + 4] == filename[a]);
+                            if (dirFileName[a + 4] != filename[a]){
+                                filenameExists = false;
+                            }
 
+
+                        }
+                        console.log("after eval:" + filenameExists);
+                        if (filenameExists){
+                            return filenameExists;
                         }
                     }
                 }

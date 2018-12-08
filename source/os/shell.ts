@@ -792,6 +792,18 @@ module TSOS {
 
         public shellWrite(args){
 
+            if (args.length > 1){
+
+                var filename = args[0];
+
+                var str = args[1];
+
+                _Kernel.writeFile(filename, str);
+
+            }else{
+                _StdOut.putText("Usage: write <filename> \"string\" Please supply a filename and a string.");
+            }
+
         }
 
         public shellRead(args){
