@@ -183,6 +183,18 @@ module TSOS {
                                   " - Lists all files.");
             this.commandList[this.commandList.length] = sc;
 
+            //format full
+            sc = new ShellCommand(this.shellFormat,
+                                  "format",
+                                  " -full - Formats first four bits of every block");
+            this.commandList[this.commandList.length] = sc;
+
+            //format quick
+            sc = new ShellCommand(this.shellFormat,
+                                  "format",
+                                  "-quick - Formats all data in disk.");
+            this.commandList[this.commandList.length] = sc;
+
             //
             // Display the initial prompt.
             this.putPrompt();
@@ -424,6 +436,12 @@ module TSOS {
                         break;
                     case "ls":
                         _StdOut.putText("Ls lists all of the files in the directory.");
+                        break;
+                    case "format -quick":
+                        _StdOut.putText("Format -quick formats the first four bits (avaiable bit and pointer bits) of every block in disk.");
+                        break;
+                    case "format -full":
+                        _StdOut.putText("Format -full formats entire disk, all bits of every block.");
                         break;
                     case "?":
                         _StdOut.putText("TOPICS:")
@@ -840,6 +858,28 @@ module TSOS {
             }
 
         }
+
+        public shellFormat(args){
+
+            console.log(args);
+
+            if (args.length > 0){
+                var typeFormat = args[0];
+                console.log(typeFormat);
+
+                if (typeFormat == "-quick"){
+                    _Kernel.formatQuick();
+                }else if (typeFormat == "-full"){
+                    _Kernel.formatFull();
+                }else{
+                    _StdOut.putText("Need -quick or -full after format command.");
+                }
+            }else{
+                _StdOut.putText("Usage: format -quick or format -full to format the disk.");
+            }
+
+        }
+
 
         public shellList(args){
 

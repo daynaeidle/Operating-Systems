@@ -549,6 +549,7 @@ module TSOS {
 
 
         //file modification functions
+        //calls functions in file system device driver and prints out the response to the console
         public createFile(filename: string){
 
             var message = _krnFileSystem.createFile(filename);
@@ -573,6 +574,19 @@ module TSOS {
         public deleteFile(filename: string){
 
             var message = _krnFileSystem.deleteFile(filename);
+            _StdOut.putText(message);
+
+        }
+
+        public formatQuick(){
+            var message = _krnFileSystem.formatQuick();
+            _StdOut.putText(message);
+
+        }
+
+        public formatFull(){
+
+            var message = _krnFileSystem.formatFull();
             _StdOut.putText(message);
 
         }

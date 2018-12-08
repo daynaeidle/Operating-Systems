@@ -378,11 +378,38 @@ module TSOS {
 
                 return ("Successfully deleted file: " + filename);
 
-
-
             }else{
                 return "File name does not exist.";
             }
+        }
+
+        public formatQuick(){
+
+            var diskSize = this.track * this.block * this.sector;
+
+            if (_CPU.isExecuting){
+                return "Cannot format disk while CPU is executing.";
+            }else{
+                for (var i = 0; i < diskSize; i++){
+                    var tsb = sessionStorage.key(i);
+                    var currBlock = JSON.parse(sessionStorage.getItem(tsb));
+
+                    for (var a = 0; a < 4; a++){
+                        currBlock[a] = "0";
+                    }
+
+                    console.log(tsb);
+                    console.log(currBlock);
+                    sessionStorage.setItem(tsb, JSON.stringify(currBlock));
+                }
+
+                return "Successfully formatted disk (quickly)";
+
+            }
+
+        }
+
+        public formatFull(){
 
         }
 
