@@ -40,17 +40,17 @@ module TSOS {
 
 
         private clearLine(): void {
-            console.log("Line Height: " + _DefaultFontSize +
-                _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
-                _FontHeightMargin);
+            ///console.log("Line Height: " + _DefaultFontSize +
+               // _DrawingContext.fontDescent(this.currentFont, this.currentFontSize) +
+                //_FontHeightMargin);
             //set the prompt string to a variable
             var prompt = _OsShell.promptStr;
             //get the length of the prompt string
             var promptLen = _DrawingContext.measureText(this.currentFont, this.currentFontSize, prompt);
-            console.log("Prompt len: " + promptLen);
+            //console.log("Prompt len: " + promptLen);
             //clear everything on the current line after the prompt string
-            console.log("Font size: " + _DefaultFontSize);
-            console.log("Margin: " + _FontHeightMargin);
+            //console.log("Font size: " + _DefaultFontSize);
+            //console.log("Margin: " + _FontHeightMargin);
             _DrawingContext.clearRect(promptLen, //start after the prompt
                                       this.currentYPosition - (_DefaultFontSize +
                                         _DrawingContext.fontDescent(this.currentFont, this.currentFontSize)), //start at the y position above the line (not including margins)

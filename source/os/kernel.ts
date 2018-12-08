@@ -551,13 +551,15 @@ module TSOS {
         //file modification functions
         public createFile(filename: string){
 
-            _krnFileSystem.createFile(filename);
+            var message = _krnFileSystem.createFile(filename);
+            _StdOut.putText(message);
 
         }
 
         public writeFile(filename: string, data: string){
 
-            _krnFileSystem.writeFile(filename, data);
+            var message = _krnFileSystem.writeFile(filename, data);
+            _StdOut.putText(message);
 
         }
 

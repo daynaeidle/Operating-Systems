@@ -24,10 +24,7 @@ module TSOS {
             this.status = "loaded";
             // More?
 
-            console.log("Im in the driver entry");
-
             if (sessionStorage){
-                console.log("im in the first if");
                 var tsb: string;
 
                 var lineValue = [];
@@ -47,15 +44,11 @@ module TSOS {
                 for (var i = 0; i < this.track; i++){
                     for (var j = 0; j < this.sector; j++){
                         for (var k = 0; k < this.block; k++){
-                            console.log("im in the loop");
                             tsb = i.toString() + j.toString() + k.toString();
                             sessionStorage.setItem(tsb, JSON.stringify(lineValue));
                         }
                     }
                 }
-
-
-
             }else{
 
                 console.log("Sorry your browser does not support Session Storage.");
@@ -65,16 +58,13 @@ module TSOS {
 
 
         //create a new file
-        public createFile(filename){
+        public createFile(filename): string{
 
             var hexName = this.convertToAscii(filename);
 
-            //console.log("tsb is 001" + JSON.parse(sessionStorage.getItem("001")));
-
             //check for existing filename
-
             if (this.fileNameExists(hexName)){
-                console.log("File name already exists.");
+                return "File name already exists.";
             }else{
                 //loop through disk to find first available block after MBR
                 for (var i = 0; i < this.track; i++){
@@ -111,20 +101,13 @@ module TSOS {
                                     sessionStorage.setItem(tsb, JSON.stringify(currBlock));
                                     console.log("Set file name: " + hexName);
                                     console.log("Original name: " + filename);
-                                    return;
+                                    return ("Successfully created file: " + filename);
                                 }
-
-
                             }
-
                         }
                     }
-
                 }
-
             }
-
-
         }
 
         //write data to a file
@@ -135,44 +118,61 @@ module TSOS {
             //check if filename exists
             if (this.fileNameExists(hexName)){
 
+                //get tsb from the given filename
                 var currTsb = this.getTsb(filename);
 
-                //find pointerlocation
-                var pointerTsb = currTsb[1] + currTsb[2] + currTsb[3];
+                //get current block from that tsb
+                var currBlock = JSON.parse(sessionStorage.getItem(currTsb));
 
-                //clear current data
+                //find pointerlocation of that tsb
+                var pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
+
+                //clear current data at the pointer
                 var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
                 pointer = this.clearData(pointerTsb);
 
+                //convert the given string to a hexstring
                 var hexStr = this.convertToAscii(str);
 
-                if (filename.length > 60){
+                if (str.length > 60){
 
+                    //continue this loop until string is no longer 60 characters
                     while (str.length > 60){
 
                         //separate the string into the first 60 bits and the rest
                         var firstPart = str.substring(0, 59);
+                        firstPart = this.convertToAscii(firstPart);
                         var str = str.substring(60);
-
-                        //write the first 60 characters to the pointer file
-                        sessionStorage.setItem(pointerTsb, JSON.stringify(firstPart));
 
                         //get a new pointer file to assign to the current pointer file for rest of string
                         var newPointerTsb = this.getPointer();
                         var newPointer = JSON.parse(sessionStorage.getItem(newPointerTsb));
                         //change available bit of new pointer to 1
-                        newPointer[0] = "1"
+                        newPointer[0] = "1";
+                        sessionStorage.setItem(newPointerTsb, JSON.stringify(newPointer));
 
-                        //set the new pointer to the current pointer's pointer bits
-                        for (var i = 0; i < newPointerTsb.length; i++){
-                            pointer[i + 1] = newPointerTsb[i];
+                        //update original pointer bits with new pointer tsb
+                        for (var i = 1; i < 4; i++){
+                            pointer[i] = newPointerTsb[i-1];
                         }
+
+                        //update pointer file with firstpart
+                        for (var j = 0; j < firstPart.length; j++){
+                            pointer[j+4] = firstPart[j];
+                        }
+
+                        //write the first 60 characters to the pointer file in sessionstorage
+                        sessionStorage.setItem(pointerTsb, JSON.stringify(pointer));
 
                         pointer = newPointer;
                         pointerTsb = newPointerTsb;
 
                         if (str.length < 60){
-                            sessionStorage.setItem(pointerTsb, JSON.stringify(str));
+                            str = this.convertToAscii(str);
+                            for (var k = 0; k < str.length; k++){
+                                pointer[k+4] = str[k];
+                            }
+                            sessionStorage.setItem(pointerTsb, JSON.stringify(pointer));
                         }
 
                     }
@@ -180,14 +180,17 @@ module TSOS {
 
                 }else{
                     //set the hex value of the string in the pointer block
-                    sessionStorage.setItem(pointerTsb, JSON.stringify(hexStr));
+                    for (var a = 0; a < hexStr.length; a++){
+                        pointer[a+4] = hexStr[a];
+                    }
+                    sessionStorage.setItem(pointerTsb, JSON.stringify(pointer));
                     console.log(hexStr + " - original: " + str + " - wrote to " + pointerTsb);
                 }
 
-
+                return ("Successfull wrote to file: " + filename);
 
             }else{
-                console.log("Filename does not exist.")
+                return ("Filename does not exist");
             }
 
         }
@@ -213,7 +216,7 @@ module TSOS {
 
 
         //get tsb from a filename
-        public getTsb(filename){
+        public getTsb(filename): string{
 
             var hexName = this.convertToAscii(filename);
 
@@ -221,19 +224,42 @@ module TSOS {
                 for (var j = 0; j < this.sector; j++){
                     for (var k = 0; k < this.block; k++){
 
+                        //boolean var for filename exists set tot true
+                        var filenameExists = true;
+
+                        //set tsb var
                         var tsb = i.toString() + j.toString() + k.toString();
 
-                        var currFilename = JSON.parse(sessionStorage.getItem(tsb));
+                        //get the filename in disk
+                        var dirFileName = JSON.parse(sessionStorage.getItem(tsb));
 
-                        if (currFilename == hexName){
-                            return tsb;
+                        //loop through filename and dirfilename and check for matches in each letter
+                        for (var a = 0; a < hexName.length; a++){
+                            //console.log(dirFileName[a + 4] == filename[a]);
+                            //if any are different, set filename exists to false
+                            if (dirFileName[a + 4] != hexName[a]){
+                                filenameExists = false;
+                            }
+
+                        }
+                        //if filenameexists is true after looping through filename
+                        //check next character of dirfilename in case name is longer than filename
+                        if (filenameExists){
+                            //if its not zero then filenames are different
+                            //so set filenameexists to false
+                            if (dirFileName[hexName.length + 4] != "00"){
+                                filenameExists = false;
+                            }
                         }
 
+                        //stop the loop if filenameexists is true
+                        if (filenameExists){
+                            console.log(tsb);
+                            return tsb;
+                        }
                     }
                 }
             }
-
-
         }
 
 
@@ -260,38 +286,46 @@ module TSOS {
 
 
         public fileNameExists(filename){
-
-            //boolean var for filenameexists
-
-
             //loop through disk and look for matching filename
             for (var i = 0; i < this.track; i++){
                 for (var j = 0; j < this.sector; j++){
                     for (var k = 0; k < this.block; k++){
 
+                        //boolean var for filename exists set tot true
                         var filenameExists = true;
 
+                        //set tsb var
                         var tsb = i.toString() + j.toString() + k.toString();
 
+                        //get the filename in disk
                         var dirFileName = JSON.parse(sessionStorage.getItem(tsb));
 
-
+                        //loop through filename and dirfilename and check for matches in each letter
                         for (var a = 0; a < filename.length; a++){
-                            console.log(dirFileName[a + 4] == filename[a]);
+                            //console.log(dirFileName[a + 4] == filename[a]);
+                            //if any are different, set filename exists to false
                             if (dirFileName[a + 4] != filename[a]){
                                 filenameExists = false;
                             }
 
-
                         }
-                        console.log("after eval:" + filenameExists);
+                        //if filenameexists is true after looping through filename
+                        //check next character of dirfilename in case name is longer than filename
+                        if (filenameExists){
+                            //if its not zero then filenames are different
+                            //so set filenameexists to false
+                            if (dirFileName[filename.length + 4] != "00"){
+                                filenameExists = false;
+                            }
+                        }
+                        //stop the loop if filenameexists is true
                         if (filenameExists){
                             return filenameExists;
                         }
                     }
                 }
             }
-
+            //return filenameexists after looping through all
             return filenameExists;
 
         }

@@ -794,11 +794,24 @@ module TSOS {
 
             if (args.length > 1){
 
+                console.log(args);
+
                 var filename = args[0];
 
                 var str = args[1];
 
-                _Kernel.writeFile(filename, str);
+                for (var i = 2; i < args.length; i++){
+                    str = str + " " + args[i];
+                }
+
+                if (str[0] == '"' && str[str.length - 1] == '"'){
+                    console.log(str[0]);
+                    console.log(str[str.length-1]);
+                    str = str.substring(1, str.length-1);
+                    _Kernel.writeFile(filename, str);
+                }else{
+                    _StdOut.putText("String must be in double quotes");
+                }
 
             }else{
                 _StdOut.putText("Usage: write <filename> \"string\" Please supply a filename and a string.");
