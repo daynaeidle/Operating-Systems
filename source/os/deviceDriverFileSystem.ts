@@ -383,13 +383,16 @@ module TSOS {
             }
         }
 
+        //format first four bits of each block
         public formatQuick(){
 
             var diskSize = this.track * this.block * this.sector;
 
+            //check if cpu is executing and dont allow formatting if it is
             if (_CPU.isExecuting){
                 return "Cannot format disk while CPU is executing.";
             }else{
+                //loop through disk and set first four bits of each block to zero
                 for (var i = 0; i < diskSize; i++){
                     var tsb = sessionStorage.key(i);
                     var currBlock = JSON.parse(sessionStorage.getItem(tsb));
@@ -398,8 +401,6 @@ module TSOS {
                         currBlock[a] = "0";
                     }
 
-                    console.log(tsb);
-                    console.log(currBlock);
                     sessionStorage.setItem(tsb, JSON.stringify(currBlock));
                 }
 
@@ -409,7 +410,25 @@ module TSOS {
 
         }
 
+        //format entirety of each block
         public formatFull(){
+
+            var diskSize = this.track * this.sector * this.block;
+
+            //check if cpu is executing and dont allow formatting if it is
+            if (_CPU.isExecuting){
+                return "Cannot format disk while CPU is executing.";
+            }else{
+                //loop through disk and initialize entire block for each block
+                for (var i = 0; i < diskSize; i++){
+                    var tsb = sessionStorage.key(i);
+                    var currBlock = JSON.parse(sessionStorage.getItem(tsb));
+                    currBlock = this.clearLine(tsb);
+                    sessionStorage.setItem(tsb, JSON.stringify(currBlock));
+                }
+
+                return "Successfully formatted disk (fully).";
+            }
 
         }
 
