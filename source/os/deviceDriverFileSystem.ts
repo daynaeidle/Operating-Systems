@@ -213,6 +213,27 @@ module TSOS {
             return currBlock;
         }
 
+        //clear everything on line including pointer val and available bit
+        public clearLine(tsb){
+
+            var lineValue = [];
+
+            for (var i = 0; i < 4; i++){
+                lineValue.push("0");
+            }
+
+            for (var j = 0; j < this.blockSize; j++){
+                lineValue.push("00");
+            }
+
+            var currBlock = JSON.parse(sessionStorage.getItem(tsb));
+
+            for (var k = 0; k < lineValue.length; k++){
+                currBlock[k] = lineValue[k];
+            }
+            return currBlock;
+        }
+
 
 
         //get tsb from a filename
@@ -315,7 +336,6 @@ module TSOS {
                     return str;
                 }
 
-
             }else{
                 return "File name does not exist.";
             }
@@ -324,6 +344,39 @@ module TSOS {
 
 
         public deleteFile(filename){
+
+            var hexName = this.convertToAscii(filename);
+            var currBlock;
+            var pointer;
+            var pointerTsb;
+
+            if (this.fileNameExists(hexName)){
+
+                //get current block and pointer tsb of that block
+                var tsb = this.getTsb(filename);
+                currBlock = JSON.parse(sessionStorage.getItem(tsb));
+                pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
+
+                while(pointerTsb != "000"){
+
+                    pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
+
+                    //clear the currentLine and write to session storage
+                    currBlock = this.clearLine(currBlock);
+                    sessionStorage.setItem(tsb, JSON.stringify(currBlock));
+
+                    //get pointer from pointer tsb
+                    pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
+
+                    currBlock = pointer;
+
+                }
+
+
+
+            }else{
+                return "File name does not exist.";
+            }
 
         }
 
