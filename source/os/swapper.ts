@@ -20,7 +20,6 @@ module TSOS {
             var tsb = _krnFileSystem.getTsb(filename);
             console.log(tsb);
             var block = JSON.parse(sessionStorage.getItem(tsb));
-            console.log(block);
             block = _krnFileSystem.clearLine(tsb);
             sessionStorage.setItem(tsb, JSON.stringify(block));
 
@@ -38,6 +37,12 @@ module TSOS {
             //and trim the ending zeroes off
             memProgram = this.trimZeroes(memProgram);
             diskProgram = this.trimZeroes(diskProgram);
+
+            console.log("disk");
+            console.log(diskProgram);
+
+            console.log("mem");
+            console.log(memProgram);
 
 
             //set disk program to main memory
