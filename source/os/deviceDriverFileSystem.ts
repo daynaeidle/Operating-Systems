@@ -601,9 +601,7 @@ module TSOS {
 
                         //write process to pointer file
                         this.writeProcessToDisk(pointerTsb, userProg);
-
-                        _Kernel.createProcess(-1);
-                        return "Program loaded onto disk with process ID: " + pid;
+                        return "SUCCESS";
 
                     }
                 }

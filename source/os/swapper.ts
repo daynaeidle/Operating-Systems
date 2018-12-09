@@ -33,13 +33,18 @@ module TSOS {
             console.log("disk");
             console.log(diskProgram);
 
-            //and trim the ending zeroes off
-            memProgram = this.trimZeroes(memProgram);
-
             console.log("memory");
             console.log(memProgram);
 
+            //and trim the ending zeroes off
+            memProgram = this.trimZeroes(memProgram);
+            diskProgram = this.trimZeroes(diskProgram);
 
+            console.log("disk");
+            console.log(diskProgram);
+
+            console.log("memory");
+            console.log(memProgram);
 
             //set disk program to main memory
             for (var j = 0; j < diskProgram.length; j++){
@@ -56,10 +61,10 @@ module TSOS {
             var trimmedProg = [];
 
             for (var i = 0; i < program.length; i++){
-                if ((program[i] != "00") && (program[i+1] != "00")){
-                    trimmedProg[i] = program[i];
-                }else{
+                if ((program[i] == "00") && (program[i+1] == "00")){
                     break;
+                }else{
+                    trimmedProg[i] = program[i];
                 }
             }
 

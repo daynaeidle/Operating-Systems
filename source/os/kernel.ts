@@ -512,7 +512,14 @@ module TSOS {
         }
 
         public loadProcessToDisk(pid, userProgram){
-            _krnFileSystem.loadProcessToDisk(pid, userProgram);
+            var outcome = _krnFileSystem.loadProcessToDisk(pid, userProgram);
+            if (outcome == "SUCCESS"){
+                _Kernel.createProcess(-1);
+                _StdOut.putText("Program loaded onto disk with process ID: " + pid);
+            }else{
+                _StdOut.putText(outcome);
+            }
+
 
         }
 
