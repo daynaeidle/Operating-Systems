@@ -195,9 +195,16 @@ module TSOS {
                                   "-quick - Formats all data in disk.");
             this.commandList[this.commandList.length] = sc;
 
+            //get schedule
             sc = new ShellCommand(this.shellGetSchedule,
                                   "getschedule",
                                   " - Displays the current scheduling algorithm.");
+            this.commandList[this.commandList.length] = sc;
+
+            //set schedule
+            sc = new ShellCommand(this.shellSetSchedule,
+                                  "setschedule",
+                                  "<rr>||<fcfs>||<priority> - Sets the current scheduling algorithm.");
             this.commandList[this.commandList.length] = sc;
 
             //
@@ -450,6 +457,9 @@ module TSOS {
                         break;
                     case "getschedule":
                         _StdOut.putText("Getschedule displays the current scheduling algorithm for CPU execution.");
+                        break;
+                    case "setschedule":
+                        _StdOut.putText("Setschedule sets the current scheduling algorithm to rr, fcfs, or priority.");
                         break;
                     case "?":
                         _StdOut.putText("TOPICS:")
@@ -909,6 +919,31 @@ module TSOS {
                 _StdOut.putText("first come, first served");
             }else{
                 _StdOut.putText("non-preemptive priority");
+            }
+
+        }
+
+        public shellSetSchedule(args){
+
+            if (args.length > 0){
+
+                var type = args[0];
+
+                if (type == "rr" ) {
+                    _schedule = type;
+                    _StdOut.putText("Scheduling algorithm set to round robin");
+                }else if (type == "fcfs") {
+                    _schedule = type;
+                    _StdOut.putText("Scheduling algorithm set to first come, first served");
+                }else if (type == "priority"){
+                    _schedule = type;
+                    _StdOut.putText("Scheduling algorithm set to non-preemptive priority");
+                }else{
+                    _StdOut.putText("Options for scheduling algorithms are: rr, fcfs, or priority");
+                }
+
+            }else{
+                _StdOut.putText("Usage: setschedule <string> - string can be rr, fcfs, or priority. Please supply a string.");
             }
 
         }
