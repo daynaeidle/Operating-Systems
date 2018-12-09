@@ -485,10 +485,20 @@ module TSOS {
         public contextSwitch(){
             console.log("in context switch");
             _currPcb.state = "Ready";
-
-            _ReadyQueue.enqueue(_currPcb);
+            var tempPcb = _currPcb;
+            //_ReadyQueue.enqueue(_currPcb);
             cpuCycles = 0;
             _CpuScheduler.getNewProc();
+            if (_currPcb.base == -1){
+                //must be swapped out
+                //call swap process with temp base
+                _currPcb.base = tempPcb.base;
+                _currPcb.location = "Memory";
+                tempPcb.base = -1;
+                tempPcb.location = "Disk;"
+            }
+
+            _ReadyQueue.enqueue(tempPcb);
             console.log("current pcb after get new proc: " + _currPcb.PID);
             _CpuScheduler.setCPU()
         }

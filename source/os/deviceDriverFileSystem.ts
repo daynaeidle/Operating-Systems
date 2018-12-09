@@ -579,7 +579,7 @@ module TSOS {
                         currBlock[0] = "1";
 
                         //write process and pid as file name
-                        var filename = ("process: " + pid);
+                        var filename = ("process:" + pid);
                         var hexName = this.convertToAscii(filename);
                         for (var a = 0; a < hexName.length; a++){
                             currBlock[a+4] = hexName[a];
@@ -620,7 +620,67 @@ module TSOS {
 
         }
 
-        public getProcessFromDisk(){
+        public getProcessFromDisk(filename){
+
+            var hexName = this.convertToAscii(filename)
+            var program = [];
+
+            //check if filename exists
+            if (this.fileNameExists(hexName)){
+                //get the tsb of the file and data at that block
+                var tsb = this.getTsb(filename);
+                var currBlock = JSON.parse(sessionStorage.getItem(tsb));
+                //find the pointer of the filename block
+                var pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
+                var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
+                //get the pointer's pointer
+                var newPointerTsb = pointer[1] + pointer[2] + pointer[3];
+
+
+                if (newPointerTsb == "000"){
+                    //grab the data from the pointer and convert hexstring to regular string
+                    for (var i = 4; i < pointer.length; i++){
+                        if (pointer[i] != "00"){
+                            program[i-4] = pointer[i];
+                        }
+                    }
+
+                    //clear pointer block
+                    pointer = this.clearLine(pointerTsb);
+                    sessionStorage.setItem(pointerTsb, JSON.stringify(pointer));
+
+                    return program;
+                }else{
+                    while (newPointerTsb != "000"){
+
+                        //check what pointer bits are
+                        newPointerTsb = pointer[1] + pointer[2] + pointer[3];
+
+                        //add pointer data to hexstr
+                        for (var j = 4; j < pointer.length; j++){
+                            if (pointer[j] != "00"){
+                                program.push(pointer[j]);
+                            }
+                        }
+
+                        //go to new pointer
+                        var newPointer = JSON.parse(sessionStorage.getItem(newPointerTsb));
+
+                        //clear the pointer line
+                        sessionStorage.setItem(pointerTsb, JSON.stringify(pointer));
+
+                        //set to current pointer
+                        pointer = newPointer;
+                        pointerTsb = newPointerTsb;
+                    }
+
+                    sessionStorage.setItem(pointerTsb, JSON.stringify(pointer));
+                    return program;
+                }
+
+            }else{
+                return "File name does not exist.";
+            }
 
         }
 
