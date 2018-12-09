@@ -4,19 +4,23 @@ module TSOS {
 
     export class Swapper {
 
-        public swapProcess(base){
+        //take in pid and base of the process being swapped into disk as arguments
+        public swapProcess(pid, base){
 
             var limit = 256;
 
             //get filename based on pid
             var filename = "process:" + _currPcb.PID;
+            console.log(filename);
 
             //gets program and clears lines along the way
             var diskProgram = _krnFileSystem.getProcessFromDisk(filename);
 
             //clear the filename line
             var tsb = _krnFileSystem.getTsb(filename);
+            console.log(tsb);
             var block = JSON.parse(sessionStorage.getItem(tsb));
+            console.log(block);
             block = _krnFileSystem.clearLine(tsb);
             sessionStorage.setItem(tsb, JSON.stringify(block));
 
@@ -30,21 +34,11 @@ module TSOS {
                 _Memory.mainMem[i + base] = "00";
             }
 
-            console.log("disk");
-            console.log(diskProgram);
-
-            console.log("memory");
-            console.log(memProgram);
 
             //and trim the ending zeroes off
             memProgram = this.trimZeroes(memProgram);
             diskProgram = this.trimZeroes(diskProgram);
 
-            console.log("disk");
-            console.log(diskProgram);
-
-            console.log("memory");
-            console.log(memProgram);
 
             //set disk program to main memory
             for (var j = 0; j < diskProgram.length; j++){
@@ -52,7 +46,7 @@ module TSOS {
             }
 
             //write memprogram to disk
-            _krnFileSystem.loadProcessToDisk(_currPcb.PID, memProgram);
+            _krnFileSystem.loadProcessToDisk(pid, memProgram);
 
         }
 

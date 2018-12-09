@@ -499,7 +499,7 @@ module TSOS {
             if (_currPcb.base == -1){
                 //must be swapped out
                 //call swap process with temp base
-                _Swapper.swapProcess(tempPcb.base);
+                _Swapper.swapProcess(tempPcb.PID, tempPcb.base);
                 _currPcb.base = tempPcb.base;
                 _currPcb.location = "Memory";
                 tempPcb.base = -1;
@@ -510,6 +510,8 @@ module TSOS {
             console.log("current pcb after get new proc: " + _currPcb.PID);
             _CpuScheduler.setCPU()
         }
+
+
 
         public loadProcessToDisk(pid, userProgram){
             var outcome = _krnFileSystem.loadProcessToDisk(pid, userProgram);
