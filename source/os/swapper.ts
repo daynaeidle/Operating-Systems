@@ -11,14 +11,12 @@ module TSOS {
 
             //get filename based on pid
             var filename = "process:" + _currPcb.PID;
-            console.log(filename);
 
             //gets program and clears lines along the way
             var diskProgram = _krnFileSystem.getProcessFromDisk(filename);
 
             //clear the filename line
             var tsb = _krnFileSystem.getTsb(filename);
-            console.log(tsb);
             var block = JSON.parse(sessionStorage.getItem(tsb));
             block = _krnFileSystem.clearLine(tsb);
             sessionStorage.setItem(tsb, JSON.stringify(block));
@@ -38,18 +36,15 @@ module TSOS {
             memProgram = this.trimZeroes(memProgram);
             diskProgram = this.trimZeroes(diskProgram);
 
-            console.log("disk");
-            console.log(diskProgram);
-
-            console.log("mem");
-            console.log(memProgram);
-
 
             //set disk program to main memory
             for (var j = 0; j < diskProgram.length; j++){
                 _Memory.mainMem[j + base] = diskProgram[j];
             }
 
+            console.log("mem");
+            console.log(memProgram);
+            console.log(pid);
             //write memprogram to disk
             _krnFileSystem.loadProcessToDisk(pid, memProgram);
 
@@ -57,17 +52,16 @@ module TSOS {
 
         public trimZeroes(program){
 
-            var trimmedProg = [];
+            var opcode = program.pop();
 
-            for (var i = 0; i < program.length; i++){
-                if ((program[i] == "00") && (program[i+1] == "00")){
-                    break;
-                }else{
-                    trimmedProg[i] = program[i];
-                }
+            while (opcode == "00"){
+                opcode = program.pop()
             }
 
-            return trimmedProg;
+            program.push(opcode);
+
+            return program;
+
 
         }
 
