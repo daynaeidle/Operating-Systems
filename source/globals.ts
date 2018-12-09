@@ -94,6 +94,7 @@ var	_MemoryAccessor: TSOS.MemoryAccessor;
 //	Software	(OS)
 var	_MemoryManager: any	= null;
 var _Pcb: TSOS.Pcb;
+var _Swapper: TSOS.Swapper;
 
 var _ResidentQueue: TSOS.Queue;
 var _ReadyQueue: TSOS.Queue;

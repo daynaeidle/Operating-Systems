@@ -227,7 +227,6 @@ module TSOS {
             }
 
             var currBlock = JSON.parse(sessionStorage.getItem(tsb));
-            console.log(currBlock);
 
             for (var k = 0; k < lineValue.length; k++){
                 currBlock[k] = lineValue[k];
@@ -276,7 +275,6 @@ module TSOS {
 
                         //stop the loop if filenameexists is true
                         if (filenameExists){
-                            console.log(tsb);
                             return tsb;
                         }
                     }
@@ -640,9 +638,7 @@ module TSOS {
                 if (newPointerTsb == "000"){
                     //grab the data from the pointer and convert hexstring to regular string
                     for (var i = 4; i < pointer.length; i++){
-                        if (pointer[i] != "00"){
-                            program[i-4] = pointer[i];
-                        }
+                        program[i-4] = pointer[i];
                     }
 
                     //clear pointer block
@@ -658,9 +654,8 @@ module TSOS {
 
                         //add pointer data to hexstr
                         for (var j = 4; j < pointer.length; j++){
-                            if (pointer[j] != "00"){
-                                program.push(pointer[j]);
-                            }
+                            program.push(pointer[j]);
+
                         }
 
                         //go to new pointer

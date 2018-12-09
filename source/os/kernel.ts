@@ -57,6 +57,9 @@ module TSOS {
             _MemoryAccessor	=	new	MemoryAccessor();
             _CpuScheduler	=	new	cpuScheduler();
 
+            //swapper
+            _Swapper = new Swapper();
+
 
             //pcb setting in bootstrap
             _currPcb = new Pcb("-", 0, "-", 0, "-", 0, 0, 0, "-", 0, 0, 0, 0);
@@ -112,6 +115,8 @@ module TSOS {
                 if (singleStepMode == true){
                     if (step == true){
                         _CPU.cycle();
+                        TSOS.Control.updatePCBTable();
+                        TSOS.Control.loadDiskTable();
                         if (runall == true){
                             _CpuScheduler.schedule();
                             _CpuScheduler.updateWaitAndTurnaround()
@@ -215,6 +220,8 @@ module TSOS {
 
         //create a new process
         public createProcess(base: number){
+
+            console.log("CALLING CREATE PROCESS");
 
             if (base == -1){
                 //create a new process control block based on base of program in disk
@@ -492,10 +499,11 @@ module TSOS {
             if (_currPcb.base == -1){
                 //must be swapped out
                 //call swap process with temp base
+                _Swapper.swapProcess(tempPcb.base);
                 _currPcb.base = tempPcb.base;
                 _currPcb.location = "Memory";
                 tempPcb.base = -1;
-                tempPcb.location = "Disk;"
+                tempPcb.location = "Disk"
             }
 
             _ReadyQueue.enqueue(tempPcb);
@@ -566,7 +574,6 @@ module TSOS {
             }
 
         }
-
 
 
 
