@@ -205,37 +205,84 @@ module TSOS {
 
         }
 
-        public static updatePCBTable(pid, state, pc, ir, acc, x, y, z, base){
+        public static updatePCBTable() {
+            var table = "";
+            var len = _ReadyQueue.getSize();
 
+            table =
+                `<tr>` +
+                `<td>PID</td>` +
+                `<td>State</td>` +
+                `<td>Location</td>` +
+                `<td>Priority</td>` +
+                `<td>IR</td>` +
+                `<td>Acc</td>` +
+                `<td>Xreg</td>` +
+                `<td>Yreg</td>` +
+                `<td>Zflag</td>` +
+                `</tr>`
 
-            if (base == 0){
-                (<HTMLElement> document.getElementById("pcb1-pid")).innerHTML = String(pid);
-                (<HTMLElement> document.getElementById("pcb1-state")).innerHTML = String(state);
-                (<HTMLElement> document.getElementById("pcb1-pc")).innerHTML = String(pc);
-                (<HTMLElement> document.getElementById("pcb1-ir")).innerHTML = ir;
-                (<HTMLElement> document.getElementById("pcb1-acc")).innerHTML = String(acc);
-                (<HTMLElement> document.getElementById("pcb1-x")).innerHTML = String(x);
-                (<HTMLElement> document.getElementById("pcb1-y")).innerHTML = String(y);
-                (<HTMLElement> document.getElementById("pcb1-z")).innerHTML = String(z);
-            } else if (base == 256){
-                (<HTMLElement> document.getElementById("pcb2-pid")).innerHTML = String(pid);
-                (<HTMLElement> document.getElementById("pcb2-state")).innerHTML = String(state);
-                (<HTMLElement> document.getElementById("pcb2-pc")).innerHTML = String(pc);
-                (<HTMLElement> document.getElementById("pcb2-ir")).innerHTML = ir;
-                (<HTMLElement> document.getElementById("pcb2-acc")).innerHTML = String(acc);
-                (<HTMLElement> document.getElementById("pcb2-x")).innerHTML = String(x);
-                (<HTMLElement> document.getElementById("pcb2-y")).innerHTML = String(y);
-                (<HTMLElement> document.getElementById("pcb2-z")).innerHTML = String(z);
+            //if theres a process set to current pcb
+            if (_currPcb.PID != "-"){
+                //write that to table first
+                var html =
+                    `<tr>` +
+                    `<td>${_currPcb.PID}</td>` +
+                    `<td>${_currPcb.state}</td>` +
+                    `<td>${_currPcb.location}</td>` +
+                    `<td>${_currPcb.priority}</td>` +
+                    `<td>${_currPcb.IR}</td>` +
+                    `<td>${_currPcb.Acc}</td>` +
+                    `<td>${_currPcb.Xreg}</td>` +
+                    `<td>${_currPcb.Yreg}</td>` +
+                    `<td>${_currPcb.Zflag}</td>` +
+                    `</tr>`
+
+                table += html;
+                //then write the ready queue
+                for (var i = 0; i < len; i++) {
+                    var thisPcb = _ReadyQueue.dequeue();
+                    html =
+                        `<tr>` +
+                        `<td>${thisPcb.PID}</td>` +
+                        `<td>${thisPcb.state}</td>` +
+                        `<td>${thisPcb.location}</td>` +
+                        `<td>${thisPcb.priority}</td>` +
+                        `<td>${thisPcb.IR}</td>` +
+                        `<td>${thisPcb.Acc}</td>` +
+                        `<td>${thisPcb.Xreg}</td>` +
+                        `<td>${thisPcb.Yreg}</td>` +
+                        `<td>${thisPcb.Zflag}</td>` +
+                        `</tr>`
+
+                    table += html;
+                    _ReadyQueue.enqueue(thisPcb);
+                }
             }else{
-                (<HTMLElement> document.getElementById("pcb3-pid")).innerHTML = String(pid);
-                (<HTMLElement> document.getElementById("pcb3-state")).innerHTML = String(state);
-                (<HTMLElement> document.getElementById("pcb3-pc")).innerHTML = String(pc);
-                (<HTMLElement> document.getElementById("pcb3-ir")).innerHTML = ir;
-                (<HTMLElement> document.getElementById("pcb3-acc")).innerHTML = String(acc);
-                (<HTMLElement> document.getElementById("pcb3-x")).innerHTML = String(x);
-                (<HTMLElement> document.getElementById("pcb3-y")).innerHTML = String(y);
-                (<HTMLElement> document.getElementById("pcb3-z")).innerHTML = String(z);
+
+                for(var i = 0; i < len; i++){
+                    var thisPcb = _ReadyQueue.dequeue();
+                    var html =
+                        `<tr>` +
+                        `<td>${thisPcb.PID}</td>`+
+                        `<td>${thisPcb.state}</td>`+
+                        `<td>${thisPcb.location}</td>`+
+                        `<td>${thisPcb.priority}</td>`+
+                        `<td>${thisPcb.IR}</td>`+
+                        `<td>${thisPcb.Acc}</td>`+
+                        `<td>${thisPcb.Xreg}</td>`+
+                        `<td>${thisPcb.Yreg}</td>`+
+                        `<td>${thisPcb.Zflag}</td>`+
+                        `</tr>`
+
+                    table += html;
+
+                    _ReadyQueue.enqueue(thisPcb);
+                }
+
             }
+
+            document.getElementById('pcbTable').innerHTML = table;
         }
 
 

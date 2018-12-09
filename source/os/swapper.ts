@@ -4,7 +4,8 @@ module TSOS {
 
     export class Swapper {
 
-        public init(){
+        public swapProcess(tsb, base){
+
         }
 
 

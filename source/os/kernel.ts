@@ -131,6 +131,7 @@ module TSOS {
             }
 
             TSOS.Control.createMemoryTable();
+            TSOS.Control.updatePCBTable();
             TSOS.Control.loadDiskTable();
 
         }
@@ -215,19 +216,14 @@ module TSOS {
         //create a new process
         public createProcess(base: number){
 
-            //create a new process control block based on base of program in memory
-            var newProcess = new Pcb(_Pid.toString(), base, "Resident", 0, "-", 0, 0, 0, "-", 0, 0, 0, 0);
+            if (base == -1){
+                //create a new process control block based on base of program in disk
+                var newProcess = new Pcb(_Pid.toString(), base, "Resident", 0, "-", 0, 0, 0, "Disk", 0, 0, 0, 0);
+            }else{
+                //create a new process control block based on base of program in memory
+                var newProcess = new Pcb(_Pid.toString(), base, "Resident", 0, "-", 0, 0, 0, "Memory", 0, 0, 0, 0);
+            }
 
-            //update pcb table
-            TSOS.Control.updatePCBTable(newProcess.PID,
-                                        newProcess.state,
-                                        newProcess.PC,
-                                        newProcess.IR,
-                                        newProcess.Acc,
-                                        newProcess.Xreg,
-                                        newProcess.Yreg,
-                                        newProcess.Zflag,
-                                        newProcess.base);
             //update pid
             _Pid++;
 
@@ -309,17 +305,6 @@ module TSOS {
             //reset clock cycles
             cpuCycles = 0;
 
-            TSOS.Control.updatePCBTable(_currPcb.PID,
-                                        _currPcb.state,
-                                        _currPcb.PC,
-                                        _currPcb.IR,
-                                        _currPcb.Acc.toString(16).toUpperCase(),
-                                        _currPcb.Xreg.toString(16).toUpperCase(),
-                                        _currPcb.Yreg.toString(16).toUpperCase(),
-                                        _currPcb.Zflag.toString(16).toUpperCase(),
-                                        _currPcb.base);
-
-
             //reset main mem using base
             var base = _currPcb.base;
             console.log("In exit: " + _currPcb.base);
@@ -384,17 +369,6 @@ module TSOS {
                 }
 
 
-
-                TSOS.Control.updatePCBTable(_currPcb.PID,
-                                            _currPcb.state,
-                                            _currPcb.PC,
-                                            _currPcb.IR,
-                                            _currPcb.Acc.toString(16).toUpperCase(),
-                                            _currPcb.Xreg.toString(16).toUpperCase(),
-                                            _currPcb.Yreg.toString(16).toUpperCase(),
-                                            _currPcb.Zflag.toString(16).toUpperCase(),
-                                            _currPcb.base);
-
                 if (_ReadyQueue.getSize() > 0){
 
                     _currPcb = _ReadyQueue.dequeue();
@@ -437,16 +411,6 @@ module TSOS {
 
                 temp.state = "Terminated";
 
-                TSOS.Control.updatePCBTable(temp.PID,
-                                            temp.state,
-                                            temp.PC,
-                                            temp.IR,
-                                            temp.Acc.toString(16).toUpperCase(),
-                                            temp.Xreg.toString(16).toUpperCase(),
-                                            temp.Yreg.toString(16).toUpperCase(),
-                                            temp.Zflag.toString(16).toUpperCase(),
-                                            temp.base);
-
                 _StdOut.advanceLine();
                 _StdOut.putText("PID: " + temp.PID);
                 _StdOut.advanceLine();
@@ -477,16 +441,6 @@ module TSOS {
                 }
 
                 temp.state = "Terminated";
-
-                TSOS.Control.updatePCBTable(temp.PID,
-                                            temp.state,
-                                            temp.PC,
-                                            temp.IR,
-                                            temp.Acc.toString(16).toUpperCase(),
-                                            temp.Xreg.toString(16).toUpperCase(),
-                                            temp.Yreg.toString(16).toUpperCase(),
-                                            temp.Zflag.toString(16).toUpperCase(),
-                                            temp.base);
 
                 _StdOut.advanceLine();
                 _StdOut.putText("PID: " + temp.PID);
@@ -531,15 +485,7 @@ module TSOS {
         public contextSwitch(){
             console.log("in context switch");
             _currPcb.state = "Ready";
-            TSOS.Control.updatePCBTable(_currPcb.PID,
-                                        _currPcb.state,
-                                        _currPcb.PC,
-                                        _currPcb.IR,
-                                        _currPcb.Acc.toString(16).toUpperCase(),
-                                        _currPcb.Xreg.toString(16).toUpperCase(),
-                                        _currPcb.Yreg.toString(16).toUpperCase(),
-                                        _currPcb.Zflag.toString(16).toUpperCase(),
-                                        _currPcb.base);
+
             _ReadyQueue.enqueue(_currPcb);
             cpuCycles = 0;
             _CpuScheduler.getNewProc();
