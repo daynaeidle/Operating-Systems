@@ -195,6 +195,11 @@ module TSOS {
                                   "-quick - Formats all data in disk.");
             this.commandList[this.commandList.length] = sc;
 
+            sc = new ShellCommand(this.shellGetSchedule,
+                                  "getschedule",
+                                  " - Displays the current scheduling algorithm.");
+            this.commandList[this.commandList.length] = sc;
+
             //
             // Display the initial prompt.
             this.putPrompt();
@@ -443,6 +448,9 @@ module TSOS {
                     case "format -full":
                         _StdOut.putText("Format -full formats entire disk, all bits of every block.");
                         break;
+                    case "getschedule":
+                        _StdOut.putText("Getschedule displays the current scheduling algorithm for CPU execution.");
+                        break;
                     case "?":
                         _StdOut.putText("TOPICS:")
                         for (var i=0; i<_OsShell.commandList.length; i++){
@@ -521,7 +529,7 @@ module TSOS {
         }
 
         public shellFact(args){
-            var facts = ['kool', 'mos', 'alaska', 'i', 'pills', 'prius', 'grouch', 'dunks', 'swiss', 'goats', 'selfie']
+            var facts = ['kool', 'mos', 'alaska', 'i', 'pills', 'prius', 'grouch', 'dunks', 'swiss', 'goats', 'selfie', 'mummy'];
             var randNum = Math.floor(Math.random() * facts.length);
 
             switch (facts[randNum]) {
@@ -557,6 +565,9 @@ module TSOS {
                     break;
                 case "selfie":
                     _StdOut.putText("In 2017, more people died from injuries caused by taking a selfie than shark attacks.");
+                    break;
+                case "mummy":
+                    _StdOut.putText("If you unwrapped the bandages on a mummy, the bandages would be about two miles long.");
                     break;
             }
 
@@ -881,10 +892,24 @@ module TSOS {
 
         }
 
-
+        //list all the files in the directory
         public shellList(args){
 
             _Kernel.listFiles();
+
+        }
+
+        public shellGetSchedule(args){
+
+            _StdOut.putText("Current scheduling algorithm: ");
+
+            if (_schedule == "rr"){
+                _StdOut.putText("round robin");
+            }else if (_schedule == "fcfs"){
+                _StdOut.putText("first come, first served");
+            }else{
+                _StdOut.putText("non-preemptive priority");
+            }
 
         }
 

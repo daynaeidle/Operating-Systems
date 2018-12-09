@@ -116,6 +116,9 @@ var runall: boolean = false;
 var singleStepMode: boolean = false;
 var step: boolean = false;
 
+//scheduling algorithm
+var _schedule: string = "rr";
+
 var onDocumentLoad = function() {
 	TSOS.Control.hostInit();
 };
