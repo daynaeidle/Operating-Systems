@@ -5,7 +5,7 @@ module TSOS {
     export class Swapper {
 
         //take in pid and base of the process being swapped into disk as arguments
-        public swapProcess(pid, base){
+        public swapProcesses(pid, base){
 
             var limit = 256;
 
@@ -47,6 +47,23 @@ module TSOS {
             console.log(pid);
             //write memprogram to disk
             _krnFileSystem.loadProcessToDisk(pid, memProgram);
+
+        }
+
+        public swapIn(){
+
+            var limit = 256;
+
+            //get filename based on pid
+            var filename = "process:" + _currPcb.PID;
+
+            //gets program and clears lines along the way
+            var diskProgram = _krnFileSystem.getProcessFromDisk(filename);
+            diskProgram = this.trimZeroes(diskProgram);
+
+            var newBase = _MemoryManager.loadMem(diskProgram);
+
+            return newBase;
 
         }
 

@@ -519,13 +519,15 @@ module TSOS {
 
                         var block = JSON.parse(sessionStorage.getItem(tsb));
 
-                        if (block[0] == 0){
+                        if (block[0] == "0"){
                             return tsb;
                         }
 
                     }
                 }
             }
+
+            return null;
         }
 
         public listFiles(){
@@ -667,8 +669,6 @@ module TSOS {
                         for (var j = 4; j < pointer.length; j++){
                             program.push(pointer[j]);
                         }
-                        console.log(program);
-                        console.log("added pointer data to program");
 
                         //go to new pointer
                         var newPointer = JSON.parse(sessionStorage.getItem(newPointerTsb));
@@ -697,6 +697,7 @@ module TSOS {
 
         public writeProcessToDisk(tsb, proc){
 
+            //pointer block from the process filename
             var currBlock = JSON.parse(sessionStorage.getItem(tsb));
 
             //if process length is greater than 60
@@ -704,20 +705,21 @@ module TSOS {
                 var length = proc.length;
                 var offset = 0;
 
-
-
-                //do loop until the last part is < 60
+                //do loop until the length > 60
                 while (length > 60){
                     var firstPart = [];
 
                     //set first part to the first 60 bits and decrease length as counter
                     for (var i = 0; i < 60; i++){
-                        firstPart[i] = proc[i + offset];
-                        length--;
+                        if (length > 0){
+                            firstPart[i] = proc[i + offset];
+                            length--;
+                        }
                     }
 
                     //get a new pointer file to assign to the current pointer file for rest of string
                     var pointerTsb = this.getPointer();
+                    console.log("IN WRITE PROCESS TO DISK pointer tsb of next block to write to" + pointerTsb);
                     var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
                     //change available bit of new pointer to 1
                     pointer[0] = "1";
@@ -725,7 +727,7 @@ module TSOS {
 
                     //update original pointer bits with new pointer tsb
                     for (var i = 1; i < 4; i++){
-                        currBlock[i] = pointer[i-1];
+                        currBlock[i] = pointerTsb[i-1];
                     }
 
                     //update pointer file with firstpart
@@ -739,14 +741,21 @@ module TSOS {
                     tsb = pointerTsb;
                     currBlock = pointer;
 
-                    if (proc.length < 60){
-                        for (var k = 0; k < proc.length; k++){
-                            currBlock[k+4] = proc[k + offset];
+                    offset+=60;
+
+                    if (length < 60){
+                        for (var k = 0; k < this.blockSize; k++){
+                            if (proc[k + offset] == undefined){
+                                currBlock[k+4] = "00";
+                            }else{
+                                currBlock[k+4] = proc[k + offset];
+                            }
+
                         }
                         sessionStorage.setItem(tsb, JSON.stringify(currBlock));
                     }
 
-                    offset+=60;
+
 
                 }
 

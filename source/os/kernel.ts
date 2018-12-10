@@ -332,6 +332,12 @@ module TSOS {
                 _currPcb.init();
             }else{
                 _currPcb = _ReadyQueue.dequeue();
+                if (_currPcb.base == -1){
+                    var newBase = _Swapper.swapIn();
+                    _currPcb.base = newBase;
+                    _currPcb.location = "Memory";
+
+                }
                 _CPU.PC = _currPcb.PC;
                 _CPU.IR = _currPcb.IR;
                 _CPU.Acc = _currPcb.Acc;
@@ -478,14 +484,12 @@ module TSOS {
             for (var i = 0; i < 768; i++){
                 _Memory.mainMem[i] = "00";
             }
-
             var resLen = _ResidentQueue.getSize();
             var readyLen = _ReadyQueue.getSize();
 
             for (var i = 0; i < resLen; i++){
                 _ResidentQueue.dequeue();
             }
-
             for (var j = 0; j < readyLen; j++){
                 _ReadyQueue.dequeue();
             }
@@ -501,13 +505,14 @@ module TSOS {
             if (_currPcb.base == -1){
                 //must be swapped out
                 //call swap process with temp base
-                _Swapper.swapProcess(tempPcb.PID, tempPcb.base);
+                _Swapper.swapProcesses(tempPcb.PID, tempPcb.base);
                 _currPcb.base = tempPcb.base;
                 _currPcb.location = "Memory";
                 tempPcb.base = -1;
-                tempPcb.location = "Disk"
-            }
+                tempPcb.location = "Disk";
 
+
+            }
             _ReadyQueue.enqueue(tempPcb);
             console.log("current pcb after get new proc: " + _currPcb.PID);
             _CpuScheduler.setCPU()

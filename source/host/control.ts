@@ -210,16 +210,16 @@ module TSOS {
             var len = _ReadyQueue.getSize();
 
             table =
-                `<tr>` +
-                `<td>PID</td>` +
-                `<td>State</td>` +
-                `<td>Location</td>` +
-                `<td>Priority</td>` +
-                `<td>IR</td>` +
-                `<td>Acc</td>` +
-                `<td>Xreg</td>` +
-                `<td>Yreg</td>` +
-                `<td>Zflag</td>` +
+                `<tr style="overflow:auto">` +
+                `<td id="pcblabel">PID</td>` +
+                `<td id="pcblabel">State</td>` +
+                `<td id="pcblabel">Location</td>` +
+                `<td id="pcblabel">Priority</td>` +
+                `<td id="pcblabel">IR</td>` +
+                `<td id="pcblabel">Acc</td>` +
+                `<td id="pcblabel">Xreg</td>` +
+                `<td id="pcblabel">Yreg</td>` +
+                `<td id="pcblabel">Zflag</td>` +
                 `</tr>`
 
             //if theres a process set to current pcb
