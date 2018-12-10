@@ -219,16 +219,14 @@ module TSOS {
         // - CloseFile
 
         //create a new process
-        public createProcess(base: number){
-
-            console.log("CALLING CREATE PROCESS");
+        public createProcess(base: number, priority: number){
 
             if (base == -1){
                 //create a new process control block based on base of program in disk
-                var newProcess = new Pcb(_Pid.toString(), base, "Resident", 0, "-", 0, 0, 0, "Disk", 0, 0, 0, 0);
+                var newProcess = new Pcb(_Pid.toString(), base, "Resident", 0, "-", 0, 0, priority, "Disk", 0, 0, 0, 0);
             }else{
                 //create a new process control block based on base of program in memory
-                var newProcess = new Pcb(_Pid.toString(), base, "Resident", 0, "-", 0, 0, 0, "Memory", 0, 0, 0, 0);
+                var newProcess = new Pcb(_Pid.toString(), base, "Resident", 0, "-", 0, 0, priority, "Memory", 0, 0, 0, 0);
             }
 
             //update pid
@@ -283,6 +281,10 @@ module TSOS {
 
             //set runall to true
             runall = true;
+
+            if (_schedule == "priority"){
+                _CpuScheduler.sortReadyQueue();
+            }
             //take the first pcb off the ready queue and set it to _currPcb
             _currPcb = _ReadyQueue.dequeue();
             //console.log("IN kernel - curr PCB:" + _currPcb.PID);
@@ -513,11 +515,11 @@ module TSOS {
 
 
 
-        public loadProcessToDisk(pid, userProgram){
+        public loadProcessToDisk(pid, userProgram, priority){
             var outcome = _krnFileSystem.loadProcessToDisk(pid, userProgram);
             if (outcome == "SUCCESS"){
-                _Kernel.createProcess(-1);
-                _StdOut.putText("Program loaded onto disk with Process ID: " + pid);
+                _Kernel.createProcess(-1, priority);
+                _StdOut.putText("Program loaded onto disk with Process ID: " + pid + " - with priority: " + priority);
             }else{
                 _StdOut.putText(outcome);
             }

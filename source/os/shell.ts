@@ -107,7 +107,7 @@ module TSOS {
             //load
             sc = new ShellCommand(this.shellLoad,
                                   "load",
-                                  " - Validates and loads the user program into memory.");
+                                  " <optional: priority integer for process> - Validates and loads the user program into memory.");
             this.commandList[this.commandList.length] = sc;
 
 
@@ -411,7 +411,9 @@ module TSOS {
                         _StdOut.putText("Update your status on the status bar. Let us know how you're feeling!");
                         break;
                     case "load":
-                        _StdOut.putText("Load checks for valid user input.");
+                        _StdOut.putText("Load loads the user process into memory or disk (with specified priority if given).");
+                        _StdOut.advanceLine();
+                        _StdOut.putText("If priority is omitted, 0 is the default making the process a high priority.");
                         break;
                     case "error":
                         _StdOut.putText("Error simulates an OS error.");
@@ -600,6 +602,12 @@ module TSOS {
 
         // validate the user program
         public shellLoad(args){
+            if (args.length > 0){
+                var priority = args[0];
+            }else{
+                priority = 0;
+            }
+
             //store the user input in a variable
             var programInput = (<HTMLInputElement>document.getElementById("taProgramInput")).value;
             //console.log(programInput);
@@ -631,11 +639,11 @@ module TSOS {
                     console.log("Base on load: " + base);
                     if (base == -1){
                         //call kernel to create a new process
-                        _Kernel.loadProcessToDisk(_Pid, _userProgram);
+                        _Kernel.loadProcessToDisk(_Pid, _userProgram, priority);
                     }else{
-                        _StdOut.putText("Program loaded into memory with Process ID: " + _Pid);
+                        _StdOut.putText("Program loaded into memory with Process ID: " + _Pid + " - with priority: " + priority);
                         //call kernel to create a new process
-                        _Kernel.createProcess(base);
+                        _Kernel.createProcess(base, priority);
                     }
 
                 }
@@ -770,7 +778,7 @@ module TSOS {
 
         }
 
-
+        //kills the given process
         public shellKill(args){
 
             var pid = args[0];
@@ -811,6 +819,7 @@ module TSOS {
 
         }
 
+        //creates a file
         public shellCreate(args) {
 
             if (args.length > 0){
@@ -828,7 +837,7 @@ module TSOS {
             }
         }
 
-
+        //writes to a file
         public shellWrite(args){
 
             if (args.length > 1){
@@ -859,6 +868,7 @@ module TSOS {
 
         }
 
+        //reads a file
         public shellRead(args){
 
             if (args.length > 0){
@@ -870,6 +880,7 @@ module TSOS {
 
         }
 
+        //deletes a file
         public shellDelete(args){
 
             if (args.length > 0){
@@ -881,6 +892,8 @@ module TSOS {
 
         }
 
+
+        //formats the disk
         public shellFormat(args){
 
             console.log(args);
@@ -909,6 +922,7 @@ module TSOS {
 
         }
 
+        //gets the current scheduling algorithm
         public shellGetSchedule(args){
 
             _StdOut.putText("Current scheduling algorithm: ");
@@ -923,6 +937,7 @@ module TSOS {
 
         }
 
+        //sets the current scheduling algorithm
         public shellSetSchedule(args){
 
             if (args.length > 0){
