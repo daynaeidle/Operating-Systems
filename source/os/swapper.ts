@@ -74,6 +74,7 @@ module TSOS {
 
             var opcode = program.pop();
 
+            //while the program has 00 on the end keep trimming them off
             while (opcode == "00"){
                 opcode = program.pop()
             }
