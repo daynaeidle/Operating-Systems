@@ -323,7 +323,7 @@ module TSOS {
                             }
                         }
 
-                        console.log(hexArr);
+                        //console.log(hexArr);
 
                         //go to new pointer
                         var newPointer = JSON.parse(sessionStorage.getItem(newPointerTsb));
@@ -526,7 +526,7 @@ module TSOS {
                     }
                 }
             }
-
+            //if none are available, return null
             return null;
         }
 
@@ -546,20 +546,17 @@ module TSOS {
                         var index = 4;
                         var filename = "";
 
-                        console.log(currBlock);
                         while (currBlock[index] != "00"){
                             hexName[index - 4] = currBlock[index];
                             index++;
                         }
 
                         filename = this.convertToString(hexName);
-                        console.log(filename);
                         filenames[filenames.length] = filename;
 
                     }
                 }
             }
-            console.log(filenames);
             return filenames;
         }
 
@@ -627,39 +624,30 @@ module TSOS {
             var hexName = this.convertToAscii(filename)
             var program = [];
 
-            console.log("past defining variables");
-
             //check if filename exists
             if (this.fileNameExists(hexName)){
-                console.log("filename exists")
                 //get the tsb of the file and data at that block
                 var tsb = this.getTsb(filename);
                 var currBlock = JSON.parse(sessionStorage.getItem(tsb));
-                console.log("got tsb and block");
+
                 //find the pointer of the filename block
                 var pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
                 var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
+
                 //get the pointer's pointer
                 var newPointerTsb = pointer[1] + pointer[2] + pointer[3];
-                console.log("got pointer block and new pointer tsb");
-
 
                 if (newPointerTsb == "000"){
-                    console.log("new pointer tsb is 000");
                     //grab the data from the pointer and convert hexstring to regular string
                     for (var i = 4; i < pointer.length; i++){
                         program[i-4] = pointer[i];
                     }
-                    console.log("added values at pointer to program");
 
                     //clear pointer block
                     pointer = this.clearLine(pointerTsb);
-                    console.log("cleared pointer block");
                     sessionStorage.setItem(pointerTsb, JSON.stringify(pointer));
-                    console.log("set pointer value to initialized data");
                     return program;
                 }else{
-                    console.log("new pointer tsb is NOT 000");
                     while (newPointerTsb != "000"){
 
                         //check what pointer bits are
@@ -688,7 +676,6 @@ module TSOS {
                 }
 
             }else{
-                console.log("file name does not exist");
                 return "File name does not exist.";
             }
 
@@ -719,7 +706,8 @@ module TSOS {
 
                     //get a new pointer file to assign to the current pointer file for rest of string
                     var pointerTsb = this.getPointer();
-                    console.log("IN WRITE PROCESS TO DISK pointer tsb of next block to write to" + pointerTsb);
+                    //console.log("IN WRITE PROCESS TO DISK pointer tsb of next block to write to" + pointerTsb);
+
                     var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
                     //change available bit of new pointer to 1
                     pointer[0] = "1";

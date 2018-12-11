@@ -118,16 +118,20 @@ module TSOS {
                         TSOS.Control.updatePCBTable();
                         TSOS.Control.loadDiskTable();
                         if (runall == true){
-                            _CpuScheduler.schedule();
-                            _CpuScheduler.updateWaitAndTurnaround()
+                            if (_ReadyQueue.getSize() > 0){
+                                _CpuScheduler.schedule();
+                            }
+                            _CpuScheduler.updateWaitAndTurnaround();
                         }
                         step = false;
                     }
                 }else{
                     _CPU.cycle();
                     if (runall == true){
-                        _CpuScheduler.schedule();
-                        _CpuScheduler.updateWaitAndTurnaround()
+                        if (_ReadyQueue.getSize() > 0){
+                            _CpuScheduler.schedule();
+                        }
+                        _CpuScheduler.updateWaitAndTurnaround();
                     }
                 }
 
@@ -295,7 +299,7 @@ module TSOS {
 
         //exit a process
         public exitProcess(pid:string){
-            console.log("Process exited");
+            console.log("Process exited: " + pid);
 
             _StdOut.advanceLine();
             _StdOut.putText("Process: " + pid);
@@ -331,7 +335,9 @@ module TSOS {
                 _CPU.Zflag = 0;
                 _currPcb.init();
             }else{
+                console.log("switching curr pcb in exit process");
                 _currPcb = _ReadyQueue.dequeue();
+                console.log("ReadyQueue size: " + _ReadyQueue.getSize());
                 if (_currPcb.base == -1){
                     var newBase = _Swapper.swapIn();
                     _currPcb.base = newBase;
@@ -497,25 +503,28 @@ module TSOS {
 
         public contextSwitch(){
             console.log("in context switch");
-            _currPcb.state = "Ready";
-            var tempPcb = _currPcb;
-            //_ReadyQueue.enqueue(_currPcb);
-            cpuCycles = 0;
-            _CpuScheduler.getNewProc();
-            if (_currPcb.base == -1){
-                //must be swapped out
-                //call swap process with temp base
-                _Swapper.swapProcesses(tempPcb.PID, tempPcb.base);
-                _currPcb.base = tempPcb.base;
-                _currPcb.location = "Memory";
-                tempPcb.base = -1;
-                tempPcb.location = "Disk";
+            if (_ReadyQueue.getSize() > 0){
 
+                _currPcb.state = "Ready";
+                var tempPcb = _currPcb;
+                cpuCycles = 0;
+                _CpuScheduler.getNewProc();
+                if (_currPcb.base == -1){
+                    //must be swapped out
+                    //call swap process with temp base
+                    _Swapper.swapProcesses(tempPcb.PID, tempPcb.base);
+                    _currPcb.base = tempPcb.base;
+                    _currPcb.location = "Memory";
+                    tempPcb.base = -1;
+                    tempPcb.location = "Disk";
+                }
+                console.log("Adding last pcb onto ready queue: " + tempPcb.PID);
+                _ReadyQueue.enqueue(tempPcb);
+                console.log("current pcb after get new proc: " + _currPcb.PID);
+                _CpuScheduler.setCPU();
 
             }
-            _ReadyQueue.enqueue(tempPcb);
-            console.log("current pcb after get new proc: " + _currPcb.PID);
-            _CpuScheduler.setCPU()
+
         }
 
 

@@ -45,7 +45,7 @@ module TSOS {
             // TODO: Accumulate CPU usage and profiling statistics here.
             // Do the real work here. Be sure to set this.isExecuting appropriately.
 
-            console.log("CURRENT: " + _currPcb.PID);
+            //console.log("CURRENT: " + _currPcb.PID);
 
             //fetch the opcode, set it to the IR, and decode it
             var opCode = this.fetch(this.PC);
@@ -63,8 +63,6 @@ module TSOS {
         //decode an opcode
         public decode(opCode: string){
             //find out what the instruction means
-
-            console.log("current opcode: " + opCode);
 
             var val;
             var address;
@@ -145,8 +143,8 @@ module TSOS {
                 case("00"):
                     //break
                     //set executing to false and call kernel exit process
-                    console.log(this.IR, " ", _currPcb.IR);
-                    console.log("Current pcb pid in 00 ", _currPcb.PID);
+                    //console.log(this.IR, " ", _currPcb.IR);
+                    //console.log("Current pcb pid in 00 ", _currPcb.PID);
                     TSOS.Control.updateCPUTable(this.PC, this.IR, this.Acc.toString(16), this.Xreg.toString(16), this.Yreg.toString(16), this.Zflag.toString(16));
                     _KernelInterruptQueue.enqueue(new Interrupt(COMPLETE_PROC_IRQ, _currPcb.PID));
                     break;
@@ -233,7 +231,7 @@ module TSOS {
 
             cpuCycles += 1;
             _currPcb.turnaround += 1;
-            console.log("Clock cycles: " + cpuCycles);
+            //console.log("Clock cycles: " + cpuCycles);
 
             //update all variables and display tables
             _currPcb.PC = this.PC;

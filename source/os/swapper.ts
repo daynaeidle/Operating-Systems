@@ -42,9 +42,6 @@ module TSOS {
                 _Memory.mainMem[j + base] = diskProgram[j];
             }
 
-            console.log("mem");
-            console.log(memProgram);
-            console.log(pid);
             //write memprogram to disk
             _krnFileSystem.loadProcessToDisk(pid, memProgram);
 
@@ -61,6 +58,12 @@ module TSOS {
             var diskProgram = _krnFileSystem.getProcessFromDisk(filename);
             diskProgram = this.trimZeroes(diskProgram);
 
+            //clear the filename line
+            var tsb = _krnFileSystem.getTsb(filename);
+            var block = JSON.parse(sessionStorage.getItem(tsb));
+            block = _krnFileSystem.clearLine(tsb);
+            sessionStorage.setItem(tsb, JSON.stringify(block));
+
             var newBase = _MemoryManager.loadMem(diskProgram);
 
             return newBase;
@@ -75,6 +78,7 @@ module TSOS {
                 opcode = program.pop()
             }
 
+            //put the last opcode on that isn't a 00
             program.push(opcode);
 
             return program;

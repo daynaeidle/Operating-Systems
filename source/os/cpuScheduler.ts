@@ -25,8 +25,12 @@ module TSOS {
 
 
         public getNewProc(): void{
-            _currPcb = _ReadyQueue.dequeue();
-            _currPcb.state = "Running";
+            if (_ReadyQueue.getSize() > 0){
+                console.log("switching curr pcb in get new proc - scheduler");
+                _currPcb = _ReadyQueue.dequeue();
+                _currPcb.state = "Running";
+            }
+
 
         }
 
@@ -40,28 +44,21 @@ module TSOS {
         }
 
 
-        /*public schedule(): void{
-
-            //if cpu cycles = quantum.. switch the process
-            if (_ReadyQueue.getSize() > 0){
-                if (cpuCycles >= this.quantum){
-                    console.log("New process");
-                    _KernelInterruptQueue.enqueue(new Interrupt(CONTEXT_SWITCH_IRQ, _currPcb));
-                }else{
-                    console.log("same process");
-                }
-            }
-        }*/
-
         public schedule(): void{
 
-            if (_schedule == "rr"){
-                this.roundRobin();
-            }else if (_schedule == "fcfs"){
-                this.fcfs();
-            }else{
-                this.priority();
+
+            if (_ReadyQueue.getSize() > 0){
+                console.log("IN SCHEDULE- ready queue size: " + _ReadyQueue.getSize());
+                if (_schedule == "rr"){
+                    this.roundRobin();
+                }else if (_schedule == "fcfs"){
+                    this.fcfs();
+                }else{
+                    this.priority();
+                }
             }
+
+
 
         }
 
