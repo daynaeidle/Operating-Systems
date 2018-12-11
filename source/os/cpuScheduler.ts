@@ -26,7 +26,7 @@ module TSOS {
 
         public getNewProc(): void{
             if (_ReadyQueue.getSize() > 0){
-                console.log("switching curr pcb in get new proc - scheduler");
+                //console.log("switching curr pcb in get new proc - scheduler");
                 _currPcb = _ReadyQueue.dequeue();
                 _currPcb.state = "Running";
             }
@@ -46,9 +46,8 @@ module TSOS {
 
         public schedule(): void{
 
-
             if (_ReadyQueue.getSize() > 0){
-                console.log("IN SCHEDULE- ready queue size: " + _ReadyQueue.getSize());
+                //console.log("IN SCHEDULE- ready queue size: " + _ReadyQueue.getSize());
                 if (_schedule == "rr"){
                     this.roundRobin();
                 }else if (_schedule == "fcfs"){
@@ -62,6 +61,7 @@ module TSOS {
 
         }
 
+        //schedule based on quantum
         public roundRobin(): void{
 
             if (_ReadyQueue.getSize() > 0){
@@ -75,9 +75,12 @@ module TSOS {
 
         }
 
+        //schedule based on fcfs
         public fcfs(): void{
 
-            this.quantum = 2000;
+            //set quantum to high number so that process that gets there first can just do its thing
+            //most likely will take less than 3000 cycles
+            this.quantum = 3000;
 
             if (_ReadyQueue.getSize() > 0){
                 if (cpuCycles >= this.quantum){
@@ -90,9 +93,10 @@ module TSOS {
 
         }
 
+        //schedule based on priority
         public priority(): void{
 
-            this.quantum = 2000;
+            this.quantum = 3000;
 
             if (_ReadyQueue.getSize() > 0){
                 if (cpuCycles >= this.quantum){
@@ -106,51 +110,26 @@ module TSOS {
 
         }
 
+        //sort the ready queue by priority
         public sortReadyQueue(): void{
 
-            //sort it so high priority processes (low numbers) are in the front
-
-            var first;
-            var second;
-            var counter = 1;
             var len = _ReadyQueue.getSize();
+            var tempList = [];
 
-            first = _ReadyQueue.dequeue();
-
-            while (counter < len){
-                second = _ReadyQueue.dequeue();
-
-                if (first.priority < second.priority){
-                    //add first back to the ready queue so it will end up at the front
-                    _ReadyQueue.enqueue(first);
-                    //set first to second so second can become the new comparison pcb
-                    first = second;
-
-                }else if (first.priority > second.priority){
-                    //add second back to ready queue so it will end up at the front
-                    _ReadyQueue.enqueue(second);
-
-                }else{
-                    //to break equal ties, use fcfs -- first was there first so add that back to the ready queue
-                    _ReadyQueue.enqueue(first);
-                }
-
-                counter++;
-            }
-
-            _ReadyQueue.enqueue(first);
-
-            //check what it looks like
+            //add elements of ready queue to tempList
             for (var i = 0; i < len; i++){
-                var temp = _ReadyQueue.dequeue();
-                console.log(temp.priority);
-                _ReadyQueue.enqueue(temp);
+                tempList[i] = _ReadyQueue.dequeue();
             }
 
+            //sort templist by priority using sort function
+            tempList.sort((a,b)=>a.priority-b.priority);
 
-
-
+            //add the elements of tempList back to readyqueue
+            for (var l = 0; l < len; l++){
+                _ReadyQueue.enqueue(tempList[l]);
+            }
         }
+
 
         public updateWaitAndTurnaround(): void{
 

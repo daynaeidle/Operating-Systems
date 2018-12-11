@@ -320,7 +320,7 @@ module TSOS {
 
             //reset main mem using base
             var base = _currPcb.base;
-            console.log("In exit: " + _currPcb.base);
+            //console.log("In exit: " + _currPcb.base);
             for (var j = base; j < base + 255; j++) {
                 _Memory.mainMem[j] = "00";
             }
@@ -335,9 +335,9 @@ module TSOS {
                 _CPU.Zflag = 0;
                 _currPcb.init();
             }else{
-                console.log("switching curr pcb in exit process");
+                //console.log("switching curr pcb in exit process");
                 _currPcb = _ReadyQueue.dequeue();
-                console.log("ReadyQueue size: " + _ReadyQueue.getSize());
+                //console.log("ReadyQueue size: " + _ReadyQueue.getSize());
                 if (_currPcb.base == -1){
                     var newBase = _Swapper.swapIn();
                     _currPcb.base = newBase;
@@ -532,7 +532,7 @@ module TSOS {
         }
 
         public contextSwitch(){
-            console.log("in context switch");
+            //console.log("in context switch");
             if (_ReadyQueue.getSize() > 0){
 
                 _currPcb.state = "Ready";
@@ -548,9 +548,9 @@ module TSOS {
                     tempPcb.base = -1;
                     tempPcb.location = "Disk";
                 }
-                console.log("Adding last pcb onto ready queue: " + tempPcb.PID);
+                //console.log("Adding last pcb onto ready queue: " + tempPcb.PID);
                 _ReadyQueue.enqueue(tempPcb);
-                console.log("current pcb after get new proc: " + _currPcb.PID);
+                //console.log("current pcb after get new proc: " + _currPcb.PID);
                 _CpuScheduler.setCPU();
 
             }

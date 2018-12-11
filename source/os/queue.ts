@@ -22,7 +22,6 @@ module TSOS {
         }
 
         public enqueue(element) {
-            console.log("Im adding " + element + " to the queue.");
             this.q.push(element);
         }
 
