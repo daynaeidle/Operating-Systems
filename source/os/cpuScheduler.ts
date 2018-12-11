@@ -121,7 +121,7 @@ module TSOS {
                 tempList[i] = _ReadyQueue.dequeue();
             }
 
-            //sort templist by priority using sort function
+            //sort templist by priority using sort function (on that functional programming grind)
             tempList.sort((a,b)=>a.priority-b.priority);
 
             //add the elements of tempList back to readyqueue

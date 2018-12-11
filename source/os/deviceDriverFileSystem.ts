@@ -224,16 +224,19 @@ module TSOS {
 
             var lineValue = [];
 
+            //reset pointer and available bits
             for (var i = 0; i < 4; i++){
                 lineValue.push("0");
             }
 
+            //reset data section
             for (var j = 0; j < this.blockSize; j++){
                 lineValue.push("00");
             }
 
             var currBlock = JSON.parse(sessionStorage.getItem(tsb));
 
+            //write cleared line to current block
             for (var k = 0; k < lineValue.length; k++){
                 currBlock[k] = lineValue[k];
             }
@@ -363,6 +366,7 @@ module TSOS {
                 currBlock = JSON.parse(sessionStorage.getItem(tsb));
                 pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
 
+                //while there are still pointer files left
                 while(pointerTsb != "000"){
 
                     pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
@@ -525,6 +529,7 @@ module TSOS {
 
                         var block = JSON.parse(sessionStorage.getItem(tsb));
 
+                        //if block is available return the tsb
                         if (block[0] == "0"){
                             return tsb;
                         }
@@ -536,6 +541,7 @@ module TSOS {
             return null;
         }
 
+        //list all files in directory
         public listFiles(){
             var track = "0";
             var filenames = [];
@@ -566,6 +572,7 @@ module TSOS {
             return filenames;
         }
 
+        //load a process to the disk
         public loadProcessToDisk(pid, userProg){
 
             var foundLoc = false;
@@ -623,11 +630,9 @@ module TSOS {
                 return "Disk is full. Program could not be loaded."
             }
 
-
-
-
         }
 
+        //retrieve a process from the disk
         public getProcessFromDisk(filename){
 
             var hexName = this.convertToAscii(filename)
@@ -690,7 +695,7 @@ module TSOS {
 
         }
 
-
+        //write a process to the disk
         public writeProcessToDisk(tsb, proc){
 
             //pointer block from the process filename
@@ -741,8 +746,10 @@ module TSOS {
                     tsb = pointerTsb;
                     currBlock = pointer;
 
+                    //increase offset
                     offset+=60;
 
+                    //if rest of process is less than 60, deal with it now
                     if (length < 60){
                         for (var k = 0; k < this.blockSize; k++){
                             if (proc[k + offset] == undefined){
@@ -760,6 +767,7 @@ module TSOS {
                 }
 
             }else{
+                //write each part of the process to a bit in the cirrent block
                 for (var a = 0; a < proc.length; a++){
                     currBlock[a+4] = proc[a];
                 }
