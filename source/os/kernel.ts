@@ -430,6 +430,7 @@ module TSOS {
                     }
                 }
 
+
                 temp.state = "Terminated";
 
                 _StdOut.advanceLine();
@@ -444,11 +445,26 @@ module TSOS {
                 _OsShell.putPrompt();
 
 
-                //reset main mem using base
+                //reset main mem or disk using base
                 base = temp.base;
-                for (var j = base; j < base + 255; j++) {
-                    _Memory.mainMem[j] = "00";
+                if (base == -1){
+                    //get filename based on pid
+                    var filename = "process:" + temp.PID;
+
+                    //gets program and clears lines along the way
+                    var diskProgram = _krnFileSystem.getProcessFromDisk(filename);
+
+                    //clear the filename line
+                    var tsb = _krnFileSystem.getTsb(filename);
+                    var block = JSON.parse(sessionStorage.getItem(tsb));
+                    block = _krnFileSystem.clearLine(tsb);
+                    sessionStorage.setItem(tsb, JSON.stringify(block));
+                }else{
+                    for (var j = base; j < base + 255; j++) {
+                        _Memory.mainMem[j] = "00";
+                    }
                 }
+
 
             }else if (loc == "ready"){
 
@@ -475,10 +491,24 @@ module TSOS {
                 _OsShell.putPrompt();
 
 
-                //reset main mem using base
+                //reset main mem or disk using base
                 base = temp.base;
-                for (var j = base; j < base + 255; j++) {
-                    _Memory.mainMem[j] = "00";
+                if (base == -1){
+                    //get filename based on pid
+                    var filename = "process:" + temp.PID;
+
+                    //gets program and clears lines along the way
+                    var diskProgram = _krnFileSystem.getProcessFromDisk(filename);
+
+                    //clear the filename line
+                    var tsb = _krnFileSystem.getTsb(filename);
+                    var block = JSON.parse(sessionStorage.getItem(tsb));
+                    block = _krnFileSystem.clearLine(tsb);
+                    sessionStorage.setItem(tsb, JSON.stringify(block));
+                }else{
+                    for (var j = base; j < base + 255; j++) {
+                        _Memory.mainMem[j] = "00";
+                    }
                 }
 
             }
@@ -528,9 +558,11 @@ module TSOS {
         }
 
 
-
+        //load a process to the disk
         public loadProcessToDisk(pid, userProgram, priority){
+            //call load process to disk from file system driver
             var outcome = _krnFileSystem.loadProcessToDisk(pid, userProgram);
+            //if its successfull create a new process
             if (outcome == "SUCCESS"){
                 _Kernel.createProcess(-1, priority);
                 _StdOut.putText("Program loaded onto disk with Process ID: " + pid + " - with priority: " + priority);
@@ -543,11 +575,12 @@ module TSOS {
 
 
 
-
         //
         //file modification functions
         //calls functions in file system device driver and prints out the response to the console
         //
+
+        //create a file on the disk
         public createFile(filename: string){
 
             var message = _krnFileSystem.createFile(filename);
@@ -555,6 +588,7 @@ module TSOS {
 
         }
 
+        //write to a file on the disk
         public writeFile(filename: string, data: string){
 
             var message = _krnFileSystem.writeFile(filename, data);
@@ -562,6 +596,7 @@ module TSOS {
 
         }
 
+        //read a file on the disk
         public readFile(filename: string,){
 
             var message = _krnFileSystem.readFile(filename);
@@ -569,6 +604,7 @@ module TSOS {
 
         }
 
+        //delete a file from the disk
         public deleteFile(filename: string){
 
             var message = _krnFileSystem.deleteFile(filename);
@@ -576,12 +612,14 @@ module TSOS {
 
         }
 
+        //format the disk pointer bits and available bits
         public formatQuick(){
             var message = _krnFileSystem.formatQuick();
             _StdOut.putText(message);
 
         }
 
+        //format entire disk
         public formatFull(){
 
             var message = _krnFileSystem.formatFull();
@@ -589,6 +627,7 @@ module TSOS {
 
         }
 
+        //list all files on disk
         public listFiles(){
 
             var filenames = _krnFileSystem.listFiles();

@@ -87,6 +87,9 @@ module TSOS {
 
                                     //setpointer
                                     var pointerTsb = this.getPointer();
+                                    if (pointerTsb == null){
+                                        return "No space to store content of file.";
+                                    }
                                     for (var a = 1; a < 4; a++){
                                         currBlock[a] = pointerTsb[a-1];
                                     }
@@ -148,6 +151,9 @@ module TSOS {
 
                         //get a new pointer file to assign to the current pointer file for rest of string
                         var newPointerTsb = this.getPointer();
+                        if (newPointerTsb == null){
+                            return "Out of space on disk to continue writing file.";
+                        }
                         var newPointer = JSON.parse(sessionStorage.getItem(newPointerTsb));
                         //change available bit of new pointer to 1
                         newPointer[0] = "1";
@@ -588,6 +594,9 @@ module TSOS {
 
                         //find available pointertsb
                         var pointerTsb = this.getPointer();
+                        if (pointerTsb == null){
+                            return "No space on disk to store process.";
+                        }
                         //get the pointer block
                         var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
 
@@ -706,6 +715,9 @@ module TSOS {
 
                     //get a new pointer file to assign to the current pointer file for rest of string
                     var pointerTsb = this.getPointer();
+                    if (pointerTsb == null){
+                        return "No space on disk to write rest of process";
+                    }
                     //console.log("IN WRITE PROCESS TO DISK pointer tsb of next block to write to" + pointerTsb);
 
                     var pointer = JSON.parse(sessionStorage.getItem(pointerTsb));
