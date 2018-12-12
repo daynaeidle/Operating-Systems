@@ -565,7 +565,7 @@ module TSOS {
             //if its successfull create a new process
             if (outcome == "SUCCESS"){
                 _Kernel.createProcess(-1, priority);
-                _StdOut.putText("Program loaded onto disk with Process ID: " + pid + " - with priority: " + priority);
+                _StdOut.putText("Program loaded onto disk with Process ID: " + pid + " - with Priority: " + priority);
             }else{
                 _StdOut.putText(outcome);
             }
@@ -628,9 +628,10 @@ module TSOS {
         }
 
         //list all files on disk
-        public listFiles(){
+        public listFiles(listType: string){
 
-            var filenames = _krnFileSystem.listFiles();
+
+            var filenames = _krnFileSystem.listFiles(listType);
 
             for (var i = 0; i < filenames.length; i++){
                 _StdOut.putText(filenames[i]);

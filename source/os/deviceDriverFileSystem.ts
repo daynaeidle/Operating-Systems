@@ -106,7 +106,12 @@ module TSOS {
                                     sessionStorage.setItem(tsb, JSON.stringify(currBlock));
                                     console.log("Set file name: " + hexName);
                                     console.log("Original name: " + filename);
-                                    return ("Successfully created file: " + filename);
+                                    if (filename[0] == "."){
+                                        return ("Successfully created hidden file: " + filename);
+                                    }else{
+                                        return ("Successfully created file: " + filename);
+                                    }
+
                                 }
                             }
                         }
@@ -366,6 +371,7 @@ module TSOS {
                 currBlock = JSON.parse(sessionStorage.getItem(tsb));
                 pointerTsb = currBlock[1] + currBlock[2] + currBlock[3];
 
+
                 //while there are still pointer files left
                 while(pointerTsb != "000"){
 
@@ -542,7 +548,7 @@ module TSOS {
         }
 
         //list all files in directory
-        public listFiles(){
+        public listFiles(listType: string){
             var track = "0";
             var filenames = [];
 
@@ -564,7 +570,16 @@ module TSOS {
                         }
 
                         filename = this.convertToString(hexName);
-                        filenames[filenames.length] = filename;
+                        if (listType == "all"){
+                            //add all filenames if ls -l was chosen at shell
+                            filenames[filenames.length] = filename;
+                        }else if (listType == "public"){
+                            if (filename[0] != "."){
+                                //if list type is public, only add it if the first character is not a .
+                                filenames[filenames.length] = filename;
+                            }
+
+                        }
 
                     }
                 }
@@ -650,6 +665,7 @@ module TSOS {
 
                 //get the pointer's pointer
                 var newPointerTsb = pointer[1] + pointer[2] + pointer[3];
+
 
                 if (newPointerTsb == "000"){
                     //grab the data from the pointer and convert hexstring to regular string

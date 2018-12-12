@@ -180,7 +180,7 @@ module TSOS {
             //ls
             sc = new ShellCommand(this.shellList,
                                   "ls",
-                                  " - Lists all files.");
+                                  " (optional: -l to show hidden files) - Lists all files.");
             this.commandList[this.commandList.length] = sc;
 
             //format full
@@ -449,7 +449,10 @@ module TSOS {
                         _StdOut.putText("Delete deletes the specified file.");
                         break;
                     case "ls":
-                        _StdOut.putText("Ls lists all of the files in the directory.");
+                        _StdOut.putText("Ls lists all of the public files in the directory.");
+                        break;
+                    case "ls -l":
+                        _StdOut.putText("Ls -l lists all files in the directory, including the hidden ones.");
                         break;
                     case "format -quick":
                         _StdOut.putText("Format -quick formats the first four bits (avaiable bit and pointer bits) of every block in disk.");
@@ -641,7 +644,7 @@ module TSOS {
                         //call kernel to create a new process
                         _Kernel.loadProcessToDisk(_Pid, _userProgram, priority);
                     }else{
-                        _StdOut.putText("Program loaded into memory with Process ID: " + _Pid + " - with priority: " + priority);
+                        _StdOut.putText("Program loaded into memory with Process ID: " + _Pid + " - with Priority: " + priority);
                         //call kernel to create a new process
                         _Kernel.createProcess(base, priority);
                     }
@@ -918,7 +921,17 @@ module TSOS {
         //list all the files in the directory
         public shellList(args){
 
-            _Kernel.listFiles();
+            if (args.length > 0){
+                if (args[0] == "-l"){
+                    //call showall files
+                    _Kernel.listFiles("all");
+                }else{
+                    _StdOut.putText("Usage: ls -l for showing all files (including hidden ones)");
+                }
+            }else{
+                //list only public files
+                _Kernel.listFiles("public");
+            }
 
         }
 
